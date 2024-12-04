@@ -29,6 +29,16 @@ public class GameDataManager {
         return roomCode;
     }
 
+    // 방 존재 여부
+    public boolean isRoomExists(String roomCode){
+        return rooms.containsKey(roomCode);
+    }
+
+    // 특정 방의 게임 데이터(GameData) 반환
+    public GameData getGameData (String roomCode){
+        return rooms.get(roomCode);
+    }
+
     //==========================================================
 
     // 랜덤 방 코드 발급

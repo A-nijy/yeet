@@ -1,4 +1,4 @@
-package yeet.backend.dto;
+package yeet.backend.dto.responseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
