@@ -29,6 +29,11 @@ public class GameDataManager {
         return roomCode;
     }
 
+    // 방 제거
+    public void removeRoom(String roomCode){
+        rooms.remove(roomCode);
+    }
+
     // 방 존재 여부
     public boolean isRoomExists(String roomCode){
         return rooms.containsKey(roomCode);
