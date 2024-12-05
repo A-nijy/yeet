@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yeet.backend.data.GameData;
 import yeet.backend.data.GameDataManager;
+import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStatusResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
 import yeet.backend.exception.RoomFullException;
@@ -46,5 +47,15 @@ public class RoomService {
         gameData.addPlayer(player);
 
         return new GameStatusResponseDto(gameData);
+    }
+
+    // 방 나가기
+    public GameRemoveResponseDto roomRemove(String roomCode, String player) {
+
+        GameData gameData = gameDataManager.getGameData(roomCode);
+
+        gameDataManager.removeRoom(roomCode);
+
+        return new GameRemoveResponseDto(gameData, player);
     }
 }

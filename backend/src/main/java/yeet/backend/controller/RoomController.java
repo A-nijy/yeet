@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.PlayerRequestDto;
+import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStatusResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
 import yeet.backend.service.RoomService;
@@ -27,7 +28,7 @@ public class RoomController {
         RoomCodeResponseDto response = roomService.roomCreate(request.getPlayer());
 
         headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
-        headerAccessor.getSessionAttributes().put("sender", request.getPlayer());
+        headerAccessor.getSessionAttributes().put("player", request.getPlayer());
 
         return response;
     }
@@ -40,8 +41,21 @@ public class RoomController {
         GameStatusResponseDto response = roomService.roomJoin(roomCode, request.getPlayer());
 
         headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
-        headerAccessor.getSessionAttributes().put("sender", request.getPlayer());
+        headerAccessor.getSessionAttributes().put("player", request.getPlayer());
 
         return  response;
+    }
+
+    // 방 나가기
+    @MessageMapping("/room/remove/{roomCode}")
+    @SendTo("/topic/room/{roomCode}")
+    public GameRemoveResponseDto roomRemove(@DestinationVariable String roomCode, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+
+        GameRemoveResponseDto response = roomService.roomRemove(roomCode, request.getPlayer());
+
+        headerAccessor.getSessionAttributes().remove("roomCode");
+        headerAccessor.getSessionAttributes().remove("player");
+
+        return response;
     }
 }
