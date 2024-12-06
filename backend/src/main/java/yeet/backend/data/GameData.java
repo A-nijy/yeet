@@ -18,10 +18,12 @@ public class GameData {
     private String roomCode;    // 방 코드
     private List<String> players = new ArrayList<>();   // 플레이어
     private Map<String, ScoreBoard> scoreboards = new HashMap<>();  // 각 플레이어의 점수판
-    private int currentPlayerIndex = 0;     // 현재 턴의 플레이어 인텍스
+    private int turnCount = 0;     // 현재 턴
+    private String currentPlayer;           // 현재 턴의 플레이어
     private boolean gameStarted = false;    // 게임 시작 여부
     private int rollCount = 3;          // 주사위 돌릴 수 있는 횟수
     private int[] dice = new int[5];    // 주사위 값
+    private boolean[] diceFix = new boolean[5];     // 주사위 고정 여부
 
     // 객체 생성
     public GameData(String roomCode) {
@@ -38,17 +40,37 @@ public class GameData {
     }
 
     // 게임 시작
-    public void gameStart () {
+    public void gameStart() {
         gameStarted = true;
     }
 
     // 주사위 돌리기 (각 주사위 고정 여부 확인)
-    public void rollDice(boolean[] index) {
+    public void rollDice() {
         for (int i = 0; i < dice.length; i++){
-            if (!index[i]){
+            if (!diceFix[i]){
                 dice[i] = random.nextInt(6) + 1;    // 1 ~ 6 랜덤 값
             }
         }
+    }
+
+    // 주사위 고정 적용
+    public void diceFixUpdate(boolean[] diceFix){
+        this.diceFix = diceFix;
+    }
+
+    // 다음 턴 변경
+    public void nextTurn() {
+        turnCount++;
+        currentPlayer = players.get(turnCount % 2);
+        rollCount = 3;
+        for (int i = 0; i < diceFix.length; i++){
+            diceFix[i] = false;
+        }
+    }
+
+    // 점수판 반환
+    public ScoreBoard getScoreBoard(String player){
+        return scoreboards.get(player);
     }
 
     // 특정 방 참여 공간 여부
