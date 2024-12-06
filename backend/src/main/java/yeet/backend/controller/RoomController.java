@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.PlayerRequestDto;
+import yeet.backend.dto.responseDto.DiceRollResponseDto;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStatusResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
