@@ -1,8 +1,11 @@
 package yeet.backend.data;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class ScoreCalculator {
 
     public List<ScoreOption> calculateOptions(int[] dice, ScoreBoard scoreboard) {
