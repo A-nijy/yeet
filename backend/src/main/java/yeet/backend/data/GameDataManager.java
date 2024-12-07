@@ -23,6 +23,7 @@ public class GameDataManager {
 
         GameData gameData = new GameData(roomCode);     // 방 데이터 생성
         gameData.addPlayer(player);                     // 방에 사용자 추가
+        gameData.setCurrentPlayer(player);              // 현재 턴 사용자 정의
 
         rooms.put(roomCode, gameData);          // 방 생성
 
