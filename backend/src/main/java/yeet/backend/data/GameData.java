@@ -53,9 +53,14 @@ public class GameData {
         }
     }
 
-    // 주사위 고정 적용
-    public void diceFixUpdate(boolean[] diceFix){
+    // 주사위 고정 적용 (전체)
+    public void diceFixAllUpdate(boolean[] diceFix){
         this.diceFix = diceFix;
+    }
+
+    // 주사위 고정 적용 (단일)
+    public void diceFixOneUpdate(int index, boolean fix){
+        diceFix[index] = fix;
     }
 
     // 다음 턴 변경

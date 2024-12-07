@@ -3,7 +3,9 @@ package yeet.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yeet.backend.data.*;
+import yeet.backend.dto.requestDto.DiceFixRequestDto;
 import yeet.backend.dto.responseDto.DiceRollResponseDto;
+import yeet.backend.dto.responseDto.DiceStatusResponseDto;
 
 import java.util.List;
 
@@ -26,5 +28,15 @@ public class PlayService {
         List<ScoreOption> scoreOptions = scoreCalculator.calculateOptions(gameData.getDice(), scoreBoard);
 
         return new DiceRollResponseDto(gameData, scoreOptions);
+    }
+
+    // 주사위 고정 여부
+    public DiceStatusResponseDto diceFix(String roomCode, DiceFixRequestDto request) {
+
+        GameData gameData = gameDataManager.getGameData(roomCode);
+
+        gameData.diceFixOneUpdate(request.getDiceIndex(), request.isFix());
+
+        return new DiceStatusResponseDto(gameData);
     }
 }
