@@ -44,6 +44,11 @@ public class GameData {
         gameStarted = true;
     }
 
+    // 게임 종료
+    public void gameEnd() {
+        gameStarted = false;
+    }
+
     // 주사위 돌리기 (각 주사위 고정 여부 확인)
     public void rollDice() {
         for (int i = 0; i < dice.length; i++){
@@ -71,6 +76,11 @@ public class GameData {
         for (int i = 0; i < diceFix.length; i++){
             diceFix[i] = false;
         }
+    }
+
+    // 게임 끝 여부
+    public boolean gameDone() {
+        return turnCount > 25;
     }
 
     // 점수판 반환
