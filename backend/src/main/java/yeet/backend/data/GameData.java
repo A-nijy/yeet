@@ -31,8 +31,9 @@ public class GameData {
     }
 
     // 플레이어 추가
-    public void addPlayer(String player) {
+    public void addPlayer(String player, ScoreBoard scoreBoard) {
         players.add(player);
+        scoreboards.put(player, scoreBoard);
 
         if (isFull()){
             gameStart();
