@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yeet.backend.data.GameData;
 import yeet.backend.data.GameDataManager;
+import yeet.backend.data.ScoreBoard;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStatusResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
@@ -44,7 +45,8 @@ public class RoomService {
         }
 
         // 방 참여
-        gameData.addPlayer(player);
+        ScoreBoard scoreBoard = new ScoreBoard();
+        gameData.addPlayer(player, scoreBoard);
 
         return new GameStatusResponseDto(gameData);
     }
