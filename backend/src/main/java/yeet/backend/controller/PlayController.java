@@ -6,7 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.DiceFixRequestDto;
 import yeet.backend.dto.requestDto.ScoreChoiceRequestDto;
 import yeet.backend.dto.responseDto.DiceRollResponseDto;
@@ -14,7 +14,7 @@ import yeet.backend.dto.responseDto.DiceStatusResponseDto;
 import yeet.backend.dto.responseDto.ScoreChoiceResponseDto;
 import yeet.backend.service.PlayService;
 
-@RestControllerAdvice
+@RestController
 @RequiredArgsConstructor
 public class PlayController {
 
