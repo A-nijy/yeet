@@ -13,7 +13,7 @@ import yeet.backend.enumeration.ResponseType;
 @NoArgsConstructor
 public class GameRemoveResponseDto {
 
-    private ResponseType type = ResponseType.GAME_END;
+    private ResponseType type = ResponseType.GAME_REMOVE;
     private String roomCode;
     private String message;
     private boolean gameStarted;
