@@ -55,6 +55,7 @@ public class PlayService {
 
         ScoreBoard scoreBoard = gameData.getScoreBoard(player);
 
+        // 잘못된 카테고리 or 이미 선택했던 점수를 요청한 경우
         if (!scoreBoard.registerScore(request.getCategory(), request.getScore())){
             throw new WrongScoreException(roomCode);
         }
@@ -69,7 +70,10 @@ public class PlayService {
 
         Map<String, Integer> scoreUpdate = new HashMap<>();
         scoreUpdate.put(request.getCategory(), scoreBoard.getScore(request.getCategory()));
-        scoreUpdate.put("bonus", scoreBoard.getScore("bonus"));
+        if (scoreBoard.upperPartFull()){
+            scoreUpdate.put("sum", scoreBoard.getScore("sum"));
+            scoreUpdate.put("bonus", scoreBoard.getScore("bonus"));
+        }
         scoreUpdate.put("total", scoreBoard.getScore("total"));
 
         ScoreChoiceResponseDto response = new ScoreChoiceResponseDto();
