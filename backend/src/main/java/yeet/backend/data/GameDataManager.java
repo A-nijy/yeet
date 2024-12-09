@@ -34,7 +34,9 @@ public class GameDataManager {
 
     // 방 제거
     public void removeRoom(String roomCode){
-        rooms.remove(roomCode);
+        if (rooms.containsKey(roomCode)){
+            rooms.remove(roomCode);
+        }
     }
 
     // 방 존재 여부

@@ -9,10 +9,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.DiceFixRequestDto;
 import yeet.backend.dto.requestDto.ScoreChoiceRequestDto;
-import yeet.backend.dto.responseDto.DiceRollResponseDto;
-import yeet.backend.dto.responseDto.DiceStatusResponseDto;
-import yeet.backend.dto.responseDto.GameDoneResponseDto;
-import yeet.backend.dto.responseDto.ScoreChoiceResponseDto;
+import yeet.backend.dto.responseDto.*;
 import yeet.backend.service.PlayService;
 
 @RestController
@@ -58,6 +55,16 @@ public class PlayController {
     public GameDoneResponseDto gameResult(@DestinationVariable String roomCode){
 
         GameDoneResponseDto response = playService.gameResult(roomCode);
+
+        return response;
+    }
+
+    // 게임 종료
+    @MessageMapping("/room/end/{roomCode}")
+    @SendTo("/topic/room/{roomCode}")
+    public GameEndResponseDto gameEnd(@DestinationVariable String roomCode, SimpMessageHeaderAccessor headerAccessor){
+
+        GameEndResponseDto response = playService.gameEnd(roomCode, headerAccessor.getSessionAttributes().get("player").toString());
 
         return response;
     }
