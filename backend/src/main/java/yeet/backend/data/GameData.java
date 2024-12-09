@@ -57,6 +57,7 @@ public class GameData {
                 dice[i] = random.nextInt(6) + 1;    // 1 ~ 6 랜덤 값
             }
         }
+        rollCount--;
     }
 
     // 주사위 고정 적용 (전체)
