@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import yeet.backend.data.*;
 import yeet.backend.dto.requestDto.DiceFixRequestDto;
 import yeet.backend.dto.requestDto.ScoreChoiceRequestDto;
-import yeet.backend.dto.responseDto.DiceRollResponseDto;
-import yeet.backend.dto.responseDto.DiceStatusResponseDto;
-import yeet.backend.dto.responseDto.GameDoneResponseDto;
-import yeet.backend.dto.responseDto.ScoreChoiceResponseDto;
+import yeet.backend.dto.responseDto.*;
 import yeet.backend.exception.WrongScoreException;
 
 import java.util.HashMap;
@@ -22,7 +19,6 @@ public class PlayService {
 
     private final GameDataManager gameDataManager;
     private final ScoreCalculator scoreCalculator;
-    private final SimpMessagingTemplate messagingTemplate;
 
     // 주사위 돌리기
     public DiceRollResponseDto diceRoll(String roomCode, String player) {
@@ -93,5 +89,13 @@ public class PlayService {
         GameDoneResponseDto response = new GameDoneResponseDto(gameData);
 
         return response;
+    }
+
+    // 게임 종료
+    public GameEndResponseDto gameEnd(String roomCode, String player) {
+
+        gameDataManager.removeRoom(roomCode);
+
+        return new GameEndResponseDto(player);
     }
 }
