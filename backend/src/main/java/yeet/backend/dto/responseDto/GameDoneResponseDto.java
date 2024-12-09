@@ -15,7 +15,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class GameDoneResponseDto {
 
-    private ResponseType type = ResponseType.GAME_END;
+    private ResponseType type = ResponseType.GAME_DONE;
     private Map<String, Integer> score;
     private String win;
 

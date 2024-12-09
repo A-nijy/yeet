@@ -79,6 +79,13 @@ public class GameData {
         }
     }
 
+    // 점수판 초기화
+    public void resetScore() {
+        for (String key : scoreboards.keySet()){
+            scoreboards.put(key, new ScoreBoard());
+        }
+    }
+
     // 게임 끝 여부
     public boolean gameDone() {
         return turnCount > 25;

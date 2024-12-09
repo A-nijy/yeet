@@ -80,6 +80,7 @@ public class PlayService {
         response.setScore(scoreUpdate);
         response.setPlayer(player);
         response.setCurrentPlayer(gameData.getCurrentPlayer());
+        response.setEnd(gameData.gameDone());
 
         return response;
     }
