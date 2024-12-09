@@ -8,5 +8,6 @@ public enum ResponseType {
     CHOICE_SCORE,   // 점수 항목 선택
     GAME_REMOVE,    // 게임 나감
     GAME_DONE,      // 게임 결과
-    GAME_END        // 게임 종료
+    GAME_END,        // 게임 종료
+    GAME_RESTART    // 게임 다시하기
 }

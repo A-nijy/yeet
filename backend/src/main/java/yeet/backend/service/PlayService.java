@@ -98,4 +98,19 @@ public class PlayService {
 
         return new GameEndResponseDto(player);
     }
+
+    // 게임 다시하기
+    public GameRestartResponseDto gameRestart(String roomCode, String player) {
+
+        GameData gameData = gameDataManager.getGameData(roomCode);
+
+        if (!gameData.isRestart()){
+            gameData.setGameStarted(false);
+            gameData.setRestart(true);
+        } else {
+            gameData.resetGameStatus();
+        }
+
+        return new GameRestartResponseDto(player, gameData.isGameStarted());
+    }
 }
