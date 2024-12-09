@@ -18,7 +18,9 @@ public class ScoreCalculator {
             int score = Arrays.stream(dice)
                     .filter(value -> value == finalI)
                     .sum();
-            possibleScores.put(getCategoryName(i), score);
+            if (score > 0){
+                possibleScores.put(getCategoryName(i), score);
+            }
         }
 
         // 2. Triple
