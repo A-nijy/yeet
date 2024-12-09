@@ -11,6 +11,7 @@ import yeet.backend.dto.requestDto.DiceFixRequestDto;
 import yeet.backend.dto.requestDto.ScoreChoiceRequestDto;
 import yeet.backend.dto.responseDto.DiceRollResponseDto;
 import yeet.backend.dto.responseDto.DiceStatusResponseDto;
+import yeet.backend.dto.responseDto.GameDoneResponseDto;
 import yeet.backend.dto.responseDto.ScoreChoiceResponseDto;
 import yeet.backend.service.PlayService;
 
@@ -47,6 +48,16 @@ public class PlayController {
     public ScoreChoiceResponseDto scoreChoice(@DestinationVariable String roomCode, @Payload ScoreChoiceRequestDto request, SimpMessageHeaderAccessor headerAccessor) {
 
         ScoreChoiceResponseDto response = playService.scoreChoice(roomCode, request, headerAccessor.getSessionAttributes().get("player").toString());
+
+        return response;
+    }
+
+    // 게임 결과
+    @MessageMapping("/game/result/{roomCode}")
+    @SendTo("/topic/room/{roomCode}")
+    public GameDoneResponseDto gameResult(@DestinationVariable String roomCode){
+
+        GameDoneResponseDto response = playService.gameResult(roomCode);
 
         return response;
     }
