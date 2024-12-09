@@ -18,5 +18,5 @@ public class ScoreChoiceResponseDto {
     private String player;
     private Map<String, Integer> score;
     private String currentPlayer;
-
+    private boolean end;
 }

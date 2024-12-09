@@ -17,7 +17,6 @@ import java.util.List;
 public class DiceRollResponseDto {
 
     private ResponseType type = ResponseType.ROLL_DICE;
-    private String roomCode;                                // 방 코드
     private String player;                                  // 주사위 돌린 사용자
     private int[] dice;                                     // 주사위 결과
     private boolean[] diceFix;                              // 주사위 고정 여부
@@ -26,7 +25,6 @@ public class DiceRollResponseDto {
 
     public DiceRollResponseDto(GameData gameData, List<ScoreOption> scoreOptions) {
 
-        roomCode = gameData.getRoomCode();
         player = gameData.getCurrentPlayer();
         dice = gameData.getDice();
         diceFix = gameData.getDiceFix();

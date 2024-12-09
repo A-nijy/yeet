@@ -65,10 +65,6 @@ public class PlayService {
         if (gameData.gameDone()){
 
             gameData.gameEnd();
-
-            GameDoneResponseDto response = new GameDoneResponseDto(gameData);
-
-            messagingTemplate.convertAndSend("/topic/room" + roomCode,response);
         }
 
         Map<String, Integer> scoreUpdate = new HashMap<>();
@@ -80,6 +76,17 @@ public class PlayService {
         response.setScore(scoreUpdate);
         response.setPlayer(player);
         response.setCurrentPlayer(gameData.getCurrentPlayer());
+        response.setEnd(!gameData.isGameStarted());
+
+        return response;
+    }
+
+    // 게임 결과
+    public GameDoneResponseDto gameResult(String roomCode) {
+
+        GameData gameData = gameDataManager.getGameData(roomCode);
+
+        GameDoneResponseDto response = new GameDoneResponseDto(gameData);
 
         return response;
     }

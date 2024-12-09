@@ -6,7 +6,7 @@ import yeet.backend.data.GameData;
 import yeet.backend.data.GameDataManager;
 import yeet.backend.data.ScoreBoard;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
-import yeet.backend.dto.responseDto.GameStatusResponseDto;
+import yeet.backend.dto.responseDto.GameStartResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
 import yeet.backend.exception.RoomFullException;
 import yeet.backend.exception.RoomNotFoundException;
@@ -30,7 +30,7 @@ public class RoomService {
     }
 
     // 방 참여
-    public GameStatusResponseDto roomJoin(String roomCode, String player) {
+    public GameStartResponseDto roomJoin(String roomCode, String player) {
 
         // 방 존재 여부
         if(!gameDataManager.isRoomExists(roomCode)){
@@ -48,7 +48,7 @@ public class RoomService {
         ScoreBoard scoreBoard = new ScoreBoard();
         gameData.addPlayer(player, scoreBoard);
 
-        return new GameStatusResponseDto(gameData);
+        return new GameStartResponseDto(gameData);
     }
 
     // 방 나가기

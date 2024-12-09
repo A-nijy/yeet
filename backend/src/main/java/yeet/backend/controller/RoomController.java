@@ -9,9 +9,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.PlayerRequestDto;
-import yeet.backend.dto.responseDto.DiceRollResponseDto;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
-import yeet.backend.dto.responseDto.GameStatusResponseDto;
+import yeet.backend.dto.responseDto.GameStartResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
 import yeet.backend.service.RoomService;
 
@@ -37,11 +36,11 @@ public class RoomController {
     // 방 참여
     @MessageMapping("/room/join/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
-    public GameStatusResponseDto roomJoin(@DestinationVariable String roomCode, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+    public GameStartResponseDto roomJoin(@DestinationVariable String roomCode, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
 
-        GameStatusResponseDto response = roomService.roomJoin(roomCode, request.getPlayer());
+        GameStartResponseDto response = roomService.roomJoin(roomCode, request.getPlayer());
 
-        headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
+        headerAccessor.getSessionAttributes().put("roomCode", roomCode);
         headerAccessor.getSessionAttributes().put("player", request.getPlayer());
 
         return  response;
@@ -50,9 +49,9 @@ public class RoomController {
     // 방 나가기
     @MessageMapping("/room/remove/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
-    public GameRemoveResponseDto roomRemove(@DestinationVariable String roomCode, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+    public GameRemoveResponseDto roomRemove(@DestinationVariable String roomCode, SimpMessageHeaderAccessor headerAccessor){
 
-        GameRemoveResponseDto response = roomService.roomRemove(roomCode, request.getPlayer());
+        GameRemoveResponseDto response = roomService.roomRemove(roomCode, headerAccessor.getSessionAttributes().get("player").toString());
 
         headerAccessor.getSessionAttributes().remove("roomCode");
         headerAccessor.getSessionAttributes().remove("player");
