@@ -24,6 +24,7 @@ public class GameData {
     private int rollCount = 3;          // 주사위 돌릴 수 있는 횟수
     private int[] dice = new int[5];    // 주사위 값
     private boolean[] diceFix = new boolean[5];     // 주사위 고정 여부
+    private boolean restart = false;        // 게임 다시하기 여부
 
     // 객체 생성
     public GameData(String roomCode) {
@@ -80,11 +81,18 @@ public class GameData {
         }
     }
 
-    // 점수판 초기화
-    public void resetScore() {
+    // 게임 다시하기로 초기화 (점수판, 턴, 턴의 플레이어, 게임 시작 여부, 주사위 횟수, 주사위 고정 여부, 다시하기 여부)
+    public void resetGameStatus() {
         for (String key : scoreboards.keySet()){
             scoreboards.put(key, new ScoreBoard());
         }
+        turnCount = 0;
+        currentPlayer = players.get(turnCount % 2);
+        rollCount = 3;
+        for (int i = 0; i < diceFix.length; i++){
+            diceFix[i] = false;
+        }
+        restart = false;
     }
 
     // 게임 끝 여부

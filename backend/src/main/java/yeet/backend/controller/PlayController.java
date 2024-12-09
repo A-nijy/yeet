@@ -68,4 +68,16 @@ public class PlayController {
 
         return response;
     }
+
+    // 게임 다시하기
+    @MessageMapping("/room/restart/{roomCode}")
+    @SendTo("/topic/room/{roomCode}")
+    public GameRestartResponseDto gameRestart(@DestinationVariable String roomCode, SimpMessageHeaderAccessor headerAccessor){
+
+        GameRestartResponseDto response = playService.gameRestart(roomCode, headerAccessor.getSessionAttributes().get("player").toString());
+
+        return response;
+    }
+
+
 }
