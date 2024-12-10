@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import PrimaryInput from "../../Inputs/PrimaryInput";
-import { createRoom } from "../../../../thunk/roomThunk";
+import { createRoom, joinRoom } from "../../../../thunk/roomThunk";
 import { useDispatch, useSelector } from "react-redux";
 import { setGeneratedRoomCode, setMessage } from "../../../../store/modalSlice";
+import { disconnectStomp } from "../../../../thunk/stompThunk";
 
 const PartContainer = styled.div`
   padding: 1rem;
@@ -28,7 +29,8 @@ const WithFriendsModal = () => {
   const inputRef = useRef(null); // 입력창 참조
 
   const handleCreateRoom = () => {
-    console.log("클릭했슈");
+    console.log("방 만들기 클릭!!");
+
     dispatch(createRoom());
   };
 
@@ -37,9 +39,12 @@ const WithFriendsModal = () => {
       inputRef.current.focus();
       return;
     }
+
+    dispatch(joinRoom(roomCode)); // 방 코드와 닉네임 전달
   };
 
   const handleCancelMatching = () => {
+    dispatch(disconnectStomp()); // STOMP 연결 종료
     dispatch(setGeneratedRoomCode(null));
     dispatch(setMessage("매칭이 취소되었습니다."));
   };

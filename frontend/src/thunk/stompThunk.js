@@ -1,6 +1,7 @@
 import stompClientManager from "../utils/stompClient";
 import { connected, disconnected } from "../store/stompSlice";
 import { setGeneratedRoomCode } from "../store/modalSlice";
+import { updateGameStartData } from "../store/gameSlice";
 
 export const connectStomp = () => async (dispatch, getState) => {
   const { connected: isConnected } = getState().stomp;
@@ -26,7 +27,7 @@ export const disconnectStomp = () => async (dispatch) => {
     await stompClientManager.disconnect();
     dispatch(disconnected());
     dispatch(setGeneratedRoomCode(null));
-
+    dispatch(updateGameStartData(null)); // 방 정보 초기화
     console.log("STOMP 연결 해제 성공");
   } catch (error) {
     console.error("STOMP 연결 해제 중 오류:", error);
