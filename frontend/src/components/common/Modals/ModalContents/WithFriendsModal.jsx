@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import PrimaryInput from "../../Inputs/PrimaryInput";
+import { createRoom } from "../../../../thunk/roomThunk";
 import { useDispatch, useSelector } from "react-redux";
 import { setGeneratedRoomCode, setMessage } from "../../../../store/modalSlice";
 
@@ -21,12 +22,15 @@ const StyledPrimaryInput = styled(PrimaryInput)`
 `;
 
 const WithFriendsModal = () => {
-  const { generatedRoomCode } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
+  const { generatedRoomCode } = useSelector((state) => state.modal);
   const [roomCode, setRoomCode] = useState(""); // 입력된 방 코드
   const inputRef = useRef(null); // 입력창 참조
 
-  const handleCreateRoom = () => {};
+  const handleCreateRoom = () => {
+    console.log("클릭했슈");
+    dispatch(createRoom());
+  };
 
   const handleJoinRoom = () => {
     if (!roomCode.trim()) {

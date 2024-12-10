@@ -126,7 +126,7 @@ const MessageBox = styled.div`
     }
   }
 `;
-const PriMaryModal = () => {
+const PrimaryModal = () => {
   const { isOpen, contentType, message, generatedRoomCode } = useSelector(
     (state) => state.modal
   );
@@ -185,4 +185,4 @@ const PriMaryModal = () => {
   );
 };
 
-export default PriMaryModal;
+export default PrimaryModal;
