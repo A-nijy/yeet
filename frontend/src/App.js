@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+
+import styled from "styled-components";
+
+import Lobby from "./pages/Lobby";
+
+const Background = styled.div`
+  color: #2b2b2b;
+  background-color: #e5e5e5;
+  min-height: 100vh;
+
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+  }
+`;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Background>
+      <Lobby />
+    </Background>
   );
 }
 
