@@ -69,3 +69,43 @@ export const createRoom = () => async (dispatch, getState) => {
   });
   console.log("방 생성 요청 전송 완료");
 };
+
+// 방 참여
+export const joinRoom = (roomCode) => async (dispatch, getState) => {
+  try {
+    const { connected } = getState().stomp;
+
+    let player = "Player2";
+
+    // 1. STOMP 연결 확인 및 초기화
+    const client = connected
+      ? stompClientManager.getClient()
+      : await dispatch(connectStomp());
+
+    if (!client) {
+      console.error("STOMP 클라이언트가 초기화되지 않았습니다.");
+      dispatch(setGeneratedRoomCode(null));
+      return;
+    }
+
+    console.log("STOMP 클라이언트 확인 완료");
+
+    // 2. 팀 채널 구독
+    subscribeToTeamChannel(client, roomCode, dispatch);
+
+    console.log(`방 ${roomCode} 참여 요청 전송 중...`);
+    dispatch(setGeneratedRoomCode(roomCode));
+
+    // 3. 방 참여 요청 전송
+    client.publish({
+      destination: `/app/room/join/${roomCode}`,
+      body: JSON.stringify({ player }),
+    });
+
+    // 구독 유지: 팀 채널에서 메시지를 계속 수신
+    console.log("팀 채널 구독 유지");
+  } catch (error) {
+    console.error("방 참여 중 오류:", error.message);
+    dispatch(setMessage("방 참여 중 오류가 발생했습니다. 다시 시도해주세요."));
+  }
+};
