@@ -8,6 +8,8 @@ import {
   setGeneratedRoomCode,
   setMessage,
 } from "../../../store/modalSlice";
+import { disconnectStomp } from "../../../thunk/stompThunk";
+import { getSessionItem } from "../../../utils/roleSession";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -144,9 +146,14 @@ const PrimaryModal = () => {
   }, [message, dispatch]);
 
   const handleClose = () => {
-    if (contentType === "withFriends" && generatedRoomCode) {
+    const player = getSessionItem("player"); // 세션에서 플레이어 값 가져오기
+    if (
+      contentType === "withFriends" &&
+      generatedRoomCode &&
+      player === "Player1"
+    ) {
       // 방 코드가 존재하는 경우: 방 코드 초기화 및 메시지 표시
-
+      dispatch(disconnectStomp()); // STOMP 연결 종료
       dispatch(setGeneratedRoomCode(null));
       dispatch(setMessage("매칭이 취소되었습니다."));
       return; // 조건 충족 후 종료

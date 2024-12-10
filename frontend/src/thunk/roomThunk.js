@@ -2,6 +2,7 @@ import stompClientManager from "../utils/stompClient";
 import { setGeneratedRoomCode, setMessage } from "../store/modalSlice";
 import { connectStomp } from "./stompThunk";
 import { subscribeToTeamChannel } from "./gameThunk";
+import { getSessionItem, setSessionItem } from "../utils/roleSession";
 
 // 개인 채널 구독
 const subscribeToPersonalChannel = (client, callback) => {
@@ -28,7 +29,14 @@ export const createRoom = () => async (dispatch, getState) => {
 
   const { connected } = getState().stomp;
 
-  let player = "Player1";
+  // 세션에 Player1 저장
+  setSessionItem("player", "Player1");
+  const player = getSessionItem("player");
+  if (!player) {
+    console.error("세션에 플레이어 값이 저장되지 않았습니다.");
+    return;
+  }
+  console.log("현재 플레이어 (방 생성):", player);
 
   // 1. STOMP 연결 확인 및 초기화
   const client = connected
@@ -75,7 +83,20 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
   try {
     const { connected } = getState().stomp;
 
-    let player = "Player2";
+    // 세션에서 플레이어 정보 가져오기
+    setSessionItem("player", "Player2");
+    const player = getSessionItem("player");
+    if (!player) {
+      console.error(
+        "세션에 플레이어 값이 없습니다. 방 참여 동작을 중단합니다."
+      );
+      dispatch(
+        setMessage("플레이어 정보를 확인할 수 없습니다. 다시 시도해주세요.")
+      );
+      return; // 세션 값이 없으면 함수 종료
+    }
+
+    console.log("현재 플레이어 (방 참여):", player);
 
     // 1. STOMP 연결 확인 및 초기화
     const client = connected
