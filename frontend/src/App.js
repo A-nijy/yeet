@@ -29,7 +29,6 @@ function App() {
     <BackgroundApp>
       {/* gameStarted 값에 따라 화면 전환 */}
       {gameStarted === true ? <GamePlay /> : <Lobby />}
-      {/* <GamePlay /> */}
     </BackgroundApp>
   );
 }

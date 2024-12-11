@@ -4,16 +4,13 @@ import PrimaryButton from "../components/common/Buttons/PrimaryButton";
 import { openModal } from "../store/modalSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryModal from "../components/common/Modals/PrimaryModal";
+import Container from "../components/common/Container/Container";
 
 const LobbyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
+  align-items: center;
 `;
 
 const ButtonContainer = styled.div`
@@ -32,22 +29,23 @@ const Lobby = () => {
 
   console.log(modalState);
   return (
-    <LobbyContainer>
-      <TitleH1>YEET!</TitleH1>
-      <ButtonContainer>
-        <PrimaryButton
-          ver="red"
-          onClick={() => dispatch(openModal("withFriends"))}
-        >
-          친구랑 하기
-        </PrimaryButton>
-        <PrimaryButton onClick={() => dispatch(openModal("quickStart"))}>
-          빠른 시작
-        </PrimaryButton>
-      </ButtonContainer>
-
-      <PrimaryModal />
-    </LobbyContainer>
+    <Container>
+      <LobbyContainer>
+        <TitleH1>YEET!</TitleH1>
+        <ButtonContainer>
+          <PrimaryButton
+            ver="red"
+            onClick={() => dispatch(openModal("withFriends"))}
+          >
+            친구랑 하기
+          </PrimaryButton>
+          <PrimaryButton onClick={() => dispatch(openModal("quickStart"))}>
+            빠른 시작
+          </PrimaryButton>
+        </ButtonContainer>
+        <PrimaryModal />
+      </LobbyContainer>
+    </Container>
   );
 };
 

@@ -6,6 +6,7 @@ import { createRoom, joinRoom } from "../../../../thunk/roomThunk";
 import { useDispatch, useSelector } from "react-redux";
 import { setGeneratedRoomCode, setMessage } from "../../../../store/modalSlice";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
+import { getSessionItem } from "../../../../utils/roleSession";
 
 const PartContainer = styled.div`
   padding: 1rem;
@@ -27,6 +28,7 @@ const WithFriendsModal = () => {
   const { generatedRoomCode } = useSelector((state) => state.modal);
   const [roomCode, setRoomCode] = useState(""); // 입력된 방 코드
   const inputRef = useRef(null); // 입력창 참조
+  const player = getSessionItem("player");
 
   const handleCreateRoom = () => {
     console.log("방 만들기 클릭!!");
@@ -51,7 +53,8 @@ const WithFriendsModal = () => {
 
   return (
     <>
-      {generatedRoomCode ? (
+      {/**'방 만들기'로 초대 코드를 받는 사람만 UI를 볼 수 있도록 설정*/}
+      {generatedRoomCode && player === "Player1" ? (
         // 방이 생성된 경우
         <PartContainer>
           <div>{generatedRoomCode}</div>
