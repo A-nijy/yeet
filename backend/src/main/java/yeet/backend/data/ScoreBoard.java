@@ -35,7 +35,7 @@ public class ScoreBoard {
     }
 
     // 점수 등록
-    public boolean registerScore(String category, int score) {
+    public boolean registerScore(String category, Integer score) {
         if (!scores.containsKey(category) || scores.get(category) != null) {
             return false; // 카테고리가 없거나 이미 등록됨
         }
@@ -69,7 +69,7 @@ public class ScoreBoard {
 
     // 상단 항목 총점 계산 (+ 적용)
     public void updateSum(){
-        int upperSectionTotal =
+        Integer upperSectionTotal =
                 (scores.getOrDefault("aces", 0) +
                         scores.getOrDefault("twos", 0) +
                         scores.getOrDefault("threes", 0) +
@@ -82,7 +82,7 @@ public class ScoreBoard {
 
     // 총합 계산
     public void updateTotal() {
-        int total = scores.entrySet().stream()
+        Integer total = scores.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)          // 값이 null이 아닌 항목만
                 .filter(entry -> !entry.getKey().equals("sum"))     // "sum" 키 제외
                 .mapToInt(entry -> entry.getValue())                // 값을 int로 변환
