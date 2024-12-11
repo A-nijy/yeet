@@ -10,8 +10,8 @@ import {
   faDiceSix,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../common/Buttons/PrimaryButton";
+import { useDispatch } from "react-redux";
 import { fixDices } from "../../thunk/gameThunk";
-import { useDispatch, useSelector } from "react-redux";
 
 const DiceContainer = styled.div`
   display: flex;
@@ -50,9 +50,14 @@ const DiceIcon = styled(FontAwesomeIcon)`
   font-size: 2.5rem;
 `;
 
-const DiceKeeper = ({ diceValues, selectedDice, onRoll, isDisabled }) => {
+const DiceKeeper = ({
+  diceValues,
+  selectedDice,
+  onRoll,
+  isDisabled,
+  roomCode,
+}) => {
   const dispatch = useDispatch();
-  const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const diceIcons = [
     faDiceOne,
     faDiceTwo,

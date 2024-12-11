@@ -4,7 +4,7 @@ const initialState = {
   gameStarted: false,
   currentPlayer: null,
   player: null,
-  rollCount: null,
+  rollCount: 0,
   dice: [1, 1, 1, 1, 1],
   diceFix: [false, false, false, false, false],
   GAME_START: {},
