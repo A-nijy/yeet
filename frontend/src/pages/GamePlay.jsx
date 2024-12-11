@@ -8,17 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSessionItem } from "../utils/roleSession";
 import { rollDices } from "../thunk/gameThunk";
 import DiceKeeper from "../components/GamePaly/DiceKeeper";
+import ScoreBoard from "../components/GamePaly/ScoreBoard";
 
 const GameBoardContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  gap: 2rem;
   width: 100%;
-
-  @media (max-width: 480px) {
-    gap: 1rem;
-  }
 `;
 
 const GameInfo = styled.div`
@@ -67,6 +63,11 @@ const GamePlay = () => {
   const diceValues = useSelector((state) => state.game.dice);
   const selectedDice = useSelector((state) => state.game.diceFix);
   const roomCode = useSelector((state) => state.modal.generatedRoomCode);
+  const enterBoardPlayer = useSelector((state) => state.game.player);
+  const scoreOptions = useSelector(
+    (state) => state.game.ROLL_DICE.scoreOptions || []
+  );
+  const choiceScore = useSelector((state) => state.game.CHOICE_SCORE);
   const player = getSessionItem("player");
 
   const opponent = player === "Player1" ? "Player2" : "Player1"; // 상대 플레이어 계산
@@ -110,7 +111,11 @@ const GamePlay = () => {
           />
         </GameInfo>
         <BoardWrapper>
-          <div>보드판</div>
+          <ScoreBoard
+            scoreOptions={scoreOptions}
+            enterBoardPlayer={enterBoardPlayer}
+            choiceScore={choiceScore}
+          />
         </BoardWrapper>
       </GameBoardContainer>
     </Container>

@@ -10,6 +10,7 @@ const initialState = {
   GAME_START: {},
   ROLL_DICE: {},
   FIX_DICE: {},
+  CHOICE_SCORE: {},
 };
 
 const gameSlice = createSlice({
@@ -60,6 +61,11 @@ const gameSlice = createSlice({
     updateFixDiceData(state, action) {
       state.FIX_DICE = { ...state.FIX_DICE, ...action.payload };
     },
+
+    // CHOICE_SCORE 데이터를 업데이트
+    updateScoreData(state, action) {
+      state.CHOICE_SCORE = { ...state.CHOICE_SCORE, ...action.payload };
+    },
   },
 });
 
@@ -73,6 +79,7 @@ export const {
   updateGameStartData,
   updateRollDiceData,
   updateFixDiceData,
+  updateScoreData,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
