@@ -33,16 +33,25 @@ const Lobby = () => {
       <LobbyContainer>
         <TitleH1>YEET!</TitleH1>
         <ButtonContainer>
+          {/** 친구랑 하기 버튼*/}
           <PrimaryButton
             ver="red"
             onClick={() => dispatch(openModal("withFriends"))}
           >
             친구랑 하기
           </PrimaryButton>
+
+          {/** 빠른 시작 버튼*/}
           <PrimaryButton onClick={() => dispatch(openModal("quickStart"))}>
             빠른 시작
           </PrimaryButton>
+
+          <PrimaryButton onClick={() => dispatch(openModal("gameResult"))}>
+            게임 결과 보기
+          </PrimaryButton>
         </ButtonContainer>
+
+        {/** 상황에 맞는 모달 등장*/}
         <PrimaryModal />
       </LobbyContainer>
     </Container>

@@ -8,6 +8,7 @@ import {
   updateDice,
   updateDiceFix,
   updateScoreData,
+  updateEnd,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -31,6 +32,9 @@ const handleMessageByType = (data, dispatch) => {
   }
   if (data.diceFix !== undefined) {
     dispatch(updateDiceFix(data.diceFix));
+  }
+  if (data.end !== undefined) {
+    dispatch(updateEnd(data.diceFix));
   }
 
   switch (data.type) {

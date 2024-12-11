@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   gameStarted: false,
+  end: false,
   currentPlayer: null,
   player: null,
   rollCount: 0,
@@ -47,6 +48,11 @@ const gameSlice = createSlice({
       state.diceFix = action.payload;
     },
 
+    // end 업데이트
+    updateEnd(state, action) {
+      state.end = action.payload;
+    },
+
     // GAME_START 데이터를 업데이트
     updateGameStartData(state, action) {
       state.GAME_START = { ...state.GAME_START, ...action.payload };
@@ -76,6 +82,7 @@ export const {
   updatePlayer,
   updateDice,
   updateDiceFix,
+  updateEnd,
   updateGameStartData,
   updateRollDiceData,
   updateFixDiceData,
