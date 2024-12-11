@@ -4,7 +4,11 @@ const initialState = {
   currentPlayer: null,
   rollCount: null,
   gameStarted: false,
+  player: null,
   GAME_START: {},
+  ROLL_DICE: {
+    dice: [1, 1, 1, 1, 1], // dice의 기본값 설정
+  },
 };
 
 const gameSlice = createSlice({
@@ -26,9 +30,19 @@ const gameSlice = createSlice({
       state.gameStarted = action.payload;
     },
 
+    // player 업데이트
+    updatePlayer(state, action) {
+      state.player = action.payload;
+    },
+
     // GAME_START 데이터를 업데이트
     updateGameStartData(state, action) {
       state.GAME_START = { ...state.GAME_START, ...action.payload };
+    },
+
+    // ROLL_DICE 데이터를 업데이트
+    updateRollDiceData(state, action) {
+      state.ROLL_DICE = { ...state.ROLL_DICE, ...action.payload };
     },
   },
 });
@@ -37,7 +51,9 @@ export const {
   updateCurrentPlayer,
   updateRollCount,
   updateGameStarted,
+  updatePlayer,
   updateGameStartData,
+  updateRollDiceData,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
