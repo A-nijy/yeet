@@ -8,6 +8,7 @@ import {
   updateDice,
   updateDiceFix,
   updateScoreData,
+  updateEnd,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -31,6 +32,9 @@ const handleMessageByType = (data, dispatch) => {
   }
   if (data.diceFix !== undefined) {
     dispatch(updateDiceFix(data.diceFix));
+  }
+  if (data.end !== undefined) {
+    dispatch(updateEnd(data.diceFix));
   }
 
   switch (data.type) {
@@ -134,17 +138,40 @@ export const selectScore = (roomCode, category, score) => async () => {
   const client = stompClientManager.getClient();
   if (!client) {
     console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+    return;
   }
 
   console.log("점수판 점수 선택 요청 전송 중...");
 
+  console.log("roomCode:", roomCode, "category:", category, "score:", score);
+
+  if (typeof roomCode !== "string") {
+    console.error("roomCode가 문자열이 아닙니다:", roomCode);
+    return;
+  }
+
+  if (typeof category !== "string") {
+    console.error("category가 문자열이 아닙니다:", category);
+    return;
+  }
+
+  if (typeof score !== "number") {
+    console.error("score가 숫자가 아닙니다:", score);
+    return;
+  }
+
+  const body = JSON.stringify({
+    roomCode: roomCode,
+    category: category,
+    score: score,
+  });
+
+  // body 값 확인
+  console.log("Request body:", body);
+
   client.publish({
     destination: `/app/score/choice/${roomCode}`,
-    body: JSON.stringify({
-      roomCode: roomCode,
-      category: category,
-      score: score,
-    }),
+    body: body, // 직렬화된 JSON 문자열
   });
 
   console.log("점수판 점수 선택 요청 전송 완료");

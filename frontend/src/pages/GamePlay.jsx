@@ -98,6 +98,7 @@ const GamePlay = () => {
 
           <DiceKeeper
             diceValues={diceValues}
+            roomCode={roomCode}
             selectedDice={selectedDice}
             onRoll={handleRollDices}
             isDisabled={currentPlayer !== player || rollCount === 0}
@@ -112,6 +113,7 @@ const GamePlay = () => {
         </GameInfo>
         <BoardWrapper>
           <ScoreBoard
+            roomCode={roomCode}
             scoreOptions={scoreOptions}
             enterBoardPlayer={enterBoardPlayer}
             choiceScore={choiceScore}

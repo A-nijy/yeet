@@ -10,6 +10,7 @@ import {
 } from "../../../store/modalSlice";
 import { disconnectStomp } from "../../../thunk/stompThunk";
 import { getSessionItem } from "../../../utils/roleSession";
+import GameResultsModal from "./ModalContents/GameResultModal";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -173,6 +174,8 @@ const PrimaryModal = () => {
         return <QuickStartModal />;
       case "withFriends":
         return <WithFriendsModal />;
+      case "gameResult":
+        return <GameResultsModal />;
       default:
         return null;
     }

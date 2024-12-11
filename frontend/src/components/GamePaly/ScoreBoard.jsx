@@ -102,10 +102,13 @@ const ScoreCell = styled.td`
       props.$isClickable ? "0px 0px 8px #000000" : "none"};
   }
 `;
-const ScoreBoard = ({ scoreOptions, enterBoardPlayer, choiceScore }) => {
+const ScoreBoard = ({
+  scoreOptions,
+  enterBoardPlayer,
+  choiceScore,
+  roomCode,
+}) => {
   const dispatch = useDispatch();
-
-  const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const fixScore = useSelector((state) => state.game.CHOICE_SCORE.score);
   const player = getSessionItem("player");
@@ -137,7 +140,8 @@ const ScoreBoard = ({ scoreOptions, enterBoardPlayer, choiceScore }) => {
     }
 
     const serverCategory = mapCategoryToServer(uiCategory); // UI 카테고리 -> 서버 카테고리 변환
-    dispatch(selectScore({ roomCode, category: serverCategory, score })); // 서버로 선택한 점수 전송
+
+    dispatch(selectScore(roomCode, serverCategory, score)); // 서버로 선택한 점수 전송
   };
 
   // 선택 가능한 점수 업데이트
