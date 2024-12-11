@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentPlayer: null,
-  rollCount: null,
   gameStarted: false,
+  currentPlayer: null,
   player: null,
+  rollCount: null,
+  dice: [1, 1, 1, 1, 1],
+  diceFix: [false, false, false, false, false],
   GAME_START: {},
-  ROLL_DICE: {
-    dice: [1, 1, 1, 1, 1], // dice의 기본값 설정
-  },
+  ROLL_DICE: {},
+  FIX_DICE: {},
 };
 
 const gameSlice = createSlice({
@@ -35,6 +36,16 @@ const gameSlice = createSlice({
       state.player = action.payload;
     },
 
+    // dice 업데이트
+    updateDice(state, action) {
+      state.dice = action.payload;
+    },
+
+    // diceFix 업데이트
+    updateDiceFix(state, action) {
+      state.diceFix = action.payload;
+    },
+
     // GAME_START 데이터를 업데이트
     updateGameStartData(state, action) {
       state.GAME_START = { ...state.GAME_START, ...action.payload };
@@ -44,6 +55,11 @@ const gameSlice = createSlice({
     updateRollDiceData(state, action) {
       state.ROLL_DICE = { ...state.ROLL_DICE, ...action.payload };
     },
+
+    // FIX_DICE 데이터를 업데이트
+    updateFixDiceData(state, action) {
+      state.FIX_DICE = { ...state.FIX_DICE, ...action.payload };
+    },
   },
 });
 
@@ -52,8 +68,11 @@ export const {
   updateRollCount,
   updateGameStarted,
   updatePlayer,
+  updateDice,
+  updateDiceFix,
   updateGameStartData,
   updateRollDiceData,
+  updateFixDiceData,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

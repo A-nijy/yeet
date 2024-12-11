@@ -5,6 +5,8 @@ import {
   updateGameStartData,
   updatePlayer,
   updateRollDiceData,
+  updateDice,
+  updateDiceFix,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -23,6 +25,12 @@ const handleMessageByType = (data, dispatch) => {
   if (data.player !== undefined) {
     dispatch(updatePlayer(data.player));
   }
+  if (data.dice !== undefined) {
+    dispatch(updateDice(data.dice));
+  }
+  if (data.diceFix !== undefined) {
+    dispatch(updateDiceFix(data.diceFix));
+  }
 
   switch (data.type) {
     case "GAME_START":
@@ -32,6 +40,11 @@ const handleMessageByType = (data, dispatch) => {
 
     case "ROLL_DICE":
       console.log("주사위 굴리기 결과 메시지 처리:", data);
+      dispatch(updateRollDiceData(data));
+      break;
+
+    case "FIX_DICE":
+      console.log("주사위 고정/해지 결과 메시지 처리:", data);
       dispatch(updateRollDiceData(data));
       break;
 
@@ -88,3 +101,25 @@ export const rollDices = (roomCode) => async (dispatch, getState) => {
 
   console.log("주사위 굴리기 요청 전송 완료");
 };
+
+// 주사위 고정/해지 요청
+export const fixDices =
+  (roomCode, diceIndex, fix) => async (dispatch, getState) => {
+    const client = stompClientManager.getClient();
+    if (!client) {
+      console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+    }
+
+    console.log("주사위 고정/해지 요청 전송 중...");
+
+    client.publish({
+      destination: `/app/dice/fix/${roomCode}`,
+      body: JSON.stringify({
+        roomCode: roomCode,
+        diceIndex: diceIndex,
+        fix: fix,
+      }),
+    });
+
+    console.log("주사위 고정/해지 요청 전송 완료");
+  };

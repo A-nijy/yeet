@@ -64,7 +64,8 @@ const GamePlay = () => {
   // Redux 상태 가져오기
   const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const rollCount = useSelector((state) => state.game.rollCount);
-  const diceValues = useSelector((state) => state.game.ROLL_DICE.dice);
+  const diceValues = useSelector((state) => state.game.dice);
+  const selectedDice = useSelector((state) => state.game.diceFix);
   const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const player = getSessionItem("player");
 
@@ -74,8 +75,6 @@ const GamePlay = () => {
   const playerRollsLeft = currentPlayer === player ? rollCount : 0;
   const opponentRollsLeft = currentPlayer === opponent ? rollCount : 0;
 
-  // 고정 주사위 예시 값
-  const selectedDice = [];
   // 주사위 굴리기
   const handleRollDices = () => {
     if (!roomCode) {
@@ -98,6 +97,7 @@ const GamePlay = () => {
 
           <DiceKeeper
             diceValues={diceValues}
+            selectedDice={selectedDice}
             onRoll={handleRollDices}
             isDisabled={currentPlayer !== player || rollCount === 0}
           />
@@ -105,7 +105,6 @@ const GamePlay = () => {
           {/* 본인 플레이어 아이콘 */}
           <PlayerIcon
             title={`${player} (me)`}
-            selectedDice={selectedDice}
             rollsLeft={playerRollsLeft} // 본인이 현재 플레이어인 경우에만 rollCount 표시
             isActive={currentPlayer === player}
           />

@@ -10,6 +10,8 @@ import {
   faDiceSix,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../common/Buttons/PrimaryButton";
+import { fixDices } from "../../thunk/gameThunk";
+import { useDispatch, useSelector } from "react-redux";
 
 const DiceContainer = styled.div`
   display: flex;
@@ -26,17 +28,20 @@ const DiceWrapperContainer = styled.div`
 `;
 
 const DiceWrapper = styled.div`
-  border: 2px solid transparent;
+  border: ${(props) =>
+    props.$isSelected ? "2px solid #ff6868" : "2px solid transparent"};
   border-radius: 0.5rem;
   padding: 0.25rem 0.4rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: ${(props) => (props.$isDisabled ? "not-allowed" : "pointer")};
+  pointer-events: ${(props) => (props.$isDisabled ? "none" : "auto")};
   transition: border 0.3s ease;
 
   &:hover {
-    border: 2px solid #ff6868;
+    border: ${(props) =>
+      props.$isDisabled ? "2px solid transparent" : "2px solid #ff6868"};
   }
 `;
 
@@ -45,7 +50,9 @@ const DiceIcon = styled(FontAwesomeIcon)`
   font-size: 2.5rem;
 `;
 
-const DiceKeeper = ({ diceValues, onRoll, isDisabled }) => {
+const DiceKeeper = ({ diceValues, selectedDice, onRoll, isDisabled }) => {
+  const dispatch = useDispatch();
+  const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const diceIcons = [
     faDiceOne,
     faDiceTwo,
@@ -55,11 +62,38 @@ const DiceKeeper = ({ diceValues, onRoll, isDisabled }) => {
     faDiceSix,
   ];
 
+  // 주사위 클릭 핸들러
+  const handleDiceClick = (index) => {
+    if (!selectedDice) {
+      console.log("주사위 초기값이 없습니다!");
+      return;
+    }
+    if (!roomCode) {
+      console.error("방 코드가 없습니다!");
+      return;
+    }
+    if (isDisabled) {
+      console.warn("현재 플레이어가 아닙니다!");
+      return;
+    }
+
+    // 선택 상태 반전
+    const updatedSelectedDice = [...selectedDice];
+    updatedSelectedDice[index] = !updatedSelectedDice[index];
+
+    dispatch(fixDices(roomCode, index, updatedSelectedDice[index]));
+  };
+
   return (
     <DiceContainer>
       <DiceWrapperContainer>
         {diceValues.map((value, index) => (
-          <DiceWrapper key={index}>
+          <DiceWrapper
+            key={index}
+            $isSelected={selectedDice[index]}
+            $isDisabled={isDisabled}
+            onClick={() => handleDiceClick(index)}
+          >
             <DiceIcon icon={diceIcons[value - 1]} />
           </DiceWrapper>
         ))}
