@@ -87,12 +87,15 @@ public class ScoreBoard {
                 .filter(entry -> !entry.getKey().equals("sum"))     // "sum" 키 제외
                 .mapToInt(entry -> entry.getValue())                // 값을 int로 변환
                 .sum();
+
+        total = (total != null) ? total : 0;
+
         scores.put("total", total);
     }
 
     // 점수 조회
     public Integer getScore(String category) {
-        return scores.getOrDefault(category, null);
+        return scores.getOrDefault(category, 0);
     }
 
 //    // 점수판이 다 채워졌는지 확인
