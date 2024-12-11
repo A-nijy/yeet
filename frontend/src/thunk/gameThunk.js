@@ -7,6 +7,7 @@ import {
   updateRollDiceData,
   updateDice,
   updateDiceFix,
+  updateScoreData,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -48,6 +49,11 @@ const handleMessageByType = (data, dispatch) => {
       dispatch(updateRollDiceData(data));
       break;
 
+    case "CHOICE_SCORE":
+      console.log("점수판 점수 선택 결과 메시지 처리:", data);
+      dispatch(updateScoreData(data));
+      break;
+
     default:
       console.warn("알 수 없는 메시지 타입:", data.type);
       break;
@@ -87,7 +93,7 @@ export const subscribeToTeamChannel = (client, teamChannelId, dispatch) => {
 };
 
 // 주사위 굴리기 요청
-export const rollDices = (roomCode) => async (dispatch, getState) => {
+export const rollDices = (roomCode) => async () => {
   const client = stompClientManager.getClient();
   if (!client) {
     console.error("STOMP 클라이언트를 가져오지 못했습니다.");
@@ -103,23 +109,43 @@ export const rollDices = (roomCode) => async (dispatch, getState) => {
 };
 
 // 주사위 고정/해지 요청
-export const fixDices =
-  (roomCode, diceIndex, fix) => async (dispatch, getState) => {
-    const client = stompClientManager.getClient();
-    if (!client) {
-      console.error("STOMP 클라이언트를 가져오지 못했습니다.");
-    }
+export const fixDices = (roomCode, diceIndex, fix) => async () => {
+  const client = stompClientManager.getClient();
+  if (!client) {
+    console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+  }
 
-    console.log("주사위 고정/해지 요청 전송 중...");
+  console.log("주사위 고정/해지 요청 전송 중...");
 
-    client.publish({
-      destination: `/app/dice/fix/${roomCode}`,
-      body: JSON.stringify({
-        roomCode: roomCode,
-        diceIndex: diceIndex,
-        fix: fix,
-      }),
-    });
+  client.publish({
+    destination: `/app/dice/fix/${roomCode}`,
+    body: JSON.stringify({
+      roomCode: roomCode,
+      diceIndex: diceIndex,
+      fix: fix,
+    }),
+  });
 
-    console.log("주사위 고정/해지 요청 전송 완료");
-  };
+  console.log("주사위 고정/해지 요청 전송 완료");
+};
+
+// 점수판 점수 선택 요청
+export const selectScore = (roomCode, category, score) => async () => {
+  const client = stompClientManager.getClient();
+  if (!client) {
+    console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+  }
+
+  console.log("점수판 점수 선택 요청 전송 중...");
+
+  client.publish({
+    destination: `/app/score/choice/${roomCode}`,
+    body: JSON.stringify({
+      roomCode: roomCode,
+      category: category,
+      score: score,
+    }),
+  });
+
+  console.log("점수판 점수 선택 요청 전송 완료");
+};
