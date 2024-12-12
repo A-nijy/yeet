@@ -35,8 +35,10 @@ const DiceWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: ${(props) => (props.$isDisabled ? "not-allowed" : "pointer")};
-  pointer-events: ${(props) => (props.$isDisabled ? "none" : "auto")};
+  cursor: ${(props) =>
+    props.$isDisabled || props.$rollCountExceeded ? "not-allowed" : "pointer"};
+  pointer-events: ${(props) =>
+    props.$isDisabled || props.$rollCountExceeded ? "none" : "auto"};
   transition: border 0.3s ease;
 
   &:hover {
@@ -56,6 +58,7 @@ const DiceKeeper = ({
   onRoll,
   isDisabled,
   roomCode,
+  rollCount,
 }) => {
   const dispatch = useDispatch();
   const diceIcons = [
@@ -81,6 +84,10 @@ const DiceKeeper = ({
       console.warn("현재 플레이어가 아닙니다!");
       return;
     }
+    if (rollCount >= 3) {
+      console.warn("첫 주사위 돌리기에서는 주사위를 고정할 수 없습니다!");
+      return;
+    }
 
     // 선택 상태 반전
     const updatedSelectedDice = [...selectedDice];
@@ -97,6 +104,7 @@ const DiceKeeper = ({
             key={index}
             $isSelected={selectedDice[index]}
             $isDisabled={isDisabled}
+            $rollCountExceeded={rollCount >= 3} // 기회가 3번이면 호버 비활성화
             onClick={() => handleDiceClick(index)}
           >
             <DiceIcon icon={diceIcons[value - 1]} />

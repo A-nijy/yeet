@@ -101,6 +101,7 @@ const GamePlay = () => {
             roomCode={roomCode}
             selectedDice={selectedDice}
             onRoll={handleRollDices}
+            rollCount={rollCount}
             isDisabled={currentPlayer !== player || rollCount === 0}
           />
 
