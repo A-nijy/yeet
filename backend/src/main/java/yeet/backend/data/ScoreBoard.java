@@ -70,12 +70,12 @@ public class ScoreBoard {
     // 상단 항목 총점 계산 (+ 적용)
     public void updateSum(){
         Integer upperSectionTotal =
-                (scores.getOrDefault("aces", 0) +
-                        scores.getOrDefault("twos", 0) +
-                        scores.getOrDefault("threes", 0) +
-                        scores.getOrDefault("fours", 0) +
-                        scores.getOrDefault("fives", 0) +
-                        scores.getOrDefault("sixes", 0));
+                (scores.get("aces") == null ? 0 : scores.get("aces")) +
+                        (scores.get("twos") == null ? 0 : scores.get("twos")) +
+                        (scores.get("threes") == null ? 0 : scores.get("threes")) +
+                        (scores.get("fours") == null ? 0 : scores.get("fours")) +
+                        (scores.get("fives") == null ? 0 : scores.get("fives")) +
+                        (scores.get("sixes") == null ? 0 : scores.get("sixes"));
 
         scores.put("sum", upperSectionTotal);
     }
@@ -85,6 +85,7 @@ public class ScoreBoard {
         Integer total = scores.entrySet().stream()
                 .filter(entry -> entry.getValue() != null)          // 값이 null이 아닌 항목만
                 .filter(entry -> !entry.getKey().equals("sum"))     // "sum" 키 제외
+                .filter(entry -> !entry.getKey().equals("total"))     // "sum" 키 제외
                 .mapToInt(entry -> entry.getValue())                // 값을 int로 변환
                 .sum();
 
