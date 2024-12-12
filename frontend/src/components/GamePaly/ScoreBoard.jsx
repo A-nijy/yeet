@@ -54,6 +54,8 @@ const StyledTable = styled.table`
     padding: 0.5rem;
     text-align: center;
     background: #e5e5e5;
+    /* 배경색을 위한 트랜지션 추가 */
+    transition: background-color 0.3s ease;
   }
 
   td {
@@ -65,6 +67,29 @@ const StyledTable = styled.table`
     background: #e5e5e5;
     border: none;
   }
+
+  /* 특정 열 강조 (nth-child 적용) */
+  ${({ $highlightedColumn }) =>
+    $highlightedColumn &&
+    `
+      /* 강조된 헤더 셀 스타일 */
+      th:nth-child(${$highlightedColumn + 1}) {
+        background-color: #e9d6d6;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+      }
+
+      /* 강조된 열의 모든 데이터 셀 배경색 적용 */
+      tr td:nth-child(${$highlightedColumn + 1}) {
+        background-color: #e9d6d6;
+      }
+
+      /* 강조된 열의 마지막 데이터 셀 하단 둥근 모서리 적용 */
+      tr:last-child td:nth-child(${$highlightedColumn + 1}) {
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
+    `}
 `;
 
 const StyledRow = styled.tr`
@@ -111,6 +136,7 @@ const ScoreBoard = ({
   const dispatch = useDispatch();
   const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const fixScore = useSelector((state) => state.game.CHOICE_SCORE.score);
+  const rollCount = useSelector((state) => state.game.rollCount);
   const player = getSessionItem("player");
 
   const [boardData, setBoardData] = useState([
@@ -120,10 +146,10 @@ const ScoreBoard = ({
     { category: "Fours", Player1: null, Player2: null },
     { category: "Fives", Player1: null, Player2: null },
     { category: "Sixes", Player1: null, Player2: null },
-    { category: "Three of a Kind", Player1: null, Player2: null },
-    { category: "Four of a Kind", Player1: null, Player2: null },
     { category: "SUM", Player1: null, Player2: null },
     { category: "BONUS", Player1: null, Player2: null },
+    { category: "Three of a Kind", Player1: null, Player2: null },
+    { category: "Four of a Kind", Player1: null, Player2: null },
     { category: "Full House", Player1: null, Player2: null },
     { category: "Small Straight", Player1: null, Player2: null },
     { category: "Large Straight", Player1: null, Player2: null },
@@ -180,9 +206,18 @@ const ScoreBoard = ({
     }
   }, [fixScore, enterBoardPlayer]);
 
+  const highlightedColumn =
+    rollCount < 3
+      ? currentPlayer === "Player1"
+        ? 1
+        : currentPlayer === "Player2"
+        ? 2
+        : null
+      : null;
+
   return (
     <Container>
-      <StyledTable>
+      <StyledTable $highlightedColumn={highlightedColumn}>
         <thead>
           <tr>
             <th>Category</th>
@@ -209,11 +244,18 @@ const ScoreBoard = ({
                     (opt) => mapCategoryToUI(opt.category) === row.category
                   );
 
-                // 클릭 가능 여부는 세션 값과 현재 플레이어가 일치해야만 가능
+                // 선택 불가능한 카테고리
+                const nonSelectableCategories = ["SUM", "BONUS", "TOTAL"];
+                const isNonSelectable = nonSelectableCategories.includes(
+                  row.category
+                );
+
+                // 클릭 가능 여부
                 const isClickable =
-                  isOption &&
+                  !isNonSelectable &&
+                  (isOption || row[playerKey] === null) &&
                   currentPlayer === player &&
-                  row[playerKey] === null;
+                  currentPlayer === playerKey;
 
                 // 현재 카테고리에 매칭되는 점수 찾기
                 const matchingOption = scoreOptions.find(
@@ -222,8 +264,8 @@ const ScoreBoard = ({
 
                 // 표시할 값 결정
                 const displayValue = isOption
-                  ? matchingOption?.score || ""
-                  : row[playerKey] !== null
+                  ? matchingOption?.score ?? "" // null 또는 undefined만 빈 문자열 처리
+                  : row[playerKey] !== null && row[playerKey] !== undefined
                   ? row[playerKey]
                   : "";
 
@@ -243,7 +285,7 @@ const ScoreBoard = ({
                         : undefined
                     }
                   >
-                    {displayValue || ""}
+                    {displayValue ?? ""}
                   </ScoreCell>
                 );
               })}

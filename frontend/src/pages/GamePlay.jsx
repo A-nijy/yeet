@@ -65,7 +65,7 @@ const GamePlay = () => {
   const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const enterBoardPlayer = useSelector((state) => state.game.player);
   const scoreOptions = useSelector(
-    (state) => state.game.ROLL_DICE.scoreOptions || []
+    (state) => state.game.ROLL_DICE.scoreOptions
   );
   const choiceScore = useSelector((state) => state.game.CHOICE_SCORE);
   const player = getSessionItem("player");

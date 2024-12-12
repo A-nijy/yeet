@@ -8,8 +8,9 @@ const initialState = {
   rollCount: 0,
   dice: [1, 1, 1, 1, 1],
   diceFix: [false, false, false, false, false],
+
   GAME_START: {},
-  ROLL_DICE: {},
+  ROLL_DICE: { scoreOptions: [] },
   FIX_DICE: {},
   CHOICE_SCORE: {},
 };
