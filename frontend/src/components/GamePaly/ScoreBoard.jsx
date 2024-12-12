@@ -120,10 +120,10 @@ const ScoreBoard = ({
     { category: "Fours", Player1: null, Player2: null },
     { category: "Fives", Player1: null, Player2: null },
     { category: "Sixes", Player1: null, Player2: null },
-    { category: "Three of a Kind", Player1: null, Player2: null },
-    { category: "Four of a Kind", Player1: null, Player2: null },
     { category: "SUM", Player1: null, Player2: null },
     { category: "BONUS", Player1: null, Player2: null },
+    { category: "Three of a Kind", Player1: null, Player2: null },
+    { category: "Four of a Kind", Player1: null, Player2: null },
     { category: "Full House", Player1: null, Player2: null },
     { category: "Small Straight", Player1: null, Player2: null },
     { category: "Large Straight", Player1: null, Player2: null },
@@ -209,11 +209,11 @@ const ScoreBoard = ({
                     (opt) => mapCategoryToUI(opt.category) === row.category
                   );
 
-                // 클릭 가능 여부는 세션 값과 현재 플레이어가 일치해야만 가능
+                // 클릭 가능 여부
                 const isClickable =
-                  isOption &&
+                  (isOption || row[playerKey] === null) &&
                   currentPlayer === player &&
-                  row[playerKey] === null;
+                  currentPlayer === playerKey;
 
                 // 현재 카테고리에 매칭되는 점수 찾기
                 const matchingOption = scoreOptions.find(
@@ -222,8 +222,8 @@ const ScoreBoard = ({
 
                 // 표시할 값 결정
                 const displayValue = isOption
-                  ? matchingOption?.score || ""
-                  : row[playerKey] !== null
+                  ? matchingOption?.score ?? "" // null 또는 undefined만 빈 문자열 처리
+                  : row[playerKey] !== null && row[playerKey] !== undefined
                   ? row[playerKey]
                   : "";
 
@@ -243,7 +243,7 @@ const ScoreBoard = ({
                         : undefined
                     }
                   >
-                    {displayValue || ""}
+                    {displayValue ?? ""}
                   </ScoreCell>
                 );
               })}
