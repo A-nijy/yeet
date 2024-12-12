@@ -18,10 +18,10 @@ const categoryMapping = {
   smallStraight: "Small Straight",
   largeStraight: "Large Straight",
   chance: "Chance",
-  yahtzee: "Yahtzee",
-  sum: "Sum",
-  bonus: "Bonus",
-  total: "Total",
+  yahtzee: "YEET",
+  sum: "SUM",
+  bonus: "BONUS",
+  total: "TOTAL",
 };
 
 const reverseCategoryMapping = Object.fromEntries(
@@ -122,14 +122,14 @@ const ScoreBoard = ({
     { category: "Sixes", Player1: null, Player2: null },
     { category: "Three of a Kind", Player1: null, Player2: null },
     { category: "Four of a Kind", Player1: null, Player2: null },
-    { category: "Sum", Player1: null, Player2: null },
-    { category: "Bonus", Player1: null, Player2: null },
+    { category: "SUM", Player1: null, Player2: null },
+    { category: "BONUS", Player1: null, Player2: null },
     { category: "Full House", Player1: null, Player2: null },
     { category: "Small Straight", Player1: null, Player2: null },
     { category: "Large Straight", Player1: null, Player2: null },
     { category: "Chance", Player1: null, Player2: null },
     { category: "YEET", Player1: null, Player2: null },
-    { category: "Total", Player1: null, Player2: null },
+    { category: "TOTAL", Player1: null, Player2: null },
   ]);
 
   // 점수 선택 핸들러
@@ -149,8 +149,7 @@ const ScoreBoard = ({
     if (choiceScore) {
       setBoardData((prevData) =>
         prevData.map((item) => {
-          const playerKey =
-            enterBoardPlayer === "Player1" ? "Player1" : "Player2";
+          const playerKey = currentPlayer === "Player1" ? "Player1" : "Player2";
           const uiCategory = mapCategoryToUI(choiceScore.category);
           if (item.category === uiCategory) {
             return { ...item, [playerKey]: choiceScore.score };
@@ -159,20 +158,23 @@ const ScoreBoard = ({
         })
       );
     }
-  }, [choiceScore, enterBoardPlayer]);
+  }, [choiceScore, currentPlayer]);
 
   // fixScore 업데이트 처리
   useEffect(() => {
-    if (fixScore) {
+    if (fixScore && enterBoardPlayer) {
       setBoardData((prevData) =>
         prevData.map((item) => {
-          const playerKey =
-            enterBoardPlayer === "Player1" ? "Player1" : "Player2";
-          const uiCategory = mapCategoryToUI(fixScore.category);
-          if (item.category === uiCategory) {
-            return { ...item, [playerKey]: fixScore.score };
+          const serverCategory = mapCategoryToServer(item.category); // 서버 카테고리와 매칭
+
+          // `fixScore`에 해당하는 카테고리가 있다면 업데이트
+          if (fixScore[serverCategory] !== undefined) {
+            return {
+              ...item,
+              [enterBoardPlayer]: fixScore[serverCategory], // KeepScorePlayer 값에 따라 업데이트
+            };
           }
-          return item;
+          return item; // 해당하지 않으면 기존 항목 유지
         })
       );
     }
