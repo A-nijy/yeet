@@ -4,6 +4,7 @@ const StyledButton = styled.button`
   width: 7rem;
   height: 2.5rem;
   border: none;
+  font-size: 0.9rem;
   border-radius: 0.6rem;
   background-color: #e5e5e5; /* 배경색 통일 */
   color: ${({ $ver, disabled }) =>
@@ -12,15 +13,15 @@ const StyledButton = styled.button`
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   box-shadow: ${({ disabled }) =>
     disabled
-      ? "inset 2px 2px 5px #a8a8a8, inset -2px -2px 5px #ffffff"
-      : "7px 7px 14px #a8a8a8, -7px -7px 14px #ffffff"};
-  transition: all 0.2s ease-in-out;
+      ? "inset 0.125rem 0.125rem 0.3125rem #a8a8a8, inset -0.125rem -0.125rem 0.3125rem #ffffff"
+      : "0.4375rem 0.4375rem 0.875rem #a8a8a8, -0.4375rem -0.4375rem 0.875rem #ffffff"};
+  transition: all 0.3s ease-in-out;
 
   &:hover {
     box-shadow: ${({ disabled }) =>
       disabled
-        ? "inset 2px 2px 5px #a8a8a8, inset -2px -2px 5px #ffffff"
-        : "4px 4px 10px #a8a8a8, -4px -4px 10px #ffffff"};
+        ? "inset 0.125rem 0.125rem 0.3125rem #a8a8a8, inset -0.125rem -0.125rem 0.3125rem #ffffff"
+        : "0.25rem 0.25rem 0.625rem #a8a8a8, -0.25rem -0.25rem 0.625rem #ffffff"};
     color: ${({ $ver, disabled }) =>
       disabled
         ? "#aaa"
@@ -34,8 +35,8 @@ const StyledButton = styled.button`
   &:active {
     box-shadow: ${({ disabled }) =>
       disabled
-        ? "inset 2px 2px 5px #a8a8a8, inset -2px -2px 5px #ffffff"
-        : "inset 4px 4px 10px #a8a8a8, inset -4px -4px 10px #ffffff"};
+        ? "inset 0.125rem 0.125rem 0.3125rem #a8a8a8, inset -0.125rem -0.125rem 0.3125rem #ffffff"
+        : "inset 0.25rem 0.25rem 0.625rem #a8a8a8, inset -0.25rem -0.25rem 0.625rem #ffffff"};
     color: ${({ $ver, disabled }) =>
       disabled
         ? "#aaa"
@@ -50,11 +51,17 @@ const StyledButton = styled.button`
     outline: none; /* 포커스 스타일 제거 */
   }
 
-  @media (max-width: 480px) {
-    width: 5.1rem;
-    height: 2.1rem;
-    font-size: 0.7rem;
+  @media (max-width: 768px) {
+    width: 6.5rem;
+    height: 2.3rem;
+    font-size: 0.85rem;
   }
+
+  /* @media (max-width: 480px) {
+    width: 6rem;
+    height: 2.1rem;
+    font-size: 0.9rem;
+  } */
 `;
 
 const PrimaryButton = ({ onClick, children, disabled, ver = "blue" }) => {

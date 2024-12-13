@@ -33,6 +33,13 @@ const IconWrapper = styled.div`
   align-items: center;
   margin: 0 1rem;
   height: 6.5rem;
+
+  @media (max-width: 768px) {
+    height: 5.5rem;
+  }
+  @media (max-width: 480px) {
+    height: 4.7rem;
+  }
 `;
 
 const UserIcon = styled(FontAwesomeIcon)`
@@ -44,7 +51,7 @@ const UserIcon = styled(FontAwesomeIcon)`
     props.$isWinner ? "3.6rem" : "2.7rem"}; /* 이긴 사람은 조금 더 큼 */
   transition: all 0.3s ease;
   @media (max-width: 768px) {
-    font-size: ${(props) => (props.$isWinner ? "3rem" : "2.3rem")};
+    font-size: ${(props) => (props.$isWinner ? "3.2rem" : "2.5rem")};
   }
   @media (max-width: 480px) {
     font-size: ${(props) => (props.$isWinner ? "3rem" : "2.3rem")};

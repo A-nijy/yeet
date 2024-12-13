@@ -17,6 +17,7 @@ const DiceContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2rem 0 2rem 0.5rem;
   gap: 1rem;
 `;
 
@@ -25,6 +26,11 @@ const DiceWrapperContainer = styled.div`
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
+  transition: padding 0.3s ease;
+
+  @media (max-width: 768px) {
+    gap: 0.3rem;
+  }
 `;
 
 const DiceWrapper = styled.div`
@@ -39,17 +45,27 @@ const DiceWrapper = styled.div`
     props.$isDisabled || props.$rollCountExceeded ? "not-allowed" : "pointer"};
   pointer-events: ${(props) =>
     props.$isDisabled || props.$rollCountExceeded ? "none" : "auto"};
-  transition: border 0.3s ease;
+  transition: padding 0.3s ease;
 
   &:hover {
     border: ${(props) =>
       props.$isDisabled ? "2px solid transparent" : "2px solid #ff6868"};
   }
+
+  @media (max-width: 768px) {
+    padding: 0.15rem 0.29rem;
+  }
 `;
 
 const DiceIcon = styled(FontAwesomeIcon)`
-  color: #f3a0b5;
+  transition: color 0.5s ease;
+  color: ${(props) => (props.$rollCountExceeded ? "#b3b3b3" : "#f3a0b5")};
   font-size: 2.5rem;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const DiceKeeper = ({
@@ -107,7 +123,10 @@ const DiceKeeper = ({
             $rollCountExceeded={rollCount >= 3} // 기회가 3번이면 호버 비활성화
             onClick={() => handleDiceClick(index)}
           >
-            <DiceIcon icon={diceIcons[value - 1]} />
+            <DiceIcon
+              icon={diceIcons[value - 1]}
+              $rollCountExceeded={rollCount >= 3}
+            />
           </DiceWrapper>
         ))}
       </DiceWrapperContainer>

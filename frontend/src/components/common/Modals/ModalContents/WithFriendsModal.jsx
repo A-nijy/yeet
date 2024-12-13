@@ -10,6 +10,10 @@ import { getSessionItem } from "../../../../utils/roleSession";
 
 const PartContainer = styled.div`
   padding: 1rem;
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+  }
 `;
 
 const StyledEnterCodeContainer = styled.div`

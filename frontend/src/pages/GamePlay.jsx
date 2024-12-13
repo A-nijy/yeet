@@ -15,6 +15,12 @@ const GameBoardContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 100%;
+  margin: 0 1rem;
+  transition: margin 0.3s ease;
+
+  @media (max-width: 768px) {
+    margin: 0 0.5rem;
+  }
 `;
 
 const GameInfo = styled.div`
@@ -25,14 +31,14 @@ const GameInfo = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+  transition: font-size 0.3s ease;
 
   @media (max-width: 768px) {
     font-size: 1rem;
-    text-align: center;
   }
 
   @media (max-width: 480px) {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -43,15 +49,6 @@ const BoardWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-
-  @media (max-width: 480px) {
-    max-width: 100%;
-    width: 100%;
-  }
 `;
 
 const GamePlay = () => {

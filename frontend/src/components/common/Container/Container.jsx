@@ -5,7 +5,7 @@ const StyledContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh; /* 최소 높이를 설정 */
   max-width: 1200px;
   margin: 0 auto;
 `;

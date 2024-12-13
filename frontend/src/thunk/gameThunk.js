@@ -130,7 +130,6 @@ export const fixDices = (roomCode, diceIndex, fix) => async () => {
   console.log("주사위 고정/해지 요청 전송 중...");
 
   const body = JSON.stringify({
-    roomCode: roomCode,
     diceIndex: diceIndex,
     fix: fix,
   });

@@ -38,11 +38,6 @@ const ModalContainer = styled.div`
   position: relative; /* 닫기 버튼 위치 조정 */
   transition: all 0.2s ease-in-out;
 
-  @media (max-width: 768px) {
-    width: 80%;
-    padding: 1.5rem;
-  }
-
   @media (max-width: 480px) {
     width: 95%;
     padding: 1rem;
@@ -79,14 +74,15 @@ const ModalTitle = styled.h2`
   font-size: 1.5rem;
   color: #333;
   margin: 0;
+  padding-bottom: 0.5rem;
   transition: all 0.2s ease-in-out;
 
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 `;
 
@@ -165,6 +161,7 @@ const PrimaryModal = () => {
   const modalTitle = useMemo(() => {
     if (contentType === "quickStart") return "빠른 시작";
     if (contentType === "withFriends") return "친구랑 하기";
+    if (contentType === "gameResult") return "게임 결과";
     return "";
   }, [contentType]);
 
