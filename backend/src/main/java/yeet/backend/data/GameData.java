@@ -81,6 +81,11 @@ public class GameData {
         }
     }
 
+    // 마지막 턴 여부
+    public boolean lastTurn() {
+        return turnCount > 23;
+    }
+
     // 게임 다시하기로 초기화 (점수판, 턴, 턴의 플레이어, 게임 시작 여부, 주사위 횟수, 주사위 고정 여부, 다시하기 여부)
     public void resetGameStatus() {
         for (String key : scoreboards.keySet()){

@@ -56,6 +56,16 @@ public class PlayService {
             throw new WrongScoreException(roomCode);
         }
 
+        Map<String, Integer> scoreUpdate = new HashMap<>();
+        scoreUpdate.put(request.getCategory(), scoreBoard.getScore(request.getCategory()));
+        if (scoreBoard.upperPartFull()){
+            scoreUpdate.put("sum", scoreBoard.getScore("sum"));
+            scoreUpdate.put("bonus", scoreBoard.getScore("bonus"));
+        }
+        if (gameData.lastTurn()){
+            scoreUpdate.put("total", scoreBoard.getScore("total"));
+        }
+
         gameData.nextTurn();
 
         // 만약 게임이 끝났다면
@@ -63,14 +73,6 @@ public class PlayService {
 
             gameData.gameEnd();
         }
-
-        Map<String, Integer> scoreUpdate = new HashMap<>();
-        scoreUpdate.put(request.getCategory(), scoreBoard.getScore(request.getCategory()));
-        if (scoreBoard.upperPartFull()){
-            scoreUpdate.put("sum", scoreBoard.getScore("sum"));
-            scoreUpdate.put("bonus", scoreBoard.getScore("bonus"));
-        }
-        scoreUpdate.put("total", scoreBoard.getScore("total"));
 
         ScoreChoiceResponseDto response = new ScoreChoiceResponseDto();
         response.setScore(scoreUpdate);
