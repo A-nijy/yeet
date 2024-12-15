@@ -6,7 +6,7 @@ import { getSessionItem } from "../../utils/roleSession";
 
 // 카테고리 매핑
 const categoryMapping = {
-  aces: "Ones",
+  aces: "Aces",
   twos: "Twos",
   threes: "Threes",
   fours: "Fours",
@@ -94,21 +94,22 @@ const StyledTable = styled.table`
 
 const StyledRow = styled.tr`
   ${(props) =>
-    props.$rowName === "Sum" &&
+    props.$rowName === "SUM" &&
     `
-      background: #f9eaea;
+      border-top: 2px solid #acacac;
     `}
 
   ${(props) =>
-    props.$rowName === "Bonus" &&
+    props.$rowName === "BONUS" &&
     `
-      background: #ffdede;
+      border-bottom: 2px solid #acacac;
     `}
 
   ${(props) =>
-    props.$rowName === "Total" &&
+    props.$rowName === "TOTAL" &&
     `
-      background: #dcedff;
+      border-top: 2px solid #acacac;
+      border-bottom: 2px solid #acacac; 
     `}
 `;
 
@@ -140,7 +141,7 @@ const ScoreBoard = ({
   const player = getSessionItem("player");
 
   const [boardData, setBoardData] = useState([
-    { category: "Ones", Player1: null, Player2: null },
+    { category: "Aces", Player1: null, Player2: null },
     { category: "Twos", Player1: null, Player2: null },
     { category: "Threes", Player1: null, Player2: null },
     { category: "Fours", Player1: null, Player2: null },

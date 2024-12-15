@@ -56,7 +56,7 @@ const CloseButton = styled.button`
   align-items: center;
   background: none;
   border: none;
-  font-size: 1.7rem; /* 아이콘 크기 */
+  font-size: 2rem; /* 아이콘 크기 */
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -67,6 +67,12 @@ const CloseButton = styled.button`
 
   &:active {
     transform: scale(0.75);
+  }
+
+  @media (max-width: 480px) {
+    width: 1.9rem; /* 버튼 고정 크기 */
+    height: 1.9rem; /* 버튼 고정 크기 */
+    font-size: 1.7rem; /* 아이콘 크기 */
   }
 `;
 
