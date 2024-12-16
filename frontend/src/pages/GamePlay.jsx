@@ -3,12 +3,12 @@ import styled from "styled-components";
 import PlayerIcon from "../components/common/Icons/PlayerIcon";
 import Container from "../components/common/Container/Container";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { getSessionItem } from "../utils/roleSession";
-import { rollDices } from "../thunk/gameThunk";
 import DiceKeeper from "../components/GamePaly/DiceKeeper";
 import ScoreBoard from "../components/GamePaly/ScoreBoard";
+import PrimaryModal from "../components/common/Modals/PrimaryModal";
 
 const GameBoardContainer = styled.div`
   display: flex;
@@ -52,9 +52,9 @@ const BoardWrapper = styled.div`
 `;
 
 const GamePlay = () => {
-  const dispatch = useDispatch();
-
   // Redux 상태 가져오기
+  const contentType = useSelector((state) => state.modal);
+
   const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const rollCount = useSelector((state) => state.game.rollCount);
   const diceValues = useSelector((state) => state.game.dice);
@@ -73,15 +73,6 @@ const GamePlay = () => {
   const playerRollsLeft = currentPlayer === player ? rollCount : 0;
   const opponentRollsLeft = currentPlayer === opponent ? rollCount : 0;
 
-  // 주사위 굴리기
-  const handleRollDices = () => {
-    if (!roomCode) {
-      console.error("방 코드가 없습니다!");
-      return;
-    }
-    dispatch(rollDices(roomCode));
-  };
-
   return (
     <Container>
       <GameBoardContainer>
@@ -97,7 +88,6 @@ const GamePlay = () => {
             diceValues={diceValues}
             roomCode={roomCode}
             selectedDice={selectedDice}
-            onRoll={handleRollDices}
             rollCount={rollCount}
             isDisabled={currentPlayer !== player || rollCount === 0}
           />
@@ -118,6 +108,8 @@ const GamePlay = () => {
           />
         </BoardWrapper>
       </GameBoardContainer>
+      {/** 상황에 맞는 모달 등장*/}
+      {contentType === "gameResult" && <PrimaryModal />}
     </Container>
   );
 };

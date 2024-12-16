@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectScore } from "../../thunk/gameThunk";
+import { gameResult, selectScore } from "../../thunk/gameThunk";
 import { getSessionItem } from "../../utils/roleSession";
 
 // 카테고리 매핑
@@ -37,8 +37,8 @@ const mapCategoryToServer = (uiCategory) =>
 // 스타일 정의
 const Container = styled.div`
   border-radius: 0.5rem;
-  padding: 1rem;
-  max-width: 30rem;
+  padding: 0.5rem 1rem;
+  max-width: 35rem;
   background: #e5e5e5;
   box-shadow: 4px 4px 10px #c2c2c2, -4px -4px 10px #ffffff;
   width: 100%;
@@ -116,7 +116,7 @@ const StyledRow = styled.tr`
 const ScoreCell = styled.td`
   color: ${(props) =>
     props.$isFixed
-      ? "black" // fixScore인 경우 검정색
+      ? "#2b2b2b" // fixScore인 경우 검정색
       : props.$isOption
       ? "red" // scoreOptions인 경우 빨간색
       : "inherit"};
@@ -138,6 +138,7 @@ const ScoreBoard = ({
   const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const fixScore = useSelector((state) => state.game.CHOICE_SCORE.score);
   const rollCount = useSelector((state) => state.game.rollCount);
+  const playEnd = useSelector((state) => state.game.end);
   const player = getSessionItem("player");
 
   const [boardData, setBoardData] = useState([
@@ -170,6 +171,16 @@ const ScoreBoard = ({
 
     dispatch(selectScore(roomCode, serverCategory, score)); // 서버로 선택한 점수 전송
   };
+
+  useEffect(() => {
+    if (playEnd === true) {
+      if (roomCode) {
+        console.warn("방코드가 존재하지 않습니다.", roomCode);
+      }
+      // 게임 결과 요청하기
+      dispatch(gameResult(roomCode));
+    }
+  }, [playEnd, dispatch, roomCode]);
 
   // 선택 가능한 점수 업데이트
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../common/Buttons/PrimaryButton";
 import { useDispatch } from "react-redux";
-import { fixDices } from "../../thunk/gameThunk";
+import { fixDices, rollDices } from "../../thunk/gameThunk";
 
 const DiceContainer = styled.div`
   display: flex;
@@ -58,10 +58,12 @@ const DiceWrapper = styled.div`
 `;
 
 const DiceIcon = styled(FontAwesomeIcon)`
-  transition: color 0.5s ease;
+  transition: ${(props) =>
+    props.$animated ? "transform 0.2s ease, opacity 0.2s ease" : "none"};
+  transform: ${(props) => (props.$animated ? "scale(0)" : "scale(1)")};
+  opacity: ${(props) => (props.$animated ? "0" : "1")};
   color: ${(props) => (props.$rollCountExceeded ? "#b3b3b3" : "#f3a0b5")};
   font-size: 2.5rem;
-  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     font-size: 2rem;
@@ -71,7 +73,6 @@ const DiceIcon = styled(FontAwesomeIcon)`
 const DiceKeeper = ({
   diceValues,
   selectedDice,
-  onRoll,
   isDisabled,
   roomCode,
   rollCount,
@@ -85,6 +86,9 @@ const DiceKeeper = ({
     faDiceFive,
     faDiceSix,
   ];
+
+  // 애니메이션 상태를 관리
+  const [animatedDice, setAnimatedDice] = useState([]);
 
   // 주사위 클릭 핸들러
   const handleDiceClick = (index) => {
@@ -112,6 +116,27 @@ const DiceKeeper = ({
     dispatch(fixDices(roomCode, index, updatedSelectedDice[index]));
   };
 
+  // 주사위 굴리기
+  const handleRollDices = () => {
+    if (!roomCode) {
+      console.error("방 코드가 없습니다!");
+      return;
+    }
+
+    // 애니메이션 대상: 선택되지 않은 주사위
+    const nonSelectedDice = diceValues
+      .map((value, index) => (!selectedDice[index] ? index : null))
+      .filter((index) => index !== null);
+
+    setAnimatedDice(nonSelectedDice); // 애니메이션 상태 설정
+
+    // 실제 주사위 굴리기 실행
+    dispatch(rollDices(roomCode));
+
+    // 일정 시간 후 애니메이션 상태 초기화 (500ms 뒤)
+    setTimeout(() => setAnimatedDice([]), 300);
+  };
+
   return (
     <DiceContainer>
       <DiceWrapperContainer>
@@ -125,12 +150,13 @@ const DiceKeeper = ({
           >
             <DiceIcon
               icon={diceIcons[value - 1]}
+              $animated={animatedDice.includes(index)} // 애니메이션 여부
               $rollCountExceeded={rollCount >= 3}
             />
           </DiceWrapper>
         ))}
       </DiceWrapperContainer>
-      <PrimaryButton onClick={onRoll} disabled={isDisabled}>
+      <PrimaryButton onClick={handleRollDices} disabled={isDisabled}>
         Roll Dice
       </PrimaryButton>
     </DiceContainer>

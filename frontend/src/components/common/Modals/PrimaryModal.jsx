@@ -5,6 +5,7 @@ import WithFriendsModal from "./ModalContents/WithFriendsModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   closeModal,
+  openModal,
   setGeneratedRoomCode,
   setMessage,
 } from "../../../store/modalSlice";
@@ -132,10 +133,19 @@ const MessageBox = styled.div`
   }
 `;
 const PrimaryModal = () => {
+  const dispatch = useDispatch();
+
   const { isOpen, contentType, message, generatedRoomCode } = useSelector(
     (state) => state.modal
   );
-  const dispatch = useDispatch();
+  const resultInfo = useSelector((state) => state.game.GAME_DONE);
+
+  useEffect(() => {
+    if (resultInfo) {
+      console.log("게임 결과 들어왔으니까 모달 띄우봅시다.");
+      // dispatch(openModal("gameResult"));
+    }
+  }, [resultInfo, dispatch]);
 
   useEffect(() => {
     if (message) {
