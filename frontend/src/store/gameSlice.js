@@ -8,6 +8,25 @@ const initialState = {
   rollCount: 0,
   dice: [1, 1, 1, 1, 1],
   diceFix: [false, false, false, false, false],
+  win: "",
+  scoreBoard: [
+    { category: "aces", Player1: null, Player2: null },
+    { category: "twos", Player1: null, Player2: null },
+    { category: "threes", Player1: null, Player2: null },
+    { category: "fours", Player1: null, Player2: null },
+    { category: "fives", Player1: null, Player2: null },
+    { category: "sixes", Player1: null, Player2: null },
+    { category: "sum", Player1: null, Player2: null },
+    { category: "bonus", Player1: null, Player2: null },
+    { category: "triple", Player1: null, Player2: null },
+    { category: "quadruple", Player1: null, Player2: null },
+    { category: "fullHouse", Player1: null, Player2: null },
+    { category: "smallStraight", Player1: null, Player2: null },
+    { category: "largeStraight", Player1: null, Player2: null },
+    { category: "chance", Player1: null, Player2: null },
+    { category: "yahtzee", Player1: null, Player2: null },
+    { category: "total", Player1: null, Player2: null },
+  ],
 
   GAME_START: {},
   ROLL_DICE: { scoreOptions: [] },
@@ -20,6 +39,9 @@ const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
+    // 게임 상태 초기화
+    resetGameState: () => initialState,
+
     // currentPlayer 업데이트
     updateCurrentPlayer(state, action) {
       state.currentPlayer = action.payload;
@@ -55,6 +77,23 @@ const gameSlice = createSlice({
       state.end = action.payload;
     },
 
+    // win 업데이트
+    updateWin(state, action) {
+      state.win = action.payload;
+    },
+
+    // scoreBoard 업데이트
+    updateScoreBoard(state, action) {
+      const { player, score } = action.payload;
+
+      // 선택된 카테고리 업데이트
+      Object.entries(score).forEach(([category, value]) => {
+        state.scoreBoard = state.scoreBoard.map((row) =>
+          row.category === category ? { ...row, [player]: value } : row
+        );
+      });
+    },
+
     // GAME_START 데이터를 업데이트
     updateGameStartData(state, action) {
       state.GAME_START = { ...state.GAME_START, ...action.payload };
@@ -83,6 +122,7 @@ const gameSlice = createSlice({
 });
 
 export const {
+  resetGameState, // 초기화
   updateCurrentPlayer,
   updateRollCount,
   updateGameStarted,
@@ -90,6 +130,8 @@ export const {
   updateDice,
   updateDiceFix,
   updateEnd,
+  updateWin,
+  updateScoreBoard,
   updateGameStartData,
   updateRollDiceData,
   updateFixDiceData,

@@ -11,6 +11,8 @@ import {
   updateEnd,
   updateFixDiceData,
   updateGameResult,
+  updateWin,
+  updateScoreBoard,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -38,6 +40,9 @@ const handleMessageByType = (data, dispatch) => {
   if (data.end !== undefined) {
     dispatch(updateEnd(data.end));
   }
+  if (data.win !== undefined) {
+    dispatch(updateWin(data.win));
+  }
 
   switch (data.type) {
     case "GAME_START":
@@ -59,12 +64,17 @@ const handleMessageByType = (data, dispatch) => {
     case "CHOICE_SCORE":
       console.log("점수판 점수 선택 결과 메시지 처리:", data);
       // ROLL_DICE와 CHOICE_SCORE 상태를 초기화
-      dispatch(updateRollDiceData({ scoreOptions: [] })); // 또는 score: {}
+
+      const { player, score } = data;
+
+      // 점수판 업데이트
+      dispatch(updateScoreBoard({ player, score }));
+
+      dispatch(updateRollDiceData({ scoreOptions: [] }));
       dispatch(updateRollCount(3)); // ROLL_DICE 초기화
       dispatch(updateDiceFix([false, false, false, false, false]));
       // 새로운 CHOICE_SCORE 데이터를 업데이트
       dispatch(updateScoreData(data));
-
       break;
 
     case "GAME_DONE":

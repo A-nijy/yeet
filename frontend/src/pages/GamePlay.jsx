@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PlayerIcon from "../components/common/Icons/PlayerIcon";
 import Container from "../components/common/Container/Container";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { getSessionItem } from "../utils/roleSession";
 import DiceKeeper from "../components/GamePaly/DiceKeeper";
 import ScoreBoard from "../components/GamePaly/ScoreBoard";
 import PrimaryModal from "../components/common/Modals/PrimaryModal";
+import { openModal } from "../store/modalSlice";
 
 const GameBoardContainer = styled.div`
   display: flex;
@@ -52,8 +53,9 @@ const BoardWrapper = styled.div`
 `;
 
 const GamePlay = () => {
+  const dispatch = useDispatch();
   // Redux 상태 가져오기
-  const contentType = useSelector((state) => state.modal);
+  const { contentType } = useSelector((state) => state.modal);
 
   const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const rollCount = useSelector((state) => state.game.rollCount);
@@ -61,9 +63,7 @@ const GamePlay = () => {
   const selectedDice = useSelector((state) => state.game.diceFix);
   const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const enterBoardPlayer = useSelector((state) => state.game.player);
-  const scoreOptions = useSelector(
-    (state) => state.game.ROLL_DICE.scoreOptions
-  );
+
   const choiceScore = useSelector((state) => state.game.CHOICE_SCORE);
   const player = getSessionItem("player");
 
@@ -72,6 +72,15 @@ const GamePlay = () => {
   // rollsLeft 값 설정
   const playerRollsLeft = currentPlayer === player ? rollCount : 0;
   const opponentRollsLeft = currentPlayer === opponent ? rollCount : 0;
+
+  const resultInfo = useSelector((state) => state.game.win);
+
+  useEffect(() => {
+    if (resultInfo.length > 1) {
+      console.log("게임 결과 들어왔으니까 모달 띄워봅시다.", resultInfo);
+      dispatch(openModal("gameResult"));
+    }
+  }, [resultInfo, dispatch]);
 
   return (
     <Container>
@@ -102,7 +111,6 @@ const GamePlay = () => {
         <BoardWrapper>
           <ScoreBoard
             roomCode={roomCode}
-            scoreOptions={scoreOptions}
             enterBoardPlayer={enterBoardPlayer}
             choiceScore={choiceScore}
           />

@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faWebAwesome } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../../Buttons/PrimaryButton";
+import { useDispatch, useSelector } from "react-redux";
+import { disconnectStomp } from "../../../../thunk/stompThunk";
 
 const ModalDescription = styled.div`
   display: flex;
@@ -46,7 +48,7 @@ const UserIcon = styled(FontAwesomeIcon)`
   color: ${(props) =>
     props.$isWinner
       ? "#1b1b1b"
-      : "#ccc"}; /* 이긴 사람은 검정, 진 사람은 회색 */
+      : "#acacac"}; /* 이긴 사람은 검정, 진 사람은 회색 */
   font-size: ${(props) =>
     props.$isWinner ? "3.6rem" : "2.7rem"}; /* 이긴 사람은 조금 더 큼 */
   transition: all 0.3s ease;
@@ -87,39 +89,52 @@ const Score = styled.div`
 `;
 
 const GameResultsModal = () => {
+  const dispatch = useDispatch();
   const handleGameExit = async () => {
     console.log("게임을 나가겠습니다.");
+    dispatch(disconnectStomp()); // STOMP 연결 종료
   };
 
   const handleGameReplay = async () => {
     console.log("게임을 한번 더 진행하겠습니다.");
   };
 
-  // 모의 값
-  let win = "Player1"; // 승자
-  let score = { player1: 386, player2: 288 };
+  const player1 = useSelector(
+    (state) => state.game.GAME_DONE.playerList.player1
+  );
+  const player2 = useSelector(
+    (state) => state.game.GAME_DONE.playerList.player2
+  );
+
+  const player1Score = useSelector(
+    (state) => state.game.GAME_DONE.result[player1]
+  );
+  const player2Score = useSelector(
+    (state) => state.game.GAME_DONE.result[player2]
+  );
+  const win = useSelector((state) => state.game.GAME_DONE.win);
 
   return (
     <div>
       <ModalDescription>
         <div>
           <IconWrapper>
-            <CrownIcon icon={faWebAwesome} $isWinner={win === "Player1"} />
-            <UserIcon icon={faUser} $isWinner={win === "Player1"} />
+            <CrownIcon icon={faWebAwesome} $isWinner={win === player1} />
+            <UserIcon icon={faUser} $isWinner={win === player1} />
           </IconWrapper>
-          <PlayerName>Player1</PlayerName>
+          <PlayerName>{player1}</PlayerName>
         </div>
 
         <Score>
-          {score.player1} : {score.player2}
+          {player1Score} : {player2Score}
         </Score>
 
         <div>
           <IconWrapper>
-            <CrownIcon icon={faWebAwesome} $isWinner={win === "Player2"} />
-            <UserIcon icon={faUser} $isWinner={win === "Player2"} />
+            <CrownIcon icon={faWebAwesome} $isWinner={win === player2} />
+            <UserIcon icon={faUser} $isWinner={win === player2} />
           </IconWrapper>
-          <PlayerName>Player2</PlayerName>
+          <PlayerName>{player2}</PlayerName>
         </div>
       </ModalDescription>
 
