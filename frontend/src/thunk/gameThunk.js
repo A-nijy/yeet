@@ -10,6 +10,7 @@ import {
   updateScoreData,
   updateEnd,
   updateFixDiceData,
+  updateGameResult,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -64,6 +65,11 @@ const handleMessageByType = (data, dispatch) => {
       // 새로운 CHOICE_SCORE 데이터를 업데이트
       dispatch(updateScoreData(data));
 
+      break;
+
+    case "GAME_DONE":
+      console.log("게임 결과 메시지 처리:", data);
+      dispatch(updateGameResult(data));
       break;
 
     default:
@@ -130,7 +136,6 @@ export const fixDices = (roomCode, diceIndex, fix) => async () => {
   console.log("주사위 고정/해지 요청 전송 중...");
 
   const body = JSON.stringify({
-    roomCode: roomCode,
     diceIndex: diceIndex,
     fix: fix,
   });
@@ -152,7 +157,6 @@ export const selectScore = (roomCode, category, score) => async (dispatch) => {
   }
 
   const body = JSON.stringify({
-    roomCode: roomCode,
     category: category,
     score: score,
   });
@@ -166,4 +170,19 @@ export const selectScore = (roomCode, category, score) => async (dispatch) => {
   });
 
   console.log("점수판 점수 선택 요청 전송 완료");
+};
+
+// 게임 결과 요청
+export const gameResult = (roomCode) => async () => {
+  const client = stompClientManager.getClient();
+  if (!client) {
+    console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+    return;
+  }
+
+  client.publish({
+    destination: `/app/game/result/${roomCode}`,
+  });
+
+  console.log("게임 결과 요청 전송 완료");
 };

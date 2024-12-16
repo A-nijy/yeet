@@ -25,6 +25,7 @@ const TitleH1 = styled.h1`
 
 const Lobby = () => {
   const dispatch = useDispatch();
+  const contentType = useSelector((state) => state.modal);
   const modalState = useSelector((state) => state.modal);
 
   console.log(modalState);
@@ -45,13 +46,10 @@ const Lobby = () => {
           <PrimaryButton onClick={() => dispatch(openModal("quickStart"))}>
             빠른 시작
           </PrimaryButton>
-
-          <PrimaryButton onClick={() => dispatch(openModal("gameResult"))}>
-            게임 결과 보기
-          </PrimaryButton>
         </ButtonContainer>
 
         {/** 상황에 맞는 모달 등장*/}
+        {contentType === ("quickStart" || "withFriends") && <PrimaryModal />}
         <PrimaryModal />
       </LobbyContainer>
     </Container>

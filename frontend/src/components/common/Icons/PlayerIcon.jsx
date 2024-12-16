@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCircle } from "@fortawesome/free-solid-svg-icons";
 
 const PlayerContainer = styled.div`
-  margin: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,9 +14,9 @@ const IconWarpper = styled.div`
 `;
 
 const UserIcon = styled(FontAwesomeIcon)`
+  transition: color 0.5s ease;
   color: ${(props) =>
     props.$isActive ? "#1b1b1b" : "#5f5f5f"}; /* 활성화 색상 */
-  font-size: 3rem;
   font-size: 3rem;
 `;
 
@@ -27,6 +26,7 @@ const ChancesContainer = styled.div`
   margin-bottom: 1rem;
 `;
 const CircleIcon = styled(FontAwesomeIcon)`
+  transition: color 0.5s ease;
   font-size: 0.5rem;
   color: ${(props) => (props.$active ? "#c94545" : "#aaa")};
 `;

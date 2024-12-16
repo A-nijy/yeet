@@ -5,6 +5,7 @@ import WithFriendsModal from "./ModalContents/WithFriendsModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   closeModal,
+  openModal,
   setGeneratedRoomCode,
   setMessage,
 } from "../../../store/modalSlice";
@@ -38,11 +39,6 @@ const ModalContainer = styled.div`
   position: relative; /* 닫기 버튼 위치 조정 */
   transition: all 0.2s ease-in-out;
 
-  @media (max-width: 768px) {
-    width: 80%;
-    padding: 1.5rem;
-  }
-
   @media (max-width: 480px) {
     width: 95%;
     padding: 1rem;
@@ -61,7 +57,7 @@ const CloseButton = styled.button`
   align-items: center;
   background: none;
   border: none;
-  font-size: 1.7rem; /* 아이콘 크기 */
+  font-size: 2rem; /* 아이콘 크기 */
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -73,20 +69,27 @@ const CloseButton = styled.button`
   &:active {
     transform: scale(0.75);
   }
+
+  @media (max-width: 480px) {
+    width: 1.9rem; /* 버튼 고정 크기 */
+    height: 1.9rem; /* 버튼 고정 크기 */
+    font-size: 1.7rem; /* 아이콘 크기 */
+  }
 `;
 
 const ModalTitle = styled.h2`
   font-size: 1.5rem;
   color: #333;
   margin: 0;
+  padding-bottom: 0.5rem;
   transition: all 0.2s ease-in-out;
 
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 `;
 
@@ -130,10 +133,19 @@ const MessageBox = styled.div`
   }
 `;
 const PrimaryModal = () => {
+  const dispatch = useDispatch();
+
   const { isOpen, contentType, message, generatedRoomCode } = useSelector(
     (state) => state.modal
   );
-  const dispatch = useDispatch();
+  const resultInfo = useSelector((state) => state.game.GAME_DONE);
+
+  useEffect(() => {
+    if (resultInfo) {
+      console.log("게임 결과 들어왔으니까 모달 띄우봅시다.");
+      // dispatch(openModal("gameResult"));
+    }
+  }, [resultInfo, dispatch]);
 
   useEffect(() => {
     if (message) {
@@ -165,6 +177,7 @@ const PrimaryModal = () => {
   const modalTitle = useMemo(() => {
     if (contentType === "quickStart") return "빠른 시작";
     if (contentType === "withFriends") return "친구랑 하기";
+    if (contentType === "gameResult") return "게임 결과";
     return "";
   }, [contentType]);
 
