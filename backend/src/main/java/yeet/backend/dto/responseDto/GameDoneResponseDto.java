@@ -16,22 +16,22 @@ import java.util.Map;
 public class GameDoneResponseDto {
 
     private ResponseType type = ResponseType.GAME_DONE;
-    private Map<String, Integer> score;
+    private Map<String, Integer> result;
     private String win;
 
     public GameDoneResponseDto(GameData gameData){
 
         String player1 = gameData.getPlayers().get(0);
-        String player2 = gameData.getPlayers().get(0);
-        Integer score1 = gameData.getScoreBoard(player1).getScore("total");
-        Integer score2 = gameData.getScoreBoard(player2).getScore("total");
+        String player2 = gameData.getPlayers().get(1);
+        Integer playerScore1 = gameData.getScoreBoard(player1).getScore("total");
+        Integer playerScore2 = gameData.getScoreBoard(player2).getScore("total");
 
-        score.put(player1, score1);
-        score.put(player2, score2);
+        result.put(player1, playerScore1);
+        result.put(player2, playerScore2);
 
-        if (score1 > score2){
+        if (playerScore1 > playerScore2){
             win = player1;
-        } else if (score2 > score1) {
+        } else if (playerScore2 > playerScore1) {
             win = player2;
         } else {
             win = "draw";
