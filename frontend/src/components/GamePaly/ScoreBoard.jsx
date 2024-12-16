@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import { selectScore } from "../../thunk/gameThunk";
+import { gameResult, selectScore } from "../../thunk/gameThunk";
 import { getSessionItem } from "../../utils/roleSession";
 
 // 카테고리 매핑
 const categoryMapping = {
-  aces: "Ones",
+  aces: "Aces",
   twos: "Twos",
   threes: "Threes",
   fours: "Fours",
@@ -24,21 +24,11 @@ const categoryMapping = {
   total: "TOTAL",
 };
 
-const reverseCategoryMapping = Object.fromEntries(
-  Object.entries(categoryMapping).map(([key, value]) => [value, key])
-);
-
-const mapCategoryToUI = (serverCategory) =>
-  categoryMapping[serverCategory] || serverCategory;
-
-const mapCategoryToServer = (uiCategory) =>
-  reverseCategoryMapping[uiCategory] || uiCategory;
-
 // 스타일 정의
 const Container = styled.div`
   border-radius: 0.5rem;
-  padding: 1rem;
-  max-width: 30rem;
+  padding: 0.5rem 1rem;
+  max-width: 35rem;
   background: #e5e5e5;
   box-shadow: 4px 4px 10px #c2c2c2, -4px -4px 10px #ffffff;
   width: 100%;
@@ -54,7 +44,6 @@ const StyledTable = styled.table`
     padding: 0.5rem;
     text-align: center;
     background: #e5e5e5;
-    /* 배경색을 위한 트랜지션 추가 */
     transition: background-color 0.3s ease;
   }
 
@@ -72,7 +61,7 @@ const StyledTable = styled.table`
   ${({ $highlightedColumn }) =>
     $highlightedColumn &&
     `
-      /* 강조된 헤더 셀 스타일 */
+      /* 강조된 열 헤더 스타일 */
       th:nth-child(${$highlightedColumn + 1}) {
         background-color: #e9d6d6;
         border-top-left-radius: 0.5rem;
@@ -84,7 +73,7 @@ const StyledTable = styled.table`
         background-color: #e9d6d6;
       }
 
-      /* 강조된 열의 마지막 데이터 셀 하단 둥근 모서리 적용 */
+      /* 강조된 열의 마지막 데이터 셀 둥근 모서리 처리 */
       tr:last-child td:nth-child(${$highlightedColumn + 1}) {
         border-bottom-left-radius: 0.5rem;
         border-bottom-right-radius: 0.5rem;
@@ -94,31 +83,26 @@ const StyledTable = styled.table`
 
 const StyledRow = styled.tr`
   ${(props) =>
-    props.$rowName === "Sum" &&
+    props.$rowName === "sum" &&
     `
-      background: #f9eaea;
+      border-top: 2px solid #acacac;
     `}
-
   ${(props) =>
-    props.$rowName === "Bonus" &&
+    props.$rowName === "bonus" &&
     `
-      background: #ffdede;
+      border-bottom: 2px solid #acacac;
     `}
-
   ${(props) =>
-    props.$rowName === "Total" &&
+    props.$rowName === "total" &&
     `
-      background: #dcedff;
+      border-top: 2px solid #acacac;
+      border-bottom: 2px solid #acacac; 
     `}
 `;
 
 const ScoreCell = styled.td`
   color: ${(props) =>
-    props.$isFixed
-      ? "black" // fixScore인 경우 검정색
-      : props.$isOption
-      ? "red" // scoreOptions인 경우 빨간색
-      : "inherit"};
+    props.$isFixed ? "#2b2b2b" : props.$isOption ? "red" : "inherit"};
   cursor: ${(props) => (props.$isClickable ? "pointer" : "default")};
   transition: text-shadow 0.3s ease;
 
@@ -127,91 +111,46 @@ const ScoreCell = styled.td`
       props.$isClickable ? "0px 0px 8px #000000" : "none"};
   }
 `;
-const ScoreBoard = ({
-  scoreOptions,
-  enterBoardPlayer,
-  choiceScore,
-  roomCode,
-}) => {
+
+const ScoreBoard = ({ roomCode }) => {
   const dispatch = useDispatch();
-  const currentPlayer = useSelector((state) => state.game.currentPlayer);
-  const fixScore = useSelector((state) => state.game.CHOICE_SCORE.score);
+
+  // Redux 상태 가져오기
+  const scoreBoard = useSelector((state) => state.game.scoreBoard);
   const rollCount = useSelector((state) => state.game.rollCount);
+  const scoreOptions = useSelector(
+    (state) => state.game.ROLL_DICE.scoreOptions
+  );
+  const currentPlayer = useSelector((state) => state.game.currentPlayer);
+  const players = useSelector((state) => state.game.GAME_START.players);
+  const playEnd = useSelector((state) => state.game.end);
   const player = getSessionItem("player");
 
-  const [boardData, setBoardData] = useState([
-    { category: "Ones", Player1: null, Player2: null },
-    { category: "Twos", Player1: null, Player2: null },
-    { category: "Threes", Player1: null, Player2: null },
-    { category: "Fours", Player1: null, Player2: null },
-    { category: "Fives", Player1: null, Player2: null },
-    { category: "Sixes", Player1: null, Player2: null },
-    { category: "SUM", Player1: null, Player2: null },
-    { category: "BONUS", Player1: null, Player2: null },
-    { category: "Three of a Kind", Player1: null, Player2: null },
-    { category: "Four of a Kind", Player1: null, Player2: null },
-    { category: "Full House", Player1: null, Player2: null },
-    { category: "Small Straight", Player1: null, Player2: null },
-    { category: "Large Straight", Player1: null, Player2: null },
-    { category: "Chance", Player1: null, Player2: null },
-    { category: "YEET", Player1: null, Player2: null },
-    { category: "TOTAL", Player1: null, Player2: null },
-  ]);
+  // 게임 결과 요청하기
+  useEffect(() => {
+    if (playEnd === true) {
+      if (roomCode) {
+        dispatch(gameResult(roomCode));
+      }
+    }
+  }, [playEnd, dispatch, roomCode]);
 
   // 점수 선택 핸들러
-  const handleSelectScore = (uiCategory, score) => {
+  const handleSelectScore = (category, score) => {
     if (!roomCode) {
       console.error("방 코드가 없습니다!");
       return;
     }
 
-    const serverCategory = mapCategoryToServer(uiCategory); // UI 카테고리 -> 서버 카테고리 변환
-
-    dispatch(selectScore(roomCode, serverCategory, score)); // 서버로 선택한 점수 전송
+    dispatch(selectScore(roomCode, category, score)); // 서버로 선택한 점수 전송
   };
 
-  // 선택 가능한 점수 업데이트
-  useEffect(() => {
-    if (choiceScore) {
-      setBoardData((prevData) =>
-        prevData.map((item) => {
-          const playerKey = currentPlayer === "Player1" ? "Player1" : "Player2";
-          const uiCategory = mapCategoryToUI(choiceScore.category);
-          if (item.category === uiCategory) {
-            return { ...item, [playerKey]: choiceScore.score };
-          }
-          return item;
-        })
-      );
-    }
-  }, [choiceScore, currentPlayer]);
-
-  // fixScore 업데이트 처리
-  useEffect(() => {
-    if (fixScore && enterBoardPlayer) {
-      setBoardData((prevData) =>
-        prevData.map((item) => {
-          const serverCategory = mapCategoryToServer(item.category); // 서버 카테고리와 매칭
-
-          // `fixScore`에 해당하는 카테고리가 있다면 업데이트
-          if (fixScore[serverCategory] !== undefined) {
-            return {
-              ...item,
-              [enterBoardPlayer]: fixScore[serverCategory], // KeepScorePlayer 값에 따라 업데이트
-            };
-          }
-          return item; // 해당하지 않으면 기존 항목 유지
-        })
-      );
-    }
-  }, [fixScore, enterBoardPlayer]);
-
   const highlightedColumn =
-    rollCount < 3
-      ? currentPlayer === "Player1"
-        ? 1
-        : currentPlayer === "Player2"
-        ? 2
+    rollCount < 3 // 주사위를 아직 굴릴 수 있는 경우에만 강조
+      ? currentPlayer === players[0]
+        ? 1 // Player1 열 강조
+        : currentPlayer === players[1]
+        ? 2 // Player2 열 강조
         : null
       : null;
 
@@ -221,59 +160,43 @@ const ScoreBoard = ({
         <thead>
           <tr>
             <th>Category</th>
-            <th>Player1</th>
-            <th>Player2</th>
+            <th>{players[0]}</th>
+            <th>{players[1]}</th>
           </tr>
         </thead>
         <tbody>
-          {boardData.map((row) => (
+          {scoreBoard.map((row) => (
             <StyledRow key={row.category} $rowName={row.category}>
-              <td>{row.category}</td>
-              {["Player1", "Player2"].map((playerKey) => {
+              {/* UI에 표시할 카테고리 이름 매핑 */}
+              <td>{categoryMapping[row.category]}</td>
+              {[players[0], players[1]].map((playerKey) => {
                 // 현재 칸이 현재 플레이어의 보드인지 확인
                 const isCurrentBoard = currentPlayer === playerKey;
-
-                // 이미 선택된 점수인지 확인
                 const isFixed = row[playerKey] !== null;
 
-                // 점수 옵션은 현재 플레이어의 보드에만 표시
                 const isOption =
                   !isFixed &&
-                  isCurrentBoard &&
-                  scoreOptions.some(
-                    (opt) => mapCategoryToUI(opt.category) === row.category
-                  );
+                  isCurrentBoard && // 현재 차례의 보드만 옵션 표시
+                  scoreOptions.some((opt) => opt.category === row.category);
 
-                // 선택 불가능한 카테고리
-                const nonSelectableCategories = ["SUM", "BONUS", "TOTAL"];
-                const isNonSelectable = nonSelectableCategories.includes(
-                  row.category
-                );
-
-                // 클릭 가능 여부
                 const isClickable =
-                  !isNonSelectable &&
-                  (isOption || row[playerKey] === null) &&
+                  !isFixed &&
                   currentPlayer === player &&
                   currentPlayer === playerKey;
 
-                // 현재 카테고리에 매칭되는 점수 찾기
                 const matchingOption = scoreOptions.find(
-                  (opt) => mapCategoryToUI(opt.category) === row.category
+                  (opt) => opt.category === row.category
                 );
 
-                // 표시할 값 결정
                 const displayValue = isOption
-                  ? matchingOption?.score ?? "" // null 또는 undefined만 빈 문자열 처리
-                  : row[playerKey] !== null && row[playerKey] !== undefined
-                  ? row[playerKey]
-                  : "";
+                  ? matchingOption?.score ?? ""
+                  : row[playerKey];
 
                 return (
                   <ScoreCell
                     key={playerKey}
-                    $isFixed={isFixed} // 이미 선택된 점수 여부
-                    $isOption={isOption} // scoreOptions 값 여부
+                    $isFixed={isFixed}
+                    $isOption={isOption}
                     $isClickable={isClickable}
                     onClick={
                       isClickable
@@ -285,7 +208,7 @@ const ScoreBoard = ({
                         : undefined
                     }
                   >
-                    {displayValue ?? ""}
+                    {displayValue}
                   </ScoreCell>
                 );
               })}
@@ -296,4 +219,5 @@ const ScoreBoard = ({
     </Container>
   );
 };
+
 export default ScoreBoard;

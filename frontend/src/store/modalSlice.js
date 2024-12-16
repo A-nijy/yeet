@@ -1,14 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  isOpen: false,
+  contentType: null,
+  message: "",
+  generatedRoomCode: null,
+};
+
 const modalSlice = createSlice({
   name: "modal",
-  initialState: {
-    isOpen: false,
-    contentType: null, // quickStart, withFriends, createRoom 등
-    message: "", // 메시지 상태 추가
-    generatedRoomCode: null, // 생성된 방 코드
-  },
+  initialState,
   reducers: {
+    // 모달 상태 초기화
+    resetModalState: () => initialState,
     openModal: (state, action) => {
       state.isOpen = true;
       state.contentType = action.payload; // 어떤 콘텐츠를 보여줄지 설정
@@ -27,7 +31,12 @@ const modalSlice = createSlice({
   },
 });
 
-export const { openModal, closeModal, setMessage, setGeneratedRoomCode } =
-  modalSlice.actions;
+export const {
+  resetModalState, // 초기화
+  openModal,
+  closeModal,
+  setMessage,
+  setGeneratedRoomCode,
+} = modalSlice.actions;
 
 export default modalSlice.reducer;

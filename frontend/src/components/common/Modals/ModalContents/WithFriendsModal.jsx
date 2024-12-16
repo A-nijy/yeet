@@ -7,9 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setGeneratedRoomCode, setMessage } from "../../../../store/modalSlice";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
 import { getSessionItem } from "../../../../utils/roleSession";
+import CopyInvitationCode from "../../../Lobby/CopyInvitationCode";
 
 const PartContainer = styled.div`
   padding: 1rem;
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+  }
 `;
 
 const StyledEnterCodeContainer = styled.div`
@@ -57,7 +62,7 @@ const WithFriendsModal = () => {
       {generatedRoomCode && player === "Player1" ? (
         // 방이 생성된 경우
         <PartContainer>
-          <div>{generatedRoomCode}</div>
+          <CopyInvitationCode>{generatedRoomCode}</CopyInvitationCode>
 
           <p>상대를 기다리는 중...</p>
           <PrimaryButton onClick={handleCancelMatching}>
