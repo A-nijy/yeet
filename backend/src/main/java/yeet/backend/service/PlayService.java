@@ -56,6 +56,7 @@ public class PlayService {
             throw new WrongScoreException(roomCode);
         }
 
+        // 응답할 값을 Map에 담음
         Map<String, Integer> scoreUpdate = new HashMap<>();
         scoreUpdate.put(request.getCategory(), scoreBoard.getScore(request.getCategory()));
         if (scoreBoard.upperPartFull()){
@@ -66,6 +67,7 @@ public class PlayService {
             scoreUpdate.put("total", scoreBoard.getScore("total"));
         }
 
+        // 다음 턴으로 변경
         gameData.nextTurn();
 
         // 만약 게임이 끝났다면

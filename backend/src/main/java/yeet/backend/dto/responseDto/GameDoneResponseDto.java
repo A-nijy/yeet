@@ -7,6 +7,7 @@ import lombok.Setter;
 import yeet.backend.data.GameData;
 import yeet.backend.enumeration.ResponseType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -16,7 +17,7 @@ import java.util.Map;
 public class GameDoneResponseDto {
 
     private ResponseType type = ResponseType.GAME_DONE;
-    private Map<String, Integer> result;
+    private Map<String, Integer> result = new HashMap<>();
     private String win;
 
     public GameDoneResponseDto(GameData gameData){
