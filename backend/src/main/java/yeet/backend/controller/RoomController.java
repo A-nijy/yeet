@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.PlayerRequestDto;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStartResponseDto;
+import yeet.backend.dto.responseDto.QuickMatchResponseDto;
 import yeet.backend.dto.responseDto.RoomCodeResponseDto;
 import yeet.backend.service.RoomService;
 
@@ -44,6 +45,32 @@ public class RoomController {
         headerAccessor.getSessionAttributes().put("player", request.getPlayer());
 
         return  response;
+    }
+
+    // 빠른 매칭
+    @MessageMapping("/quick/match")
+    @SendToUser("/queue/game")
+    public QuickMatchResponseDto quickMatch(SimpMessageHeaderAccessor headerAccessor){
+
+        QuickMatchResponseDto response = roomService.quickMatch();
+
+        headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
+        headerAccessor.getSessionAttributes().put("player", response.getPlayer());
+
+        return response;
+    }
+
+    // 빠른 매칭 나가기
+    @MessageMapping("/quick/match/remove")
+    @SendToUser("/queue/game")
+    public boolean quickMatchRemove(SimpMessageHeaderAccessor headerAccessor){
+
+        roomService.quickMatchRemove(headerAccessor.getSessionAttributes().get("roomCode").toString());
+
+        headerAccessor.getSessionAttributes().remove("roomCode");
+        headerAccessor.getSessionAttributes().remove("player");
+
+        return true;
     }
 
     // 방 나가기
