@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faWebAwesome } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
+import { gameOver } from "../../../../thunk/gameThunk";
 
 const ModalDescription = styled.div`
   display: flex;
@@ -90,10 +91,24 @@ const Score = styled.div`
 
 const GameResultsModal = () => {
   const dispatch = useDispatch();
+
+  const roomCode = useSelector((state) => state.modal.generatedRoomCode);
+  const gameover = useSelector((state) => state.game.gameOver);
+
   const handleGameExit = async () => {
     console.log("게임을 나가겠습니다.");
-    dispatch(disconnectStomp()); // STOMP 연결 종료
+
+    dispatch(gameOver(roomCode));
   };
+
+  useEffect(() => {
+    if (gameover) {
+      console.log(
+        "게임 종료 요청에 대한 응답을 받았습니다. STOMP 연결을 종료하겠습니다."
+      );
+      dispatch(disconnectStomp()); // STOMP 연결 종료
+    }
+  }, [gameover, dispatch]);
 
   const handleGameReplay = async () => {
     console.log("게임을 한번 더 진행하겠습니다.");

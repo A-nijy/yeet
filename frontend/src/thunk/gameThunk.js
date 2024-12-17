@@ -13,6 +13,7 @@ import {
   updateGameResult,
   updateWin,
   updateScoreBoard,
+  updateGameOver,
 } from "../store/gameSlice";
 import stompClientManager from "../utils/stompClient";
 
@@ -80,6 +81,11 @@ const handleMessageByType = (data, dispatch) => {
     case "GAME_DONE":
       console.log("게임 결과 메시지 처리:", data);
       dispatch(updateGameResult(data));
+      break;
+
+    case "GAME_END":
+      console.log("게임 종료 메시지 처리:", data);
+      dispatch(updateGameOver(true));
       break;
 
     default:
@@ -195,4 +201,19 @@ export const gameResult = (roomCode) => async () => {
   });
 
   console.log("게임 결과 요청 전송 완료");
+};
+
+// 게임 종료 요청
+export const gameOver = (roomCode) => async () => {
+  const client = stompClientManager.getClient();
+  if (!client) {
+    console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+    return;
+  }
+
+  client.publish({
+    destination: `/app/room/end/${roomCode}`,
+  });
+
+  console.log("게임 종료 요청 전송 완료");
 };

@@ -9,6 +9,7 @@ const initialState = {
   dice: [1, 1, 1, 1, 1],
   diceFix: [false, false, false, false, false],
   win: "",
+  gameOver: false,
   scoreBoard: [
     { category: "aces", Player1: null, Player2: null },
     { category: "twos", Player1: null, Player2: null },
@@ -82,6 +83,10 @@ const gameSlice = createSlice({
       state.win = action.payload;
     },
 
+    // gmaeOver 업데이트
+    updateGameOver(state, action) {
+      state.gameOver = action.payload;
+    },
     // scoreBoard 업데이트
     updateScoreBoard(state, action) {
       const { player, score } = action.payload;
@@ -131,6 +136,7 @@ export const {
   updateDiceFix,
   updateEnd,
   updateWin,
+  updateGameOver,
   updateScoreBoard,
   updateGameStartData,
   updateRollDiceData,
