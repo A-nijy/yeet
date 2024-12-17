@@ -77,7 +77,21 @@ public class RoomService {
         return response;
     }
 
+    // 빠른 매칭 나가기
+    public void quickMatchRemove(String roomCode) {
 
+        // 큐에서 해당 방 코드를 가진 대기 데이터 찾기
+        QueueData queueData = roomQueue.founcQueue(roomCode);
+
+        // 큐에서 대기자 제거
+        if (queueData != null){
+            roomQueue.removeQueue(queueData);
+        }
+
+        // 방 데이터 관리하는 Map에서 해당 데이터 삭제
+        GameData gameData = gameDataManager.getGameData(roomCode);
+        gameDataManager.removeRoom(roomCode);
+    }
 
 
     // 방 나가기

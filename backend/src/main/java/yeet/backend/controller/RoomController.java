@@ -60,7 +60,18 @@ public class RoomController {
         return response;
     }
 
+    // 빠른 매칭 나가기
+    @MessageMapping("/quick/match/remove")
+    @SendToUser("/queue/game")
+    public boolean quickMatchRemove(SimpMessageHeaderAccessor headerAccessor){
 
+        roomService.quickMatchRemove(headerAccessor.getSessionAttributes().get("roomCode").toString());
+
+        headerAccessor.getSessionAttributes().remove("roomCode");
+        headerAccessor.getSessionAttributes().remove("player");
+
+        return true;
+    }
 
     // 방 나가기
     @MessageMapping("/room/remove/{roomCode}")
