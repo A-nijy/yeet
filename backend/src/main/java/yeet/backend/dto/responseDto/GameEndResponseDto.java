@@ -13,9 +13,9 @@ import yeet.backend.enumeration.ResponseType;
 public class GameEndResponseDto {
 
     private ResponseType type = ResponseType.GAME_END;
-    private String message;
+    private String player;
 
     public GameEndResponseDto(String player){
-        message = player + "님이 게임을 종료했습니다.";
+        this.player = player;
     }
 }

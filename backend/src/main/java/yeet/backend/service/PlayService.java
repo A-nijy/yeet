@@ -109,12 +109,11 @@ public class PlayService {
         GameData gameData = gameDataManager.getGameData(roomCode);
 
         if (!gameData.isRestart()){
-            gameData.setGameStarted(false);
             gameData.setRestart(true);
         } else {
             gameData.resetGameStatus();
         }
 
-        return new GameRestartResponseDto(player, gameData.isGameStarted());
+        return new GameRestartResponseDto(player, gameData);
     }
 }

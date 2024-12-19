@@ -14,11 +14,11 @@ import yeet.backend.enumeration.ResponseType;
 public class GameRemoveResponseDto {
 
     private ResponseType type = ResponseType.GAME_REMOVE;
-    private String message;
+    private String player;
     private boolean gameStarted;
 
     public GameRemoveResponseDto(GameData gameData, String player){
-        message = player + "님이 게임을 나갔습니다.";
+        this.player = player;
         gameStarted = gameData.isGameStarted();
     }
 }
