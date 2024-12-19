@@ -62,12 +62,10 @@ const GamePlay = () => {
   const diceValues = useSelector((state) => state.game.dice);
   const selectedDice = useSelector((state) => state.game.diceFix);
   const roomCode = useSelector((state) => state.modal.generatedRoomCode);
-  const enterBoardPlayer = useSelector((state) => state.game.player);
-
-  const choiceScore = useSelector((state) => state.game.CHOICE_SCORE);
+  const players = useSelector((state) => state.game.GAME_START.players);
   const player = getSessionItem("player");
 
-  const opponent = player === "Player1" ? "Player2" : "Player1"; // 상대 플레이어 계산
+  const opponent = player === players[0] ? players[1] : players[0]; // 상대 플레이어 계산
 
   // rollsLeft 값 설정
   const playerRollsLeft = currentPlayer === player ? rollCount : 0;
@@ -109,11 +107,7 @@ const GamePlay = () => {
           />
         </GameInfo>
         <BoardWrapper>
-          <ScoreBoard
-            roomCode={roomCode}
-            enterBoardPlayer={enterBoardPlayer}
-            choiceScore={choiceScore}
-          />
+          <ScoreBoard roomCode={roomCode} />
         </BoardWrapper>
       </GameBoardContainer>
       {/** 상황에 맞는 모달 등장*/}

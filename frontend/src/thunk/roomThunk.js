@@ -30,7 +30,7 @@ export const createRoom = () => async (dispatch, getState) => {
   const { connected } = getState().stomp;
 
   // 세션에 Player1 저장
-  setSessionItem("player", "Player1");
+  setSessionItem("player", "딩가딩가");
   const player = getSessionItem("player");
   if (!player) {
     console.error("세션에 플레이어 값이 저장되지 않았습니다.");
@@ -84,7 +84,7 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     const { connected } = getState().stomp;
 
     // 세션에서 플레이어 정보 가져오기
-    setSessionItem("player", "Player2");
+    setSessionItem("player", "오리꽥꽥");
     const player = getSessionItem("player");
     if (!player) {
       console.error(

@@ -10,30 +10,34 @@ const initialState = {
   diceFix: [false, false, false, false, false],
   win: "",
   gameOver: false,
+
+  animatedDice: [],
   scoreBoard: [
-    { category: "aces", Player1: null, Player2: null },
-    { category: "twos", Player1: null, Player2: null },
-    { category: "threes", Player1: null, Player2: null },
-    { category: "fours", Player1: null, Player2: null },
-    { category: "fives", Player1: null, Player2: null },
-    { category: "sixes", Player1: null, Player2: null },
-    { category: "sum", Player1: null, Player2: null },
-    { category: "bonus", Player1: null, Player2: null },
-    { category: "triple", Player1: null, Player2: null },
-    { category: "quadruple", Player1: null, Player2: null },
-    { category: "fullHouse", Player1: null, Player2: null },
-    { category: "smallStraight", Player1: null, Player2: null },
-    { category: "largeStraight", Player1: null, Player2: null },
-    { category: "chance", Player1: null, Player2: null },
-    { category: "yahtzee", Player1: null, Player2: null },
-    { category: "total", Player1: null, Player2: null },
+    { category: "aces", p1: null, p2: null },
+    { category: "twos", p1: null, p2: null },
+    { category: "threes", p1: null, p2: null },
+    { category: "fours", p1: null, p2: null },
+    { category: "fives", p1: null, p2: null },
+    { category: "sixes", p1: null, p2: null },
+    { category: "sum", p1: null, p2: null },
+    { category: "bonus", p1: null, p2: null },
+    { category: "triple", p1: null, p2: null },
+    { category: "quadruple", p1: null, p2: null },
+    { category: "fullHouse", p1: null, p2: null },
+    { category: "smallStraight", p1: null, p2: null },
+    { category: "largeStraight", p1: null, p2: null },
+    { category: "chance", p1: null, p2: null },
+    { category: "yahtzee", p1: null, p2: null },
+    { category: "total", p1: null, p2: null },
   ],
 
-  GAME_START: {},
+  GAME_START: { players: ["Player1", "Player2"] },
   ROLL_DICE: { scoreOptions: [] },
   FIX_DICE: {},
   CHOICE_SCORE: {},
   GAME_DONE: {},
+  GAME_END: {},
+  GAME_RESTART: {},
 };
 
 const gameSlice = createSlice({
@@ -42,6 +46,17 @@ const gameSlice = createSlice({
   reducers: {
     // 게임 상태 초기화
     resetGameState: () => initialState,
+
+    // 게임 다시하기 (gameStarted을 제외하고 게임 상태 초기화)
+    resetGameStateForRestart(state) {
+      const gameStartedValue = state.gameStarted; // 현재 gameStarted 값 저장
+
+      // initialState를 복사하되 gameStarted만 기존 값 유지
+      Object.assign(state, {
+        ...initialState,
+        gameStarted: gameStartedValue,
+      });
+    },
 
     // currentPlayer 업데이트
     updateCurrentPlayer(state, action) {
@@ -87,6 +102,11 @@ const gameSlice = createSlice({
     updateGameOver(state, action) {
       state.gameOver = action.payload;
     },
+
+    updateAnimatedDice(state, action) {
+      state.animatedDice = action.payload;
+    },
+
     // scoreBoard 업데이트
     updateScoreBoard(state, action) {
       const { player, score } = action.payload;
@@ -101,7 +121,21 @@ const gameSlice = createSlice({
 
     // GAME_START 데이터를 업데이트
     updateGameStartData(state, action) {
+      // GAME_START.players 업데이트
       state.GAME_START = { ...state.GAME_START, ...action.payload };
+
+      // players가 존재하면 scoreBoard 키 업데이트
+      if (action.payload.players) {
+        const players = action.payload.players;
+
+        state.scoreBoard = state.scoreBoard.map((row) => {
+          return {
+            category: row.category, // category 유지
+            [players[0]]: null, // 첫 번째 플레이어
+            [players[1]]: null, // 두 번째 플레이어
+          };
+        });
+      }
     },
 
     // ROLL_DICE 데이터를 업데이트
@@ -123,11 +157,22 @@ const gameSlice = createSlice({
     updateGameResult(state, action) {
       state.GAME_DONE = { ...state.GAME_DONE, ...action.payload };
     },
+
+    // GAME_END 데이터를 업데이트
+    updateGameEnd(state, action) {
+      state.GAME_END = { ...state.GAME_END, ...action.payload };
+    },
+
+    // GAME_RESTART 데이터를 업데이트
+    updateGameRestart(state, action) {
+      state.GAME_RESTART = { ...state.GAME_RESTART, ...action.payload };
+    },
   },
 });
 
 export const {
   resetGameState, // 초기화
+  resetGameStateForRestart, // 다시하기를 위한 초기화
   updateCurrentPlayer,
   updateRollCount,
   updateGameStarted,
@@ -137,12 +182,15 @@ export const {
   updateEnd,
   updateWin,
   updateGameOver,
+  updateAnimatedDice,
   updateScoreBoard,
   updateGameStartData,
   updateRollDiceData,
   updateFixDiceData,
   updateScoreData,
   updateGameResult,
+  updateGameEnd,
+  updateGameRestart,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
