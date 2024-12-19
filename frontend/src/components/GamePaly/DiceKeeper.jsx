@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,7 +10,7 @@ import {
   faDiceSix,
 } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../common/Buttons/PrimaryButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fixDices, rollDices } from "../../thunk/gameThunk";
 
 const DiceContainer = styled.div`
@@ -77,7 +77,6 @@ const DiceKeeper = ({
   roomCode,
   rollCount,
 }) => {
-  const dispatch = useDispatch();
   const diceIcons = [
     faDiceOne,
     faDiceTwo,
@@ -86,9 +85,9 @@ const DiceKeeper = ({
     faDiceFive,
     faDiceSix,
   ];
+  const dispatch = useDispatch();
 
-  // 애니메이션 상태를 관리
-  const [animatedDice, setAnimatedDice] = useState([]);
+  const animatedDice = useSelector((state) => state.game.animatedDice);
 
   // 주사위 클릭 핸들러
   const handleDiceClick = (index) => {
@@ -122,19 +121,8 @@ const DiceKeeper = ({
       console.error("방 코드가 없습니다!");
       return;
     }
-
-    // 애니메이션 대상: 선택되지 않은 주사위
-    const nonSelectedDice = diceValues
-      .map((value, index) => (!selectedDice[index] ? index : null))
-      .filter((index) => index !== null);
-
-    setAnimatedDice(nonSelectedDice); // 애니메이션 상태 설정
-
     // 실제 주사위 굴리기 실행
     dispatch(rollDices(roomCode));
-
-    // 일정 시간 후 애니메이션 상태 초기화 (500ms 뒤)
-    setTimeout(() => setAnimatedDice([]), 300);
   };
 
   return (

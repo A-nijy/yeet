@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faWebAwesome } from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
+import { gameOver, gameRestart } from "../../../../thunk/gameThunk";
+import { resetGameStateForRestart } from "../../../../store/gameSlice";
+import { getSessionItem } from "../../../../utils/roleSession";
+import { closeModal } from "../../../../store/modalSlice";
 
 const ModalDescription = styled.div`
   display: flex;
@@ -90,22 +94,14 @@ const Score = styled.div`
 
 const GameResultsModal = () => {
   const dispatch = useDispatch();
-  const handleGameExit = async () => {
-    console.log("게임을 나가겠습니다.");
-    dispatch(disconnectStomp()); // STOMP 연결 종료
-  };
 
-  const handleGameReplay = async () => {
-    console.log("게임을 한번 더 진행하겠습니다.");
-  };
-
+  const roomCode = useSelector((state) => state.modal.generatedRoomCode);
   const player1 = useSelector(
     (state) => state.game.GAME_DONE.playerList.player1
   );
   const player2 = useSelector(
     (state) => state.game.GAME_DONE.playerList.player2
   );
-
   const player1Score = useSelector(
     (state) => state.game.GAME_DONE.result[player1]
   );
@@ -113,6 +109,50 @@ const GameResultsModal = () => {
     (state) => state.game.GAME_DONE.result[player2]
   );
   const win = useSelector((state) => state.game.GAME_DONE.win);
+
+  const gameoverPlayer = useSelector((state) => state.game.GAME_END.player);
+
+  const restartPlayer = useSelector((state) => state.game.GAME_RESTART.player);
+  const restart = useSelector((state) => state.game.GAME_RESTART.restart);
+  const player = getSessionItem("player");
+
+  const disabledRestart = gameoverPlayer === player ? true : false;
+  const restartRequest = restart === false ? true : false;
+
+  // 게임 종료 클릭 이벤트
+  const handleGameExit = async () => {
+    console.log("게임을 나가겠습니다.");
+
+    dispatch(gameOver(roomCode));
+  };
+
+  useEffect(() => {
+    // 세션 플레이어와 방을 나간사람 같다면(disabledReset) 종료
+    if (disabledRestart) {
+      console.log(
+        "게임 종료 요청에 대한 응답을 받았습니다. STOMP 연결을 종료하겠습니다."
+      );
+      dispatch(disconnectStomp()); // STOMP 연결 종료
+    }
+  }, [disabledRestart, dispatch]);
+
+  // 다시하기 클릭 이벤트
+  const handleGameReplay = async () => {
+    console.log("게임을 한번 더 진행하겠습니다.");
+    //
+    dispatch(gameRestart(roomCode));
+  };
+
+  // 다시하기 요청 값이 true 라면 모두 다시하기를 희망한다고 판단
+  useEffect(() => {
+    if (restart) {
+      console.log(
+        "게임 다시하기 요청을 받았습니다. 게임을 다시 시작하겠습니다."
+      );
+      dispatch(closeModal());
+      dispatch(resetGameStateForRestart()); // 게임 진행 여부를 제외한 초기화
+    }
+  }, [restart, dispatch]);
 
   return (
     <div>
@@ -142,8 +182,13 @@ const GameResultsModal = () => {
         <PrimaryButton onClick={handleGameExit} ver={"red"}>
           게임 종료
         </PrimaryButton>
-        <PrimaryButton onClick={handleGameReplay}>다시하기</PrimaryButton>
+        {/** 게임을 끝낸 사람이 본인이 아니라면 버튼이 비활성화되도록 함 */}
+        <PrimaryButton onClick={handleGameReplay} disabled={disabledRestart}>
+          다시하기
+        </PrimaryButton>
       </ButtonContainer>
+      {/** 상대가 다시하기를 요청한 상태라면 상대가 기다리고 있다는 메시지를 띄움 */}
+      {restartRequest && <div>한판 더 해요!</div>}
     </div>
   );
 };

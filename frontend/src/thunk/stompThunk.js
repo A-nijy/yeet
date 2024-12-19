@@ -2,6 +2,7 @@ import stompClientManager from "../utils/stompClient";
 import { connected, disconnected } from "../store/stompSlice";
 import { resetModalState } from "../store/modalSlice";
 import { resetGameState } from "../store/gameSlice";
+import { removeSessionItem } from "../utils/roleSession";
 
 export const connectStomp = () => async (dispatch, getState) => {
   const { connected: isConnected } = getState().stomp;
@@ -25,8 +26,8 @@ export const connectStomp = () => async (dispatch, getState) => {
 export const disconnectStomp = () => async (dispatch) => {
   try {
     await stompClientManager.disconnect();
-    dispatch(disconnected());
-    // 슬라이스 상태 초기화
+    dispatch(disconnected()); // STOMP 슬라이스 상태 초기화
+    removeSessionItem("player"); // 플레이어 세션 삭제
     dispatch(resetGameState()); // 게임 슬라이스 초기화
     dispatch(resetModalState()); // 모달 슬라이스 초기화
     console.log("STOMP 연결 해제 성공");
