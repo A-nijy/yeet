@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faWebAwesome } from "@fortawesome/free-solid-svg-icons";
@@ -91,7 +91,11 @@ const Score = styled.div`
     font-size: 1rem;
   }
 `;
-
+const RestartMessage = styled.div`
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #2b2b2b;
+`;
 const GameResultsModal = () => {
   const dispatch = useDispatch();
 
@@ -116,9 +120,7 @@ const GameResultsModal = () => {
   const restart = useSelector((state) => state.game.GAME_RESTART.restart);
   const player = getSessionItem("player");
 
-  const disabledRestart = gameoverPlayer === player ? true : false;
-  const restartRequest = restart === false ? true : false;
-
+  const [restartRequest, setRestartRequest] = useState(true);
   // 게임 종료 클릭 이벤트
   const handleGameExit = async () => {
     console.log("게임을 나가겠습니다.");
@@ -127,20 +129,24 @@ const GameResultsModal = () => {
   };
 
   useEffect(() => {
-    // 세션 플레이어와 방을 나간사람 같다면(disabledReset) 종료
-    if (disabledRestart) {
+    // 세션 플레이어와 방을 나간사람 같다면 종료
+    if (gameoverPlayer === player) {
       console.log(
         "게임 종료 요청에 대한 응답을 받았습니다. STOMP 연결을 종료하겠습니다."
       );
       dispatch(disconnectStomp()); // STOMP 연결 종료
     }
-  }, [disabledRestart, dispatch]);
+  }, [gameoverPlayer, player, dispatch]);
 
   // 다시하기 클릭 이벤트
   const handleGameReplay = async () => {
-    console.log("게임을 한번 더 진행하겠습니다.");
+    // 다시하기를 눌렀다면 다시하기를 눌러도 서버에 전송되지 않도록 함.
+    if (restartRequest) {
+      console.log("게임을 한번 더 진행하겠습니다.");
+      dispatch(gameRestart(roomCode));
+      setRestartRequest(false);
+    }
     //
-    dispatch(gameRestart(roomCode));
   };
 
   // 다시하기 요청 값이 true 라면 모두 다시하기를 희망한다고 판단
@@ -151,6 +157,8 @@ const GameResultsModal = () => {
       );
       dispatch(closeModal());
       dispatch(resetGameStateForRestart()); // 게임 진행 여부를 제외한 초기화
+      // 다시 시작으로 화면이 전환되었다면 후에 다시하기를 서버에 전송하도록 true로 변경
+      setRestartRequest(true);
     }
   }, [restart, dispatch]);
 
@@ -177,18 +185,22 @@ const GameResultsModal = () => {
           <PlayerName>{player2}</PlayerName>
         </div>
       </ModalDescription>
-
+      {restart === false && !gameoverPlayer && (
+        <RestartMessage>한판 더 해요!</RestartMessage>
+      )}
       <ButtonContainer>
         <PrimaryButton onClick={handleGameExit} ver={"red"}>
           게임 종료
         </PrimaryButton>
         {/** 게임을 끝낸 사람이 본인이 아니라면 버튼이 비활성화되도록 함 */}
-        <PrimaryButton onClick={handleGameReplay} disabled={disabledRestart}>
+        <PrimaryButton
+          onClick={handleGameReplay}
+          disabled={gameoverPlayer && gameoverPlayer !== player}
+        >
           다시하기
         </PrimaryButton>
       </ButtonContainer>
       {/** 상대가 다시하기를 요청한 상태라면 상대가 기다리고 있다는 메시지를 띄움 */}
-      {restartRequest && <div>한판 더 해요!</div>}
     </div>
   );
 };

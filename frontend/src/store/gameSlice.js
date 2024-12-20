@@ -49,13 +49,34 @@ const gameSlice = createSlice({
 
     // 게임 다시하기 (gameStarted을 제외하고 게임 상태 초기화)
     resetGameStateForRestart(state) {
-      const gameStartedValue = state.gameStarted; // 현재 gameStarted 값 저장
-
-      // initialState를 복사하되 gameStarted만 기존 값 유지
+      // 현재 값들 저장
+      const gameStartedValue = state.gameStarted;
+      const playersValue = state.GAME_START.players;
+      const currentPlayerValue = state.currentPlayer;
+      const rollCountValue = state.rollCount;
+      // initialState를 복사하되 gameStarted, players만 기존 값 유지
+      // currentPlayer와 rollCount는 업데이트
       Object.assign(state, {
         ...initialState,
         gameStarted: gameStartedValue,
+        currentPlayer: currentPlayerValue,
+        rollCount: rollCountValue,
+        GAME_START: {
+          ...state.GAME_START,
+          players: playersValue,
+        },
       });
+
+      // players가 존재하면 scoreBoard 키 업데이트
+      if (playersValue) {
+        state.scoreBoard = state.scoreBoard.map((row) => {
+          return {
+            category: row.category, // category 유지
+            [playersValue[0]]: null, // 첫 번째 플레이어
+            [playersValue[1]]: null, // 두 번째 플레이어
+          };
+        });
+      }
     },
 
     // currentPlayer 업데이트
