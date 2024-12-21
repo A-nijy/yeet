@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueueData {
+public class RoomData {
 
     private String player;
     private String roomCode;

@@ -2,6 +2,7 @@ package yeet.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yeet.backend.config.WebSocketEventListener;
 import yeet.backend.data.*;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStartResponseDto;
@@ -16,12 +17,16 @@ public class RoomService {
 
     private final GameDataManager gameDataManager;
     private final RoomQueue roomQueue;
+    private final WebSocketEventListener webSocketEventListener;
 
     // 방 생성
-    public RoomCodeResponseDto roomCreate(String player) {
+    public RoomCodeResponseDto roomCreate(String sessionId, String player) {
 
         // 방 생성 (+ 방코드 반환)
         String roomCode = gameDataManager.createRoom(player);
+
+        // 세션에 roomData 추가하기
+        webSocketEventListener.updateSessionData(sessionId, new RoomData(player, roomCode));
 
         // 반환 DTO 생성
         RoomCodeResponseDto response = new RoomCodeResponseDto(roomCode);
@@ -30,7 +35,7 @@ public class RoomService {
     }
 
     // 방 참여
-    public GameStartResponseDto roomJoin(String roomCode, String player) {
+    public GameStartResponseDto roomJoin(String roomCode, String sessionId, String player) {
 
         // 방 존재 여부
         if(!gameDataManager.isRoomExists(roomCode)){
@@ -48,6 +53,9 @@ public class RoomService {
         ScoreBoard scoreBoard = new ScoreBoard();
         gameData.addPlayer(player, scoreBoard);
 
+        // 세션에 roomData 추가하기
+        webSocketEventListener.updateSessionData(sessionId, new RoomData(player, roomCode));
+
         return new GameStartResponseDto(gameData);
     }
 
@@ -59,17 +67,17 @@ public class RoomService {
         // 큐에 대기자 존재 여부에 따른 로직
         if (roomQueue.isQueue()){
 
-            QueueData queueData = roomQueue.pollQueue();
+            RoomData roomData = roomQueue.pollQueue();
 
-            response = new QuickMatchResponseDto("player2", queueData.getRoomCode(), true);
+            response = new QuickMatchResponseDto("player2", roomData.getRoomCode(), true);
 
         } else {
 
             String roomCode = gameDataManager.createRoom("player1");
 
-            QueueData queueData = new QueueData("player1", roomCode);
+            RoomData roomData = new RoomData("player1", roomCode);
 
-            roomQueue.addQueue(queueData);
+            roomQueue.addQueue(roomData);
 
             response = new QuickMatchResponseDto("player1", roomCode, false);
         }
@@ -81,11 +89,11 @@ public class RoomService {
     public void quickMatchRemove(String roomCode) {
 
         // 큐에서 해당 방 코드를 가진 대기 데이터 찾기
-        QueueData queueData = roomQueue.founcQueue(roomCode);
+        RoomData roomData = roomQueue.founcQueue(roomCode);
 
         // 큐에서 대기자 제거
-        if (queueData != null){
-            roomQueue.removeQueue(queueData);
+        if (roomData != null){
+            roomQueue.removeQueue(roomData);
         }
 
         // 방 데이터 관리하는 Map에서 해당 데이터 삭제

@@ -1,13 +1,11 @@
 package yeet.backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
+import yeet.backend.config.WebSocketEventListener;
 import yeet.backend.dto.requestDto.PlayerRequestDto;
 import yeet.backend.dto.responseDto.GameRemoveResponseDto;
 import yeet.backend.dto.responseDto.GameStartResponseDto;
@@ -24,9 +22,9 @@ public class RoomController {
     // 방 생성 (방 코드 응답)
     @MessageMapping("/room/create")
     @SendToUser("/queue/game")
-    public RoomCodeResponseDto roomCreate(@Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+    public RoomCodeResponseDto roomCreate(@Header("smipSessionId") String sessionId, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
 
-        RoomCodeResponseDto response = roomService.roomCreate(request.getPlayer());
+        RoomCodeResponseDto response = roomService.roomCreate(sessionId, request.getPlayer());
 
         headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
         headerAccessor.getSessionAttributes().put("player", request.getPlayer());
@@ -37,9 +35,9 @@ public class RoomController {
     // 방 참여
     @MessageMapping("/room/join/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
-    public GameStartResponseDto roomJoin(@DestinationVariable String roomCode, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+    public GameStartResponseDto roomJoin(@DestinationVariable String roomCode, @Header("smipSessionId") String sessionId, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
 
-        GameStartResponseDto response = roomService.roomJoin(roomCode, request.getPlayer());
+        GameStartResponseDto response = roomService.roomJoin(roomCode, sessionId, request.getPlayer());
 
         headerAccessor.getSessionAttributes().put("roomCode", roomCode);
         headerAccessor.getSessionAttributes().put("player", request.getPlayer());
