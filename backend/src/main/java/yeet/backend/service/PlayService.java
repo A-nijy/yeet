@@ -3,6 +3,7 @@ package yeet.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import yeet.backend.config.WebSocketEventListener;
 import yeet.backend.data.*;
 import yeet.backend.dto.requestDto.DiceFixRequestDto;
 import yeet.backend.dto.requestDto.ScoreChoiceRequestDto;
@@ -19,6 +20,7 @@ public class PlayService {
 
     private final GameDataManager gameDataManager;
     private final ScoreCalculator scoreCalculator;
+    private final WebSocketEventListener webSocketEventListener;
 
     // 주사위 돌리기
     public DiceRollResponseDto diceRoll(String roomCode, String player) {
@@ -96,9 +98,10 @@ public class PlayService {
     }
 
     // 게임 종료
-    public GameEndResponseDto gameEnd(String roomCode, String player) {
+    public GameEndResponseDto gameEnd(String roomCode, String sessionId, String player) {
 
         gameDataManager.removeRoom(roomCode);
+        webSocketEventListener.removeSessionData(sessionId);
 
         return new GameEndResponseDto(player);
     }
