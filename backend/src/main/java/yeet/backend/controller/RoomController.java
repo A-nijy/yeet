@@ -48,15 +48,26 @@ public class RoomController {
     // 빠른 매칭
     @MessageMapping("/quick/match")
     @SendToUser("/queue/game")
-    public QuickMatchResponseDto quickMatch(SimpMessageHeaderAccessor headerAccessor){
+    public QuickMatchResponseDto quickMatch(@Header("smipSessionId") String sessionId, SimpMessageHeaderAccessor headerAccessor){
 
-        QuickMatchResponseDto response = roomService.quickMatch();
+        QuickMatchResponseDto response = roomService.quickMatch(sessionId);
 
         headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
         headerAccessor.getSessionAttributes().put("player", response.getPlayer());
 
         return response;
     }
+
+    // 빠른 매칭 완료 후 게임 시작 요청
+    @MessageMapping("/quick/match/start")
+    @SendTo("/topic/room/{roomCode}")
+    public GameStartResponseDto gameStart(@DestinationVariable String roomCode){
+
+        GameStartResponseDto response = roomService.gameStart(roomCode);
+
+        return response;
+    }
+
 
     // 빠른 매칭 나가기
     @MessageMapping("/quick/match/remove")

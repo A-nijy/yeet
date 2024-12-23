@@ -60,7 +60,7 @@ public class RoomService {
     }
 
     // 빠른 매칭
-    public QuickMatchResponseDto quickMatch() {
+    public QuickMatchResponseDto quickMatch(String sessionId) {
 
         QuickMatchResponseDto response;
 
@@ -69,10 +69,20 @@ public class RoomService {
 
             RoomData roomData = roomQueue.pollQueue();
 
+            GameData gameData = gameDataManager.getGameData(roomData.getRoomCode());
+
+            // 방 참여
+            ScoreBoard scoreBoard = new ScoreBoard();
+            gameData.addPlayer("player2", scoreBoard);
+
             response = new QuickMatchResponseDto("player2", roomData.getRoomCode(), true);
+
+            // 세션에 roomData 추가하기
+            webSocketEventListener.updateSessionData(sessionId, new RoomData("player2", roomData.getRoomCode()));
 
         } else {
 
+            // 방 생성
             String roomCode = gameDataManager.createRoom("player1");
 
             RoomData roomData = new RoomData("player1", roomCode);
@@ -80,9 +90,20 @@ public class RoomService {
             roomQueue.addQueue(roomData);
 
             response = new QuickMatchResponseDto("player1", roomCode, false);
+
+            // 세션에 roomData 추가하기
+            webSocketEventListener.updateSessionData(sessionId, new RoomData("player1", roomCode));
         }
 
         return response;
+    }
+
+    // 빠른 매칭 완료 후 게임 시작 요청
+    public GameStartResponseDto gameStart(String roomCode) {
+
+        GameData gameData = gameDataManager.getGameData(roomCode);
+
+        return new GameStartResponseDto(gameData);
     }
 
     // 빠른 매칭 나가기

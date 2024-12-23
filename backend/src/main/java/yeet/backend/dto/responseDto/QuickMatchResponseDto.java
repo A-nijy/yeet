@@ -13,5 +13,5 @@ public class QuickMatchResponseDto {
 
     private String player;
     private String roomCode;
-    private boolean gameStarted;
+    private boolean ready;
 }
