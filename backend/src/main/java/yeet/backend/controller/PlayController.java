@@ -59,9 +59,9 @@ public class PlayController {
     // 게임 종료
     @MessageMapping("/room/end/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
-    public GameEndResponseDto gameEnd(@DestinationVariable String roomCode, @Header("smipSessionId") String sessionId, SimpMessageHeaderAccessor headerAccessor){
+    public GameEndResponseDto gameEnd(@DestinationVariable String roomCode, SimpMessageHeaderAccessor headerAccessor){
 
-        GameEndResponseDto response = playService.gameEnd(roomCode, sessionId, headerAccessor.getSessionAttributes().get("player").toString());
+        GameEndResponseDto response = playService.gameEnd(roomCode, headerAccessor.getSessionId(), headerAccessor.getSessionAttributes().get("player").toString());
 
         return response;
     }

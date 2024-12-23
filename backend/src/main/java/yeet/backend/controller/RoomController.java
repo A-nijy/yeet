@@ -22,9 +22,9 @@ public class RoomController {
     // 방 생성 (방 코드 응답)
     @MessageMapping("/room/create")
     @SendToUser("/queue/game")
-    public RoomCodeResponseDto roomCreate(@Header("smipSessionId") String sessionId, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+    public RoomCodeResponseDto roomCreate(@Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
 
-        RoomCodeResponseDto response = roomService.roomCreate(sessionId, request.getPlayer());
+        RoomCodeResponseDto response = roomService.roomCreate(headerAccessor.getSessionId(), request.getPlayer());
 
         headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
         headerAccessor.getSessionAttributes().put("player", request.getPlayer());
@@ -35,9 +35,9 @@ public class RoomController {
     // 방 참여
     @MessageMapping("/room/join/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
-    public GameStartResponseDto roomJoin(@DestinationVariable String roomCode, @Header("smipSessionId") String sessionId, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
+    public GameStartResponseDto roomJoin(@DestinationVariable String roomCode, @Payload PlayerRequestDto request, SimpMessageHeaderAccessor headerAccessor){
 
-        GameStartResponseDto response = roomService.roomJoin(roomCode, sessionId, request.getPlayer());
+        GameStartResponseDto response = roomService.roomJoin(roomCode, headerAccessor.getSessionId(), request.getPlayer());
 
         headerAccessor.getSessionAttributes().put("roomCode", roomCode);
         headerAccessor.getSessionAttributes().put("player", request.getPlayer());
@@ -48,9 +48,9 @@ public class RoomController {
     // 빠른 매칭
     @MessageMapping("/quick/match")
     @SendToUser("/queue/game")
-    public QuickMatchResponseDto quickMatch(@Header("smipSessionId") String sessionId, SimpMessageHeaderAccessor headerAccessor){
+    public QuickMatchResponseDto quickMatch(SimpMessageHeaderAccessor headerAccessor){
 
-        QuickMatchResponseDto response = roomService.quickMatch(sessionId);
+        QuickMatchResponseDto response = roomService.quickMatch(headerAccessor.getSessionId());
 
         headerAccessor.getSessionAttributes().put("roomCode", response.getRoomCode());
         headerAccessor.getSessionAttributes().put("player", response.getPlayer());
