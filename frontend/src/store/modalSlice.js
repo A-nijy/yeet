@@ -4,6 +4,7 @@ const initialState = {
   isOpen: false,
   contentType: null,
   message: "",
+  createRoomCode: null,
   generatedRoomCode: null,
 };
 
@@ -25,6 +26,9 @@ const modalSlice = createSlice({
     setMessage: (state, action) => {
       state.message = action.payload; // 메시지 업데이트
     },
+    setCreateRoomCode: (state, action) => {
+      state.createRoomCode = action.payload;
+    },
     setGeneratedRoomCode: (state, action) => {
       state.generatedRoomCode = action.payload;
     },
@@ -36,6 +40,7 @@ export const {
   openModal,
   closeModal,
   setMessage,
+  setCreateRoomCode,
   setGeneratedRoomCode,
 } = modalSlice.actions;
 
