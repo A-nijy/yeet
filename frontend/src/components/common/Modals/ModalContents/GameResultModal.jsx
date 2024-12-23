@@ -116,7 +116,6 @@ const GameResultsModal = () => {
 
   const gameoverPlayer = useSelector((state) => state.game.GAME_END.player);
 
-  const restartPlayer = useSelector((state) => state.game.GAME_RESTART.player);
   const restart = useSelector((state) => state.game.GAME_RESTART.restart);
   const player = getSessionItem("player");
 

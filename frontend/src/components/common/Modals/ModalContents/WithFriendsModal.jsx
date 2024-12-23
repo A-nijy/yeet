@@ -4,7 +4,7 @@ import PrimaryButton from "../../Buttons/PrimaryButton";
 import PrimaryInput from "../../Inputs/PrimaryInput";
 import { createRoom, joinRoom } from "../../../../thunk/roomThunk";
 import { useDispatch, useSelector } from "react-redux";
-import { setGeneratedRoomCode, setMessage } from "../../../../store/modalSlice";
+import { setMessage } from "../../../../store/modalSlice";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
 import CopyInvitationCode from "../../../Lobby/CopyInvitationCode";
 
@@ -50,7 +50,6 @@ const WithFriendsModal = () => {
 
   const handleCancelMatching = () => {
     dispatch(disconnectStomp()); // STOMP 연결 종료
-    dispatch(setGeneratedRoomCode(null));
     dispatch(setMessage("매칭이 취소되었습니다."));
   };
 
