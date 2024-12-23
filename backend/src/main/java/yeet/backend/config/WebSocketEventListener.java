@@ -32,7 +32,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
 
-        sessionDataMap.put(sessionId, null);
+        sessionDataMap.put(sessionId, new RoomData());
     }
 
     // sessionDataMap에 데이터 추가하기
