@@ -20,7 +20,7 @@ export const subscribeToTeamChannel = (client, teamChannelId, dispatch) => {
           console.log("팀 채널 메시지 수신:", data);
 
           // 메시지 타입에 따라 처리
-          gmaeMessageHandler(data, dispatch);
+          gmaeMessageHandler(teamChannelId, data, dispatch);
           resolve(subscription); // 구독 객체 반환
         } catch (error) {
           console.error("팀 채널 메시지 처리 중 오류:", error);

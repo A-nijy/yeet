@@ -29,7 +29,7 @@ const StyledPrimaryInput = styled(PrimaryInput)`
 
 const WithFriendsModal = () => {
   const dispatch = useDispatch();
-  const { generatedRoomCode } = useSelector((state) => state.modal);
+  const { createRoomCode } = useSelector((state) => state.modal);
   const [roomCode, setRoomCode] = useState(""); // 입력된 방 코드
   const inputRef = useRef(null); // 입력창 참조
 
@@ -45,7 +45,7 @@ const WithFriendsModal = () => {
       return;
     }
 
-    dispatch(joinRoom(roomCode)); // 방 코드와 닉네임 전달
+    dispatch(joinRoom(roomCode)); // 방 코드 전달
   };
 
   const handleCancelMatching = () => {
@@ -56,10 +56,10 @@ const WithFriendsModal = () => {
   return (
     <>
       {/**'방 만들기'로 초대 코드를 받는 사람만 UI를 볼 수 있도록 설정*/}
-      {generatedRoomCode ? (
+      {createRoomCode ? (
         // 방이 생성된 경우
         <PartContainer>
-          <CopyInvitationCode>{generatedRoomCode}</CopyInvitationCode>
+          <CopyInvitationCode>{createRoomCode}</CopyInvitationCode>
 
           <p>상대를 기다리는 중...</p>
           <PrimaryButton onClick={handleCancelMatching}>

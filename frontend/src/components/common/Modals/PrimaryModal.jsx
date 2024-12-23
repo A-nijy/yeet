@@ -3,13 +3,8 @@ import styled from "styled-components";
 import QuickStartModal from "./ModalContents/QuickStartModal";
 import WithFriendsModal from "./ModalContents/WithFriendsModal";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  closeModal,
-  setGeneratedRoomCode,
-  setMessage,
-} from "../../../store/modalSlice";
+import { closeModal, setMessage } from "../../../store/modalSlice";
 import { disconnectStomp } from "../../../thunk/stompThunk";
-import { getSessionItem } from "../../../utils/roleSession";
 import GameResultsModal from "./ModalContents/GameResultModal";
 
 const ModalBackground = styled.div`
@@ -133,7 +128,7 @@ const MessageBox = styled.div`
 `;
 const PrimaryModal = () => {
   const dispatch = useDispatch();
-  const { isOpen, contentType, message, generatedRoomCode } = useSelector(
+  const { isOpen, contentType, message, createRoomCode } = useSelector(
     (state) => state.modal
   );
 
@@ -149,15 +144,9 @@ const PrimaryModal = () => {
   }, [message, dispatch]);
 
   const handleClose = () => {
-    const player = getSessionItem("player"); // 세션에서 플레이어 값 가져오기
-    if (
-      contentType === "withFriends" &&
-      generatedRoomCode &&
-      player === "Player1"
-    ) {
+    if (contentType === "withFriends" && createRoomCode) {
       // 방 코드가 존재하는 경우: 방 코드 초기화 및 메시지 표시
       dispatch(disconnectStomp()); // STOMP 연결 종료
-      dispatch(setGeneratedRoomCode(null));
       dispatch(setMessage("매칭이 취소되었습니다."));
       return; // 조건 충족 후 종료
     }

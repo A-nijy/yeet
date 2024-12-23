@@ -1,5 +1,5 @@
 import stompClientManager from "../utils/stompClient";
-import { setGeneratedRoomCode, setMessage } from "../store/modalSlice";
+import { setCreateRoomCode, setMessage } from "../store/modalSlice";
 import { connectStomp } from "./stompThunk";
 import { subscribeToTeamChannel } from "./gameThunk";
 import { getSessionItem, setSessionItem } from "../utils/roleSession";
@@ -45,7 +45,7 @@ const subscribeToExceptionChannel = (client) => {
 
 // 방 생성
 export const createRoom = () => async (dispatch, getState) => {
-  dispatch(setGeneratedRoomCode("생성 중..."));
+  dispatch(setCreateRoomCode("생성 중 ..."));
 
   const { connected } = getState().stomp;
 
@@ -65,7 +65,7 @@ export const createRoom = () => async (dispatch, getState) => {
 
   if (!client) {
     console.error("STOMP 클라이언트가 초기화되지 않았습니다.");
-    dispatch(setGeneratedRoomCode(null));
+    dispatch(setCreateRoomCode(null));
     return;
   }
 
@@ -74,7 +74,7 @@ export const createRoom = () => async (dispatch, getState) => {
     if (data.roomCode) {
       console.log("개인 채널 구독 성공: 방 번호", data.roomCode);
 
-      dispatch(setGeneratedRoomCode(data.roomCode));
+      dispatch(setCreateRoomCode(data.roomCode));
 
       // 3. 방 번호를 기반으로 팀 채널 구독
       subscribeToTeamChannel(client, data.roomCode, dispatch)
@@ -90,8 +90,8 @@ export const createRoom = () => async (dispatch, getState) => {
     }
   });
 
-  // // 4. 예외 응답 채널 구독 요청
-  // subscribeToExceptionChannel(client);
+  // 4. 예외 응답 채널 구독 요청
+  subscribeToExceptionChannel(client);
 
   // 5. 방 생성 요청
   client.publish({
@@ -128,7 +128,6 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
 
     if (!client) {
       console.error("STOMP 클라이언트가 초기화되지 않았습니다.");
-      dispatch(setGeneratedRoomCode(null));
       return;
     }
 
@@ -138,12 +137,11 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     subscribeToTeamChannel(client, roomCode, dispatch);
 
     console.log(`방 ${roomCode} 참여 요청 전송 중...`);
-    dispatch(setGeneratedRoomCode(roomCode));
 
-    // // 4. 예외 응답 채널 구독 요청
-    // subscribeToExceptionChannel(client);
+    // 3. 예외 응답 채널 구독 요청
+    subscribeToExceptionChannel(client);
 
-    // 3. 방 참여 요청 전송
+    // 4. 방 참여 요청 전송
     client.publish({
       destination: `/app/room/join/${roomCode}`,
       body: JSON.stringify({ player }),

@@ -20,12 +20,16 @@ function App() {
   // 게임 시작 여부를 Redux 상태에서 확인
   const gameStarted = useSelector((state) => state.game.gameStarted);
   const gameState = useSelector((state) => state.game);
+  const modalState = useSelector((state) => state.modal);
   console.log("gameStarted 상태:", gameStarted);
   console.log("game 상태:", gameState);
 
   useEffect(() => {
     console.log("game 상태 변경 감지:", gameStarted);
   }, [gameStarted]);
+  useEffect(() => {
+    console.log("modal 상태 변경 감지:", modalState);
+  }, [modalState]);
 
   return (
     <>
