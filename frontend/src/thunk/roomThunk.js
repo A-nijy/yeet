@@ -3,6 +3,7 @@ import { setGeneratedRoomCode, setMessage } from "../store/modalSlice";
 import { connectStomp } from "./stompThunk";
 import { subscribeToTeamChannel } from "./gameThunk";
 import { getSessionItem, setSessionItem } from "../utils/roleSession";
+import { exceptionMessageHandler } from "../handler/exceptionMessageHandler";
 
 // 개인 채널 구독
 const subscribeToPersonalChannel = (client, callback) => {
@@ -20,6 +21,25 @@ const subscribeToPersonalChannel = (client, callback) => {
   });
 
   console.log("개인 채널 구독 완료");
+  return subscription;
+};
+
+// 예외 응답용 채널 구독 (개인 채널)
+const subscribeToExceptionChannel = (client) => {
+  console.log("예외 응답용 채널 구독 설정 중: /user/queue/game");
+
+  const subscription = client.subscribe("/user/queue/errors", (message) => {
+    try {
+      const data = JSON.parse(message.body);
+      console.log("예외 응답용 채널 메시지 수신:", data);
+
+      exceptionMessageHandler(data);
+    } catch (error) {
+      console.error("예외 응답용 채널 메시지 처리 중 오류:", error);
+    }
+  });
+
+  console.log("예외 응답용 채널 구독 완료");
   return subscription;
 };
 
@@ -66,11 +86,14 @@ export const createRoom = () => async (dispatch, getState) => {
         });
     } else {
       console.error("방 생성 실패: 응답에 방 번호가 없습니다.");
-      dispatch(setMessage("방 생성에 실패했습니다. 다시 시도해주세요."));
+      // dispatch(setMessage("방 생성에 실패했습니다. 다시 시도해주세요."));
     }
   });
 
-  // 4. 방 생성 요청
+  // // 4. 예외 응답 채널 구독 요청
+  // subscribeToExceptionChannel(client);
+
+  // 5. 방 생성 요청
   client.publish({
     destination: `/app/room/create`,
     body: JSON.stringify({ player }),
@@ -117,6 +140,9 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     console.log(`방 ${roomCode} 참여 요청 전송 중...`);
     dispatch(setGeneratedRoomCode(roomCode));
 
+    // // 4. 예외 응답 채널 구독 요청
+    // subscribeToExceptionChannel(client);
+
     // 3. 방 참여 요청 전송
     client.publish({
       destination: `/app/room/join/${roomCode}`,
@@ -127,6 +153,6 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     console.log("팀 채널 구독 유지");
   } catch (error) {
     console.error("방 참여 중 오류:", error.message);
-    dispatch(setMessage("방 참여 중 오류가 발생했습니다. 다시 시도해주세요."));
+    // dispatch(setMessage("방 참여 중 오류가 발생했습니다. 다시 시도해주세요."));
   }
 };

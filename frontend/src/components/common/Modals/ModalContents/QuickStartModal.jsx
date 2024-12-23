@@ -10,7 +10,7 @@ const ModalDescription = styled.p`
 `;
 
 // 모달 콘텐츠 컴포넌트
-const QuickStartModal = ({ onCancel }) => {
+const QuickStartModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCancelClick = async () => {
