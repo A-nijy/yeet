@@ -1,10 +1,7 @@
 package yeet.backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.RestController;
 import yeet.backend.dto.requestDto.DiceFixRequestDto;
@@ -62,9 +59,9 @@ public class PlayController {
     // 게임 종료
     @MessageMapping("/room/end/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
-    public GameEndResponseDto gameEnd(@DestinationVariable String roomCode, SimpMessageHeaderAccessor headerAccessor){
+    public GameEndResponseDto gameEnd(@DestinationVariable String roomCode, @Header("smipSessionId") String sessionId, SimpMessageHeaderAccessor headerAccessor){
 
-        GameEndResponseDto response = playService.gameEnd(roomCode, headerAccessor.getSessionAttributes().get("player").toString());
+        GameEndResponseDto response = playService.gameEnd(roomCode, sessionId, headerAccessor.getSessionAttributes().get("player").toString());
 
         return response;
     }
