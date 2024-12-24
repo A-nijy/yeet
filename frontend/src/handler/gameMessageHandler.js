@@ -17,9 +17,10 @@ import {
   updateGameEnd,
   updateGameRestart,
 } from "../store/gameSlice";
+import { setGeneratedRoomCode } from "../store/modalSlice";
 
 // 타입별 메시지 핸들러
-export const gmaeMessageHandler = (data, dispatch) => {
+export const gmaeMessageHandler = (roomCode, data, dispatch) => {
   // 공통 데이터 업데이트
   if (data.currentPlayer !== undefined) {
     dispatch(updateCurrentPlayer(data.currentPlayer));
@@ -50,6 +51,8 @@ export const gmaeMessageHandler = (data, dispatch) => {
     case "GAME_START":
       console.log("게임 시작 메시지 처리:", data);
       dispatch(updateGameStartData(data));
+      // 방 생성으로 받은 코드 보장된 코드로 저장하기
+      dispatch(setGeneratedRoomCode(roomCode));
       break;
 
     case "ROLL_DICE":
