@@ -68,7 +68,6 @@ public class RoomController {
         return response;
     }
 
-
     // 빠른 매칭 나가기
     @MessageMapping("/quick/match/remove")
     @SendToUser("/queue/game")
