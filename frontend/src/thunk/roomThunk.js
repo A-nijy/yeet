@@ -149,3 +149,69 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     // dispatch(setMessage("방 참여 중 오류가 발생했습니다. 다시 시도해주세요."));
   }
 };
+
+// 빠른 매칭
+export const QuickJoinRoom = (roomCode) => async (dispatch, getState) => {
+  try {
+    const { connected } = getState().stomp;
+
+    // 세션에서 플레이어 정보 가져오기
+    setSessionItem("player", "빠른 오리");
+    const player = getSessionItem("player");
+    if (!player) {
+      console.error(
+        "세션에 플레이어 값이 없습니다. 방 참여 동작을 중단합니다."
+      );
+      dispatch(
+        setMessage("플레이어 정보를 확인할 수 없습니다. 다시 시도해주세요.")
+      );
+      return; // 세션 값이 없으면 함수 종료
+    }
+
+    console.log("현재 플레이어 (빠른 시작 참여):", player);
+
+    // 1. STOMP 연결 확인 및 초기화
+    const client = connected
+      ? stompClientManager.getClient()
+      : await dispatch(connectStomp());
+
+    if (!client) {
+      console.error("STOMP 클라이언트가 초기화되지 않았습니다.");
+      return;
+    }
+
+    console.log("STOMP 클라이언트 확인 완료");
+
+    // 3. 예외 응답 채널 구독 요청
+    subscribeToExceptionChannel(client);
+
+    // 2. 팀 채널 구독
+    subscribeToTeamChannel(client, roomCode, dispatch);
+
+    console.log(`빠른 시작 ${roomCode} 참여 요청 전송 중...`);
+
+    // 4. 방 참여 요청 전송
+    client.publish({
+      destination: `/app/quick/match/start`,
+      body: JSON.stringify({ player }),
+    });
+  } catch (error) {
+    console.error("빠른 시작 참여 중 오류:", error.message);
+    // dispatch(setMessage("방 참여 중 오류가 발생했습니다. 다시 시도해주세요."));
+  }
+};
+
+// 빠른 매칭 취소
+export const CancelQuickJoinRoom = () => async (dispatch, getState) => {
+  const client = stompClientManager.getClient();
+  if (!client) {
+    console.error("STOMP 클라이언트를 가져오지 못했습니다.");
+    return;
+  }
+
+  client.publish({
+    destination: `/app/quick/match/remove`,
+  });
+
+  console.log("게임 다시하기 요청 전송 완료");
+};
