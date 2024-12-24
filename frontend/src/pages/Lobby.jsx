@@ -47,7 +47,6 @@ const Lobby = () => {
             빠른 시작
           </PrimaryButton>
         </ButtonContainer>
-
         {/** 상황에 맞는 모달 등장*/}
         {contentType === ("quickStart" || "withFriends") && <PrimaryModal />}
         <PrimaryModal />

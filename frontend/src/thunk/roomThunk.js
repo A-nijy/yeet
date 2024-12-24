@@ -26,7 +26,7 @@ const subscribeToPersonalChannel = (client, callback) => {
 
 // 예외 응답용 채널 구독 (개인 채널)
 const subscribeToExceptionChannel = (client) => {
-  console.log("예외 응답용 채널 구독 설정 중: /user/queue/game");
+  console.log("예외 응답용 채널 구독 설정 중: /user/queue/errors");
 
   const subscription = client.subscribe("/user/queue/errors", (message) => {
     try {
@@ -69,6 +69,8 @@ export const createRoom = () => async (dispatch, getState) => {
     return;
   }
 
+  subscribeToExceptionChannel(client);
+
   // 2. 개인 채널 구독 및 방 번호 수신
   subscribeToPersonalChannel(client, (data) => {
     if (data.roomCode) {
@@ -90,15 +92,11 @@ export const createRoom = () => async (dispatch, getState) => {
     }
   });
 
-  // 4. 예외 응답 채널 구독 요청
-  subscribeToExceptionChannel(client);
-
   // 5. 방 생성 요청
   client.publish({
     destination: `/app/room/create`,
     body: JSON.stringify({ player }),
   });
-  console.log("방 생성 요청 전송 완료");
 };
 
 // 방 참여
@@ -133,22 +131,19 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
 
     console.log("STOMP 클라이언트 확인 완료");
 
+    // 3. 예외 응답 채널 구독 요청
+    subscribeToExceptionChannel(client);
+
     // 2. 팀 채널 구독
     subscribeToTeamChannel(client, roomCode, dispatch);
 
     console.log(`방 ${roomCode} 참여 요청 전송 중...`);
-
-    // 3. 예외 응답 채널 구독 요청
-    subscribeToExceptionChannel(client);
 
     // 4. 방 참여 요청 전송
     client.publish({
       destination: `/app/room/join/${roomCode}`,
       body: JSON.stringify({ player }),
     });
-
-    // 구독 유지: 팀 채널에서 메시지를 계속 수신
-    console.log("팀 채널 구독 유지");
   } catch (error) {
     console.error("방 참여 중 오류:", error.message);
     // dispatch(setMessage("방 참여 중 오류가 발생했습니다. 다시 시도해주세요."));
