@@ -28,8 +28,6 @@ export const subscribeToTeamChannel = (client, teamChannelId, dispatch) => {
         }
       }
     );
-
-    console.log("팀 채널 구독 완료");
   });
 };
 
