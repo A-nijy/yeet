@@ -28,6 +28,7 @@ public class GlobalException {
     public void handleCustomException(CustomException e, SimpMessageHeaderAccessor headerAccessor){
 
         String sessionId = headerAccessor.getSessionId();
+        System.out.println(sessionId);
 
         simpMessagingTemplate.convertAndSendToUser(sessionId, "/queue/errors", new ErrorResponseDto(e.getErrorCode(), e.getMessage(), e.getStatus()));
     }
