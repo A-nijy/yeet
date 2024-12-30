@@ -5,6 +5,7 @@ import { openModal } from "../store/modalSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryModal from "../components/common/Modals/PrimaryModal";
 import Container from "../components/common/Container/Container";
+import { QuickCreateRoom } from "../thunk/roomThunk";
 
 const LobbyContainer = styled.div`
   display: flex;
@@ -26,9 +27,11 @@ const TitleH1 = styled.h1`
 const Lobby = () => {
   const dispatch = useDispatch();
   const contentType = useSelector((state) => state.modal);
-  const modalState = useSelector((state) => state.modal);
 
-  console.log(modalState);
+  const handleQuickStart = () => {
+    dispatch(QuickCreateRoom());
+    dispatch(openModal("quickStart"));
+  };
   return (
     <Container>
       <LobbyContainer>
@@ -43,9 +46,7 @@ const Lobby = () => {
           </PrimaryButton>
 
           {/** 빠른 시작 버튼*/}
-          <PrimaryButton onClick={() => dispatch(openModal("quickStart"))}>
-            빠른 시작
-          </PrimaryButton>
+          <PrimaryButton onClick={handleQuickStart}>빠른 시작</PrimaryButton>
         </ButtonContainer>
         {/** 상황에 맞는 모달 등장*/}
         {contentType === ("quickStart" || "withFriends") && <PrimaryModal />}
