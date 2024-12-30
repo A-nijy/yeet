@@ -59,7 +59,7 @@ public class RoomController {
     }
 
     // 빠른 매칭 완료 후 게임 시작 요청
-    @MessageMapping("/quick/match/start")
+    @MessageMapping("/quick/match/start/{roomCode}")
     @SendTo("/topic/room/{roomCode}")
     public GameStartResponseDto gameStart(@DestinationVariable String roomCode){
 
