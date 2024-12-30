@@ -1,6 +1,7 @@
 package yeet.backend.exception;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -23,10 +24,11 @@ public class GlobalException {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @ExceptionHandler(CustomException.class)
+    @MessageExceptionHandler(CustomException.class)
     public void handleCustomException(CustomException e, SimpMessageHeaderAccessor headerAccessor){
 
         String sessionId = headerAccessor.getSessionId();
+        System.out.println(sessionId);
 
         simpMessagingTemplate.convertAndSendToUser(sessionId, "/queue/errors", new ErrorResponseDto(e.getErrorCode(), e.getMessage(), e.getStatus()));
     }

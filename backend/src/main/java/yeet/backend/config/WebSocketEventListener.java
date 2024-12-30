@@ -7,6 +7,8 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 import yeet.backend.data.GameDataManager;
 import yeet.backend.data.RoomData;
 import yeet.backend.dto.responseDto.GameEndResponseDto;
@@ -33,6 +35,8 @@ public class WebSocketEventListener {
         String sessionId = accessor.getSessionId();
 
         sessionDataMap.put(sessionId, new RoomData());
+
+        System.out.println("----- " + sessionId + "웹 소켓 연결 -----");
     }
 
     // sessionDataMap에 데이터 추가하기
@@ -54,6 +58,8 @@ public class WebSocketEventListener {
         String sessionId = event.getSessionId();
         RoomData roomData = sessionDataMap.remove(sessionId);
 
+        System.out.println("----- " + sessionId + "웹 소켓 끊김 -----");
+
         if (roomData != null){
 
             if (gameDataManager.isRoomExists(roomData.getRoomCode())){
@@ -64,5 +70,27 @@ public class WebSocketEventListener {
             // 방 데이터 Map 지우기
             gameDataManager.removeRoom(roomData.getRoomCode());
         }
+    }
+
+    // 채널 구독 시점
+    @EventListener
+    public void handleSessionSubscribe(SessionSubscribeEvent event) {
+        StompHeaderAccessor stompHeaderAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = stompHeaderAccessor.getSessionId();
+        String destination = stompHeaderAccessor.getDestination();
+
+        // 구독된 채널과 세션 ID를 추적
+        System.out.println("----- " + sessionId + " 님이 " + destination + " 채널을 구독 -----");
+    }
+
+    // 채널 구독 취소 시점
+    @EventListener
+    public void handleSessionUnsubscribe(SessionUnsubscribeEvent event) {
+        StompHeaderAccessor stompHeaderAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = stompHeaderAccessor.getSessionId();
+        String destination = stompHeaderAccessor.getDestination();
+
+        // 구독 취소된 채널과 세션 ID를 추적
+        System.out.println("----- " + sessionId + " 님이 " + destination + " 채널을 구독 취소 -----");
     }
 }
