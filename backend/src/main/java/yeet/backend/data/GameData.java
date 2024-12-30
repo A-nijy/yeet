@@ -98,6 +98,7 @@ public class GameData {
             diceFix[i] = false;
         }
         restart = false;
+        gameStarted = true;
     }
 
     // 게임 끝 여부
