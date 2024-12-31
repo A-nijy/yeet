@@ -27,9 +27,9 @@ public class GlobalException {
     @MessageExceptionHandler(CustomException.class)
     public void handleCustomException(CustomException e, SimpMessageHeaderAccessor headerAccessor){
 
-        String sessionId = headerAccessor.getSessionId();
-        System.out.println(sessionId);
+        String name = headerAccessor.getUser().getName();
+        System.out.println("예외 처리에서 꺼낸 name = " + name);
 
-        simpMessagingTemplate.convertAndSendToUser(sessionId, "/queue/errors", new ErrorResponseDto(e.getErrorCode(), e.getMessage(), e.getStatus()));
+        simpMessagingTemplate.convertAndSendToUser(name, "/queue/errors", new ErrorResponseDto(e.getErrorCode(), e.getMessage(), e.getStatus()));
     }
 }
