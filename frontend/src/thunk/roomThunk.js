@@ -30,22 +30,42 @@ const subscribeToPersonalChannel = (client, callback) => {
 };
 
 // 예외 응답용 채널 구독 (개인 채널)
-const subscribeToExceptionChannel = (client) => {
+// const subscribeToExceptionChannel = (client, dispatch) => {
+//   console.log("예외 응답용 채널 구독 설정 중: /user/queue/errors");
+
+//   const subscription = client.subscribe("/user/queue/errors", (message) => {
+//     try {
+//       const data = JSON.parse(message.body);
+//       console.log("예외 응답용 채널 메시지 수신:", data);
+
+//       exceptionMessageHandler(data, dispatch);
+//     } catch (error) {
+//       console.error("예외 응답용 채널 메시지 처리 중 오류:", error);
+//     }
+//   });
+
+//   console.log("예외 응답용 채널 구독 완료");
+//   return subscription;
+// };
+
+const subscribeToExceptionChannel = (client, dispatch) => {
+  if (typeof dispatch !== "function") {
+    console.error("dispatch가 함수가 아닙니다:", dispatch);
+    return;
+  }
+
   console.log("예외 응답용 채널 구독 설정 중: /user/queue/errors");
 
-  const subscription = client.subscribe("/user/queue/errors", (message) => {
+  client.subscribe("/user/queue/errors", (message) => {
     try {
       const data = JSON.parse(message.body);
       console.log("예외 응답용 채널 메시지 수신:", data);
 
-      exceptionMessageHandler(data);
+      exceptionMessageHandler(data, dispatch);
     } catch (error) {
       console.error("예외 응답용 채널 메시지 처리 중 오류:", error);
     }
   });
-
-  console.log("예외 응답용 채널 구독 완료");
-  return subscription;
 };
 
 // 방 생성
@@ -74,7 +94,7 @@ export const createRoom = () => async (dispatch, getState) => {
     return;
   }
 
-  subscribeToExceptionChannel(client);
+  subscribeToExceptionChannel(client, dispatch);
 
   // 2. 개인 채널 구독 및 방 번호 수신
   subscribeToPersonalChannel(client, (data) => {
@@ -137,7 +157,7 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     console.log("STOMP 클라이언트 확인 완료");
 
     // 3. 예외 응답 채널 구독 요청
-    subscribeToExceptionChannel(client);
+    subscribeToExceptionChannel(client, dispatch);
 
     // 2. 팀 채널 구독
     subscribeToTeamChannel(client, roomCode, dispatch);
@@ -173,7 +193,7 @@ export const QuickCreateRoom = () => async (dispatch, getState) => {
     console.log("STOMP 클라이언트 확인 완료");
 
     // 3. 예외 응답 채널 구독 요청
-    subscribeToExceptionChannel(client);
+    subscribeToExceptionChannel(client, dispatch);
 
     // 2. 개인 채널 구독 및 준비 상태
     subscribeToPersonalChannel(client, (data) => {

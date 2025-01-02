@@ -3,9 +3,17 @@ import styled from "styled-components";
 import QuickStartModal from "./ModalContents/QuickStartModal";
 import WithFriendsModal from "./ModalContents/WithFriendsModal";
 import { useDispatch, useSelector } from "react-redux";
-import { closeModal, setMessage } from "../../../store/modalSlice";
-import { disconnectStomp } from "../../../thunk/stompThunk";
+import {
+  closeModal,
+  setCreateRoomCode,
+  setMessage,
+} from "../../../store/modalSlice";
+import {
+  disconnectStomp,
+  disconnectStompExceptForInitialization,
+} from "../../../thunk/stompThunk";
 import GameResultsModal from "./ModalContents/GameResultModal";
+import { CancelQuickJoinRoom } from "../../../thunk/roomThunk";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -146,9 +154,15 @@ const PrimaryModal = () => {
   const handleClose = () => {
     if (contentType === "withFriends" && createRoomCode) {
       // 방 코드가 존재하는 경우: 방 코드 초기화 및 메시지 표시
-      dispatch(disconnectStomp()); // STOMP 연결 종료
+      dispatch(setCreateRoomCode(""));
+      dispatch(disconnectStompExceptForInitialization()); // STOMP 연결 종료
       dispatch(setMessage("매칭이 취소되었습니다."));
       return; // 조건 충족 후 종료
+    }
+    if (contentType === "quickStart") {
+      dispatch(CancelQuickJoinRoom());
+      dispatch(disconnectStomp()); // STOMP 연결 종료
+      return;
     }
     dispatch(closeModal());
   };
