@@ -1,6 +1,7 @@
 package yeet.backend.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // WebSocket 연결 및 종료 이벤트를 처리하는 컴포넌트
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketEventListener {
 
     private final GameDataManager gameDataManager;
@@ -33,22 +35,24 @@ public class WebSocketEventListener {
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
+        log.info("{} 웹 소켓 연결", sessionId);
 
         sessionDataMap.put(sessionId, new RoomData());
-
-        System.out.println("----- " + sessionId + "웹 소켓 연결 -----");
+        log.info("클라이언트의 세션ID를 세션 관리 Map에 저장 (RoomData는 빈 객체)");
     }
 
     // sessionDataMap에 데이터 추가하기
     public void updateSessionData(String sessionId, RoomData roomData){
 
         sessionDataMap.put(sessionId, roomData);
+        log.info("세션 관리 Map에서 {} 세션ID의 RoomData(roomCode: {}, player: {}) 추가", sessionId, roomData.getRoomCode(), roomData.getPlayer());
     }
 
     // sessionDataMap에 데이터 삭제하기
     public void removeSessionData(String sessionId){
 
         sessionDataMap.remove(sessionId);
+        log.info("세션 관리 Map에서 {} 세션ID에 관한 데이터 제거", sessionId);
     }
 
     // 웹 소켓 종료 시점
@@ -56,9 +60,10 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
 
         String sessionId = event.getSessionId();
-        RoomData roomData = sessionDataMap.remove(sessionId);
+        log.info("{} 웹 소켓 연결 끊김", sessionId);
 
-        System.out.println("----- " + sessionId + "웹 소켓 끊김 -----");
+        RoomData roomData = sessionDataMap.remove(sessionId);
+        log.info("세션 관리 Map에서 {} 세션ID에 관한 데이터 제거", sessionId);
 
         if (roomData != null){
 
@@ -80,7 +85,7 @@ public class WebSocketEventListener {
         String destination = stompHeaderAccessor.getDestination();
 
         // 구독된 채널과 세션 ID를 추적
-        System.out.println("----- " + sessionId + " 님이 " + destination + " 채널을 구독 -----");
+        log.info("{} 세션ID가 {} 채널 구독", sessionId, destination);
     }
 
     // 채널 구독 취소 시점
@@ -91,6 +96,6 @@ public class WebSocketEventListener {
         String destination = stompHeaderAccessor.getDestination();
 
         // 구독 취소된 채널과 세션 ID를 추적
-        System.out.println("----- " + sessionId + " 님이 " + destination + " 채널을 구독 취소 -----");
+        log.info("{} 세션ID가 {} 채널 구독 취소", sessionId, destination);
     }
 }

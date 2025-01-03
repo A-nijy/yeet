@@ -19,8 +19,6 @@ public class CustomhandshakeHandler extends DefaultHandshakeHandler {
         // 여기에서 WebSocket 세션 ID를 가져옵니다
         String name = UUID.randomUUID().toString();  // 예시로 UUID를 생성 (고유 세션 ID)
 
-        System.out.println("핸들러 유저 : " + name);
-
         return new Principal() {
             @Override
             public String getName() {

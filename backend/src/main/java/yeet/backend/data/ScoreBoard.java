@@ -2,12 +2,14 @@ package yeet.backend.data;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @Setter
+@Slf4j
 public class ScoreBoard {
 
     private final Map<String, Integer> scores = new HashMap<>();
@@ -32,6 +34,7 @@ public class ScoreBoard {
         scores.put("sum", 0);   // 자동 계산
         scores.put("bonus", 0); // 자동 계산
         scores.put("total", 0); // 자동 계산
+        log.info("점수판 초기 데이터 생성");
     }
 
     // 점수 등록
@@ -62,8 +65,10 @@ public class ScoreBoard {
     public boolean upperPartFull() {
         if (scores.get("aces") != null && scores.get("twos") != null && scores.get("threes") != null &&
                 scores.get("fours") != null && scores.get("fives") != null && scores.get("sixes") != null){
+            log.info("상단 점수판 모두 채웠는지 여부: true");
             return true;
         }
+        log.info("상단 점수판 모두 채웠는지 여부: false");
         return false;
     }
 

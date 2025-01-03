@@ -1,6 +1,7 @@
 package yeet.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import yeet.backend.config.WebSocketEventListener;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PlayService {
 
     private final GameDataManager gameDataManager;
@@ -55,6 +57,7 @@ public class PlayService {
 
         // 잘못된 카테고리 or 이미 선택했던 점수를 요청한 경우
         if (!scoreBoard.registerScore(request.getCategory(), request.getScore())){
+            log.warn("{} 카테고리는 이미 선택한 점수거나 존재하지 않는 카테고리", request.getCategory());
             throw new WrongScoreException(roomCode);
         }
 
@@ -112,8 +115,10 @@ public class PlayService {
         GameData gameData = gameDataManager.getGameData(roomCode);
 
         if (!gameData.isRestart()){
+            log.info("게임 재시작 대기중");
             gameData.setRestart(true);
         } else {
+            log.info("게임 재시작");
             gameData.resetGameStatus();
         }
 
