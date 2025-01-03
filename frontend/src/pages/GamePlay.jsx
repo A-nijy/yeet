@@ -56,9 +56,8 @@ const GamePlay = () => {
   const dispatch = useDispatch();
   // Redux 상태 가져오기
   const { contentType } = useSelector((state) => state.modal);
+  const { currentPlayer, rollCount } = useSelector((state) => state.game);
 
-  const currentPlayer = useSelector((state) => state.game.currentPlayer);
-  const rollCount = useSelector((state) => state.game.rollCount);
   const diceValues = useSelector((state) => state.game.dice);
   const selectedDice = useSelector((state) => state.game.diceFix);
   const roomCode = useSelector((state) => state.modal.generatedRoomCode);

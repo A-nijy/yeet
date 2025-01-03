@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faWebAwesome } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faWebAwesome,
+  faComment,
+} from "@fortawesome/free-solid-svg-icons";
 import PrimaryButton from "../../Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
@@ -11,12 +15,14 @@ import { getSessionItem } from "../../../../utils/roleSession";
 import { closeModal } from "../../../../store/modalSlice";
 
 const ModalDescription = styled.div`
+  height: 9rem;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: end;
   margin-bottom: 1rem;
   transition: all 0.3s ease;
   @media (max-width: 480px) {
+    height: 8rem;
     margin-bottom: 0.5rem;
   }
 `;
@@ -25,7 +31,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 3rem;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
 
   @media (max-width: 480px) {
     gap: 2rem;
@@ -37,14 +43,13 @@ const IconWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-end; /* 아이콘을 아래쪽으로 정렬 */
   align-items: center;
-  margin: 0 1rem;
-  height: 6.5rem;
-
+  height: 6rem;
+  transition: all 0.3s ease;
   @media (max-width: 768px) {
-    height: 5.5rem;
+    height: 5rem;
   }
   @media (max-width: 480px) {
-    height: 4.7rem;
+    height: 4.5rem;
   }
 `;
 
@@ -83,19 +88,73 @@ const PlayerName = styled.p`
   margin-top: 0.5rem;
 `;
 
+const CenterContainer = styled.div`
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 위로 정렬 */
+  justify-content: flex-start; /* 위쪽 정렬 */
+  margin: 0 2.5rem; /* 좌우 간격 조정 */
+  height: 100%; /* 부모 컨테이너의 전체 높이 사용 */
+`;
+
+const CommentWrapper = styled.div`
+  height: 4.7rem; /* 고정 높이 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  position: relative;
+  transition: all 0.3s ease;
+  @media (max-width: 480px) {
+    height: 4rem;
+  }
+`;
+
+const CommentIconWithText = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 6rem; /* 아이콘 크기와 동일하게 설정 */
+  height: 4rem;
+  transition: all 0.3s ease;
+  @media (max-width: 480px) {
+    width: 5rem; /* 아이콘 크기와 동일하게 설정 */
+    height: 3.3rem;
+  }
+`;
+
+const CommentIcon = styled(FontAwesomeIcon)`
+  font-size: 4rem;
+  color: #a89879;
+  transform: ${(props) => (props.$isFlipped ? "scaleX(-1)" : "none")};
+  transition: all 0.3s ease;
+  @media (max-width: 480px) {
+    font-size: 3.3rem;
+  }
+`;
+
+const CommentText = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffffff; /* 텍스트 색상 */
+  pointer-events: none; /* 클릭 불가능 */
+  transition: all 0.3s ease;
+  @media (max-width: 480px) {
+    font-size: 0.65rem;
+  }
+`;
+
 const Score = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
-  margin: 0 2rem;
+  transition: all 0.3s ease;
   @media (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `;
-const RestartMessage = styled.div`
-  margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-  color: #2b2b2b;
-`;
+
 const GameResultsModal = () => {
   const dispatch = useDispatch();
 
@@ -117,6 +176,8 @@ const GameResultsModal = () => {
   const gameoverPlayer = useSelector((state) => state.game.GAME_END.player);
 
   const restart = useSelector((state) => state.game.GAME_RESTART.restart);
+  const restartPlayer = useSelector((state) => state.game.player);
+
   const player = getSessionItem("player");
 
   const [restartRequest, setRestartRequest] = useState(true);
@@ -166,27 +227,52 @@ const GameResultsModal = () => {
       <ModalDescription>
         <div>
           <IconWrapper>
-            <CrownIcon icon={faWebAwesome} $isWinner={win === player1} />
-            <UserIcon icon={faUser} $isWinner={win === player1} />
+            <CrownIcon
+              icon={faWebAwesome}
+              $isWinner={win === player1 || player1Score === player2Score}
+            />
+            <UserIcon
+              icon={faUser}
+              $isWinner={win === player1 || player1Score === player2Score}
+            />
           </IconWrapper>
           <PlayerName>{player1}</PlayerName>
         </div>
 
-        <Score>
-          {player1Score} : {player2Score}
-        </Score>
+        <CenterContainer>
+          <CommentWrapper>
+            {restart === false && !gameoverPlayer ? (
+              <CommentIconWithText>
+                <CommentIcon
+                  icon={faComment}
+                  $isFlipped={restartPlayer !== player1}
+                />
+                <CommentText>다시 ㄱ?</CommentText>
+              </CommentIconWithText>
+            ) : (
+              <div /> /* 빈 공간 유지 */
+            )}
+          </CommentWrapper>
+          <Score>
+            {player1Score} : {player2Score}
+          </Score>
+        </CenterContainer>
 
         <div>
           <IconWrapper>
-            <CrownIcon icon={faWebAwesome} $isWinner={win === player2} />
-            <UserIcon icon={faUser} $isWinner={win === player2} />
+            <CrownIcon
+              icon={faWebAwesome}
+              $isWinner={win === player2 || player1Score === player2Score}
+            />
+            <UserIcon
+              icon={faUser}
+              $isWinner={win === player2 || player1Score === player2Score}
+            />
           </IconWrapper>
           <PlayerName>{player2}</PlayerName>
         </div>
       </ModalDescription>
-      {restart === false && !gameoverPlayer && (
-        <RestartMessage>한판 더 해요!</RestartMessage>
-      )}
+
       <ButtonContainer>
         <PrimaryButton onClick={handleGameExit} ver={"red"}>
           게임 종료

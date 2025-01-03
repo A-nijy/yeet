@@ -58,7 +58,6 @@ const WithFriendsModal = () => {
   const handleCancelMatching = () => {
     dispatch(disconnectStompExceptForInitialization()); // STOMP 연결 종료
     dispatch(setCreateRoomCode(""));
-    // dispatch(disconnectStomp()); // STOMP 연결 종료
     dispatch(setMessage("매칭이 취소되었습니다."));
   };
 

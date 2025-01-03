@@ -21,7 +21,7 @@ const ModalBackground = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -139,6 +139,11 @@ const PrimaryModal = () => {
   const { isOpen, contentType, message, createRoomCode } = useSelector(
     (state) => state.modal
   );
+
+  // 모달 타입 변경 시 메시지 초기화
+  useEffect(() => {
+    dispatch(setMessage("")); // 메시지 초기화
+  }, [contentType, dispatch]);
 
   useEffect(() => {
     if (message) {
