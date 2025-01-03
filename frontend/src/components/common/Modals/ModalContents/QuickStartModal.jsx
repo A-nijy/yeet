@@ -28,7 +28,7 @@ const QuickStartModal = () => {
   }, [roomCode, ready, dispatch]);
 
   const handleCancelClick = () => {
-    CancelQuickJoinRoom();
+    dispatch(CancelQuickJoinRoom());
     dispatch(disconnectStomp()); // STOMP 연결 종료
   };
 

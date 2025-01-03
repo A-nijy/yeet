@@ -116,12 +116,12 @@ const ScoreBoard = ({ roomCode }) => {
   const dispatch = useDispatch();
 
   // Redux 상태 가져오기
-  const scoreBoard = useSelector((state) => state.game.scoreBoard);
-  const rollCount = useSelector((state) => state.game.rollCount);
+  const { scoreBoard, rollCount, currentPlayer } = useSelector(
+    (state) => state.game
+  );
   const scoreOptions = useSelector(
     (state) => state.game.ROLL_DICE.scoreOptions
   );
-  const currentPlayer = useSelector((state) => state.game.currentPlayer);
   const players = useSelector((state) => state.game.GAME_START.players);
   const playEnd = useSelector((state) => state.game.end);
   const player = getSessionItem("player");

@@ -3,9 +3,17 @@ import styled from "styled-components";
 import QuickStartModal from "./ModalContents/QuickStartModal";
 import WithFriendsModal from "./ModalContents/WithFriendsModal";
 import { useDispatch, useSelector } from "react-redux";
-import { closeModal, setMessage } from "../../../store/modalSlice";
-import { disconnectStomp } from "../../../thunk/stompThunk";
+import {
+  closeModal,
+  setCreateRoomCode,
+  setMessage,
+} from "../../../store/modalSlice";
+import {
+  disconnectStomp,
+  disconnectStompExceptForInitialization,
+} from "../../../thunk/stompThunk";
 import GameResultsModal from "./ModalContents/GameResultModal";
+import { CancelQuickJoinRoom } from "../../../thunk/roomThunk";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -13,7 +21,7 @@ const ModalBackground = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,6 +140,11 @@ const PrimaryModal = () => {
     (state) => state.modal
   );
 
+  // 모달 타입 변경 시 메시지 초기화
+  useEffect(() => {
+    dispatch(setMessage("")); // 메시지 초기화
+  }, [contentType, dispatch]);
+
   useEffect(() => {
     if (message) {
       // 약간의 딜레이를 추가해 브라우저 렌더링 순서 보장
@@ -146,9 +159,15 @@ const PrimaryModal = () => {
   const handleClose = () => {
     if (contentType === "withFriends" && createRoomCode) {
       // 방 코드가 존재하는 경우: 방 코드 초기화 및 메시지 표시
-      dispatch(disconnectStomp()); // STOMP 연결 종료
+      dispatch(setCreateRoomCode(""));
+      dispatch(disconnectStompExceptForInitialization()); // STOMP 연결 종료
       dispatch(setMessage("매칭이 취소되었습니다."));
       return; // 조건 충족 후 종료
+    }
+    if (contentType === "quickStart") {
+      dispatch(CancelQuickJoinRoom());
+      dispatch(disconnectStomp()); // STOMP 연결 종료
+      return;
     }
     dispatch(closeModal());
   };

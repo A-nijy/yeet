@@ -4,13 +4,12 @@ import { setMessage } from "../store/modalSlice";
 export const exceptionMessageHandler = (data, dispatch) => {
   switch (data.errorCode) {
     case "E_ROOM_NOT_FOUND":
-      console.error("존재하지 않는 방 코드 메시지 처리:", data);
-      dispatch(setMessage(data.message));
+      console.log("존재하지 않는 코드 핸들러까지 집입");
+      dispatch(setMessage("존재하지 않은 초대 코드입니다."));
       break;
 
     case "E_ROOM_FULL":
-      console.error("방 참여 불가 메시지 처리:", data);
-      dispatch(setMessage(data.message));
+      dispatch(setMessage("참여 인원을 초과했습니다."));
       break;
 
     case "E_WRONG_SCORE_CHOICE":

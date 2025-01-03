@@ -26,7 +26,7 @@ const TitleH1 = styled.h1`
 
 const Lobby = () => {
   const dispatch = useDispatch();
-  const contentType = useSelector((state) => state.modal);
+  const { contentType } = useSelector((state) => state.modal);
 
   const handleQuickStart = () => {
     dispatch(QuickCreateRoom());

@@ -35,3 +35,16 @@ export const disconnectStomp = () => async (dispatch) => {
     console.error("STOMP 연결 해제 중 오류:", error);
   }
 };
+
+// 모달, 게임 슬라이스 초기화 제외
+export const disconnectStompExceptForInitialization =
+  () => async (dispatch) => {
+    try {
+      await stompClientManager.disconnect();
+      dispatch(disconnected()); // STOMP 슬라이스 상태 초기화
+      removeSessionItem("player"); // 플레이어 세션 삭제
+      console.log("STOMP 연결 해제 성공");
+    } catch (error) {
+      console.error("STOMP 연결 해제 중 오류:", error);
+    }
+  };
