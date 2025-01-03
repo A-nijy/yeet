@@ -1,6 +1,7 @@
 package yeet.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import yeet.backend.config.WebSocketEventListener;
 import yeet.backend.data.*;
@@ -13,6 +14,7 @@ import yeet.backend.exception.RoomNotFoundException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomService {
 
     private final GameDataManager gameDataManager;
@@ -39,6 +41,7 @@ public class RoomService {
 
         // 방 존재 여부
         if(!gameDataManager.isRoomExists(roomCode)){
+            log.warn("{} 해당 방은 존재하지 않아 예외 발생", roomCode);
             throw new RoomNotFoundException(roomCode);
         }
 
@@ -46,6 +49,7 @@ public class RoomService {
 
         // 참여 가능 여부
         if(gameData.isFull() || gameData.isStarted()){
+            log.warn("{} 해당 방은 인원이 다 찼거나, 이미 시작된 게임으로 예외 발생", roomCode);
             throw new RoomFullException(roomCode);
         }
 
@@ -68,6 +72,7 @@ public class RoomService {
         if (roomQueue.isQueue()){
 
             RoomData roomData = roomQueue.pollQueue();
+            log.info("큐 대기자 정보 추출 roomCode: {}, player: {}", roomData.getRoomCode(), roomData.getPlayer());
 
             GameData gameData = gameDataManager.getGameData(roomData.getRoomCode());
 

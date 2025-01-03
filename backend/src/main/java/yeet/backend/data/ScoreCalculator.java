@@ -1,14 +1,17 @@
 package yeet.backend.data;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class ScoreCalculator {
 
     public List<ScoreOption> calculateOptions(int[] dice, ScoreBoard scoreboard) {
+        log.trace("현재 주사위 값 {}으로 선택할 수 있는 점수 계산 메서드 호출", Arrays.toString(dice));
 
         Map<String, Integer> possibleScores = new HashMap<>();
 
@@ -57,10 +60,13 @@ public class ScoreCalculator {
         }
 
         // 이미 채워진 항목 제외
-        return possibleScores.entrySet().stream()
-                .filter(entry -> scoreboard.getScore(entry.getKey()) == null)
-                .map(entry -> new ScoreOption(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        List<ScoreOption> requestList = possibleScores.entrySet().stream()
+                                                        .filter(entry -> scoreboard.getScore(entry.getKey()) == null)
+                                                        .map(entry -> new ScoreOption(entry.getKey(), entry.getValue()))
+                                                        .collect(Collectors.toList());
+        log.info("선택 가능한 점수 리스트: {}", requestList);
+
+        return requestList;
     }
 
     //=============================================================

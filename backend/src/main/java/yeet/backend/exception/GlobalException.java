@@ -28,7 +28,6 @@ public class GlobalException {
     public void handleCustomException(CustomException e, SimpMessageHeaderAccessor headerAccessor){
 
         String name = headerAccessor.getUser().getName();
-        System.out.println("예외 처리에서 꺼낸 name = " + name);
 
         simpMessagingTemplate.convertAndSendToUser(name, "/queue/errors", new ErrorResponseDto(e.getErrorCode(), e.getMessage(), e.getStatus()));
     }

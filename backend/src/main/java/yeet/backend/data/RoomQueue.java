@@ -1,10 +1,12 @@
 package yeet.backend.data;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
+@Slf4j
 public class RoomQueue {
 
     private final ConcurrentLinkedQueue<RoomData> waitingQueue = new ConcurrentLinkedQueue<>();
@@ -14,11 +16,12 @@ public class RoomQueue {
     public void addQueue(RoomData roomData){
 
         waitingQueue.add(roomData);
+        log.info("큐에 대기자 추가 roomCode: {}, player: {}", roomData.getRoomCode(), roomData.getPlayer());
     }
 
     // 큐 대기자 존재 여부
     public boolean isQueue() {
-
+        log.info("큐에 대기자 존재 여부 확인: {}", !waitingQueue.isEmpty());
         return !waitingQueue.isEmpty();
     }
 
@@ -42,5 +45,6 @@ public class RoomQueue {
     // 큐에서 특정 QueueData 삭제
     public void removeQueue(RoomData roomData){
         waitingQueue.remove(roomData);
+        log.info("큐에서 대기자 제거 roomCode: {}, player: {}", roomData.getRoomCode(), roomData.getPlayer());
     }
 }
