@@ -35,7 +35,7 @@ public class WebSocketEventListener {
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
-        log.info("{} 웹 소켓 연결", sessionId);
+        log.info("[{}] 웹 소켓 연결", sessionId);
 
         sessionDataMap.put(sessionId, new RoomData());
         log.info("클라이언트의 세션ID를 세션 관리 Map에 저장 (RoomData는 빈 객체)");
@@ -45,14 +45,14 @@ public class WebSocketEventListener {
     public void updateSessionData(String sessionId, RoomData roomData){
 
         sessionDataMap.put(sessionId, roomData);
-        log.info("세션 관리 Map에서 {} 세션ID의 RoomData(roomCode: {}, player: {}) 추가", sessionId, roomData.getRoomCode(), roomData.getPlayer());
+        log.info("세션 관리 Map에서 [{}] 세션ID의 RoomData(roomCode: {}, player: {}) 추가", sessionId, roomData.getRoomCode(), roomData.getPlayer());
     }
 
     // sessionDataMap에 데이터 삭제하기
     public void removeSessionData(String sessionId){
 
         sessionDataMap.remove(sessionId);
-        log.info("세션 관리 Map에서 {} 세션ID에 관한 데이터 제거", sessionId);
+        log.info("세션 관리 Map에서 [{}] 세션ID에 관한 데이터 제거", sessionId);
     }
 
     // 웹 소켓 종료 시점
@@ -60,10 +60,10 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
 
         String sessionId = event.getSessionId();
-        log.info("{} 웹 소켓 연결 끊김", sessionId);
+        log.info("[{}] 웹 소켓 연결 끊김", sessionId);
 
         RoomData roomData = sessionDataMap.remove(sessionId);
-        log.info("세션 관리 Map에서 {} 세션ID에 관한 데이터 제거", sessionId);
+        log.info("세션 관리 Map에서 [{}] 세션ID에 관한 데이터 제거", sessionId);
 
         if (roomData != null){
 
@@ -85,7 +85,7 @@ public class WebSocketEventListener {
         String destination = stompHeaderAccessor.getDestination();
 
         // 구독된 채널과 세션 ID를 추적
-        log.info("{} 세션ID가 {} 채널 구독", sessionId, destination);
+        log.info("[{}] 세션ID가 {} 채널 구독", sessionId, destination);
     }
 
     // 채널 구독 취소 시점
@@ -96,6 +96,6 @@ public class WebSocketEventListener {
         String destination = stompHeaderAccessor.getDestination();
 
         // 구독 취소된 채널과 세션 ID를 추적
-        log.info("{} 세션ID가 {} 채널 구독 취소", sessionId, destination);
+        log.info("[{}] 세션ID가 {} 채널 구독 취소", sessionId, destination);
     }
 }
