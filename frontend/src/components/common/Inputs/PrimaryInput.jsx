@@ -21,10 +21,6 @@ const StyledInput = styled.input`
     background: #f5f5f5;
     cursor: not-allowed;
   }
-
-  @media (max-width: 480px) {
-    font-size: 0.7rem;
-  }
 `;
 
 const PrimaryInput = forwardRef(
@@ -36,7 +32,7 @@ const PrimaryInput = forwardRef(
       type = "text",
       disabled,
       className,
-      numericOnly = false,
+      alphanumericOnly = false,
       maxLength,
     },
     ref
@@ -44,13 +40,14 @@ const PrimaryInput = forwardRef(
     const handleChange = (e) => {
       let newValue = e.target.value;
 
-      // if (numericOnly) {
-      //   newValue = newValue.replace(/\D/g, ""); // 숫자 외의 모든 문자 제거
-      // }
+      // 영어는 대문자로 변환
+      if (alphanumericOnly) {
+        newValue = newValue.replace(/[a-z]/g, (match) => match.toUpperCase());
+      }
 
-      // if (newValue.length > maxLength) {
-      //   newValue = newValue.slice(0, maxLength); // 길이 제한 적용
-      // }
+      if (newValue.length > maxLength) {
+        newValue = newValue.slice(0, maxLength); // 길이 제한 적용
+      }
 
       onChange(newValue);
     };

@@ -21,7 +21,7 @@ const ModalDescription = styled.div`
   align-items: end;
   margin-bottom: 1rem;
   transition: all 0.3s ease;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     height: 8rem;
     margin-bottom: 0.5rem;
   }
@@ -33,7 +33,7 @@ const ButtonContainer = styled.div`
   gap: 3rem;
   transition: all 0.3s ease;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     gap: 2rem;
   }
 `;
@@ -48,9 +48,6 @@ const IconWrapper = styled.div`
   @media (max-width: 768px) {
     height: 5rem;
   }
-  @media (max-width: 480px) {
-    height: 4.5rem;
-  }
 `;
 
 const UserIcon = styled(FontAwesomeIcon)`
@@ -64,9 +61,6 @@ const UserIcon = styled(FontAwesomeIcon)`
   @media (max-width: 768px) {
     font-size: ${(props) => (props.$isWinner ? "3.2rem" : "2.5rem")};
   }
-  @media (max-width: 480px) {
-    font-size: ${(props) => (props.$isWinner ? "3rem" : "2.3rem")};
-  }
 `;
 
 const CrownIcon = styled(FontAwesomeIcon)`
@@ -78,14 +72,18 @@ const CrownIcon = styled(FontAwesomeIcon)`
   @media (max-width: 768px) {
     font-size: 1.7rem;
   }
-  @media (max-width: 480px) {
-    font-size: 1.5rem;
-  }
 `;
 
 const PlayerName = styled.p`
-  color: #666;
+  color: #555;
   margin-top: 0.5rem;
+  width: 6rem;
+  max-height: 1.5rem;
+  transition: all 0.3s ease;
+  @media (max-width: 768px) {
+    width: 4rem;
+    max-height: 1.6rem;
+  }
 `;
 
 const CenterContainer = styled.div`
@@ -104,7 +102,7 @@ const CommentWrapper = styled.div`
   align-items: start;
   position: relative;
   transition: all 0.3s ease;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     height: 4rem;
   }
 `;
@@ -115,8 +113,8 @@ const CommentIconWithText = styled.div`
   width: 6rem; /* 아이콘 크기와 동일하게 설정 */
   height: 4rem;
   transition: all 0.3s ease;
-  @media (max-width: 480px) {
-    width: 5rem; /* 아이콘 크기와 동일하게 설정 */
+  @media (max-width: 768px) {
+    width: 4.5rem; /* 아이콘 크기와 동일하게 설정 */
     height: 3.3rem;
   }
 `;
@@ -126,7 +124,7 @@ const CommentIcon = styled(FontAwesomeIcon)`
   color: #a89879;
   transform: ${(props) => (props.$isFlipped ? "scaleX(-1)" : "none")};
   transition: all 0.3s ease;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 3.3rem;
   }
 `;
@@ -141,17 +139,17 @@ const CommentText = styled.span`
   color: #ffffff; /* 텍스트 색상 */
   pointer-events: none; /* 클릭 불가능 */
   transition: all 0.3s ease;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.65rem;
   }
 `;
 
 const Score = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
   transition: all 0.3s ease;
-  @media (max-width: 480px) {
-    font-size: 1.2rem;
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
   }
 `;
 

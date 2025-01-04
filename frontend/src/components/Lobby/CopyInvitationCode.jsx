@@ -28,14 +28,10 @@ const StyledCode = styled.div`
   box-shadow: inset 4px 4px 10px #a8a8a8, inset -4px -4px 10px #ffffff;
   user-select: all;
   word-break: break-word;
+  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     width: 8rem;
-  }
-
-  @media (max-width: 480px) {
-    width: 7rem;
-    /* font-size: 1.1rem; */
   }
 `;
 
@@ -46,6 +42,7 @@ const IconWrapper = styled.div`
   animation: none;
   transition: all 0.2s ease-in-out;
   color: #616161;
+  transition: all 0.3s ease;
 
   &:hover {
     color: #333;
@@ -58,16 +55,16 @@ const IconWrapper = styled.div`
     width: 1.5rem;
     font-size: 1.35rem;
   }
-
-  @media (max-width: 480px) {
-    width: 1.2rem;
-    font-size: 1.35rem;
-  }
 `;
 
 const CopyInvitationCode = ({ children }) => {
   const dispatch = useDispatch();
   const handleCopy = () => {
+    if (children === "생성 중 ...") {
+      dispatch(setMessage("코드가 생성 중입니다. 잠시만 기다려주세요."));
+      return;
+    }
+
     navigator.clipboard
       .writeText(children)
       .then(() => {

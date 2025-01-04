@@ -7,19 +7,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCreateRoomCode, setMessage } from "../../../../store/modalSlice";
 import { disconnectStompExceptForInitialization } from "../../../../thunk/stompThunk";
 import CopyInvitationCode from "../../../Lobby/CopyInvitationCode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDice } from "@fortawesome/free-solid-svg-icons";
 
 const PartContainer = styled.div`
-  padding: 1rem;
-
-  @media (max-width: 480px) {
-    padding: 0.5rem;
-  }
+  padding: 0 2rem;
 `;
 
+const CreateRoomContainer = styled.div`
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const Contour = styled.hr`
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1rem 0;
+`;
+
+const ModalText = styled.div`
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1rem;
+`;
+
+const ModalTextMain = styled.div`
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+`;
+const DiceIcon = styled(FontAwesomeIcon)`
+  font-size: 2.5rem;
+  color: #f3a0b5;
+`;
 const StyledEnterCodeContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 `;
 
 const StyledPrimaryInput = styled(PrimaryInput)`
@@ -34,9 +61,12 @@ const WithFriendsModal = () => {
   const inputRef = useRef(null); // 입력창 참조
 
   useEffect(() => {
-    if (message === "존재하지 않은 초대 코드입니다.") {
-      setRoomCode("");
+    if (
+      message === "존재하지 않은 초대 코드입니다." ||
+      message === "참여 인원을 초과했습니다."
+    ) {
       dispatch(disconnectStompExceptForInitialization()); // STOMP 연결 종료
+      return;
     }
   }, [message, dispatch]);
 
@@ -66,29 +96,39 @@ const WithFriendsModal = () => {
       {/**'방 만들기'로 초대 코드를 받는 사람만 UI를 볼 수 있도록 설정*/}
       {createRoomCode ? (
         // 방이 생성된 경우
-        <PartContainer>
-          <CopyInvitationCode>{createRoomCode}</CopyInvitationCode>
-
-          <p>상대를 기다리는 중...</p>
+        <>
+          <CopyInvitationCode>{createRoomCode}</CopyInvitationCode>{" "}
+          {createRoomCode === "생성 중 ..." ? (
+            <ModalText>코드가 생성 중입니다. 잠시만 기다려주세요.</ModalText>
+          ) : (
+            <ModalText>상대방에게 코드를 알려주세요!</ModalText>
+          )}
           <PrimaryButton onClick={handleCancelMatching}>
             매칭 취소
           </PrimaryButton>
-        </PartContainer>
+        </>
       ) : (
         // 방 생성 및 입장 화면
         <>
           <PartContainer>
-            <PrimaryButton onClick={handleCreateRoom}>방 만들기</PrimaryButton>
+            <CreateRoomContainer>
+              <PrimaryButton onClick={handleCreateRoom}>
+                방 만들기
+              </PrimaryButton>
+              <DiceIcon icon={faDice} />
+            </CreateRoomContainer>
           </PartContainer>
+          <Contour />
           <PartContainer>
+            <ModalTextMain>친구에게 받은 코드를 입력하세요.</ModalTextMain>
             <StyledEnterCodeContainer>
               <StyledPrimaryInput
                 ref={inputRef} // 입력창에 포커스 참조
                 placeholder="코드를 입력하세요."
                 value={roomCode}
-                numericOnly={true}
+                alphanumericOnly={true}
                 onChange={setRoomCode}
-                maxLength={4}
+                maxLength={6}
               />
               <PrimaryButton onClick={handleJoinRoom}>입장하기</PrimaryButton>
             </StyledEnterCodeContainer>
