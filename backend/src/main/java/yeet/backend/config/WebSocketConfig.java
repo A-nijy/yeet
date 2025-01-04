@@ -30,7 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws/connect")
                 // 웹 소켓 핸드셰이크 과정에서 클라이언트를 식별하는 로직 정의
                 .setHandshakeHandler(new CustomhandshakeHandler())
-                .setAllowedOrigins("http://localhost:3000", "http://localhost:3001")
+                .setAllowedOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
                 .withSockJS();
     }
 }
