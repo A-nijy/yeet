@@ -1,4 +1,4 @@
-import { setMessage } from "../store/modalSlice";
+import { openModal, setMessage } from "../store/modalSlice";
 
 // 타입별 메시지 핸들러
 export const exceptionMessageHandler = (data, dispatch) => {
@@ -12,12 +12,9 @@ export const exceptionMessageHandler = (data, dispatch) => {
       dispatch(setMessage("참여 인원을 초과했습니다."));
       break;
 
-    case "E_WRONG_SCORE_CHOICE":
-      console.error(
-        "이미 선택한 점수이거나 잘못된 카테고리 메시지 처리:",
-        data
-      );
-      // 이 부분은 점수판 내용이므로 따로 메세지를 띄워야할 거 같음.
+    case "E_BROWSER_QUIT":
+      console.log("한놈 나갔데이");
+      dispatch(openModal("gameQuit"));
       break;
 
     default:
