@@ -16,6 +16,7 @@ import GameResultsModal from "./ModalContents/GameResultModal";
 import { CancelQuickJoinRoom } from "../../../thunk/roomThunk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import GameQuitModal from "./ModalContents/GameQuitModal";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -191,6 +192,10 @@ const PrimaryModal = () => {
       dispatch(disconnectStomp());
       return;
     }
+    if (contentType === "gameQuit") {
+      dispatch(disconnectStomp());
+      return;
+    }
 
     dispatch(closeModal());
   };
@@ -210,6 +215,8 @@ const PrimaryModal = () => {
         return <WithFriendsModal />;
       case "gameResult":
         return <GameResultsModal />;
+      case "gameQuit":
+        return <GameQuitModal />;
       default:
         return null;
     }
