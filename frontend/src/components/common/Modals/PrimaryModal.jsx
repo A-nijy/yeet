@@ -204,6 +204,7 @@ const PrimaryModal = () => {
     if (contentType === "quickStart") return "빠른 시작";
     if (contentType === "withFriends") return "친구랑 하기";
     if (contentType === "gameResult") return "게임 결과";
+    if (contentType === "gameQuit") return "앗! 이런";
     return "";
   }, [contentType]);
 

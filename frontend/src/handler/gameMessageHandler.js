@@ -17,7 +17,7 @@ import {
   updateGameEnd,
   updateGameRestart,
 } from "../store/gameSlice";
-import { setGeneratedRoomCode } from "../store/modalSlice";
+import { openModal, setGeneratedRoomCode } from "../store/modalSlice";
 
 // 타입별 메시지 핸들러
 export const gmaeMessageHandler = (roomCode, data, dispatch) => {
@@ -105,6 +105,11 @@ export const gmaeMessageHandler = (roomCode, data, dispatch) => {
     case "GAME_RESTART":
       console.log("게임 다시하기 메시지 처리:", data);
       dispatch(updateGameRestart(data));
+      break;
+
+    case "GAME_QUIT":
+      console.log("상대가 게임을 나간 경우 메시지 처리:", data);
+      dispatch(openModal("gameQuit"));
       break;
 
     default:

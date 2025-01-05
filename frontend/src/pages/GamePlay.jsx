@@ -106,7 +106,9 @@ const GamePlay = () => {
         </BoardWrapper>
       </GameBoardContainer>
       {/** 상황에 맞는 모달 등장*/}
-      {contentType === "gameResult" && <PrimaryModal />}
+      {(contentType === "gameResult" || contentType === "gameQuit") && (
+        <PrimaryModal />
+      )}
     </Container>
   );
 };

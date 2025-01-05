@@ -1,4 +1,4 @@
-import { openModal, setMessage } from "../store/modalSlice";
+import { setMessage } from "../store/modalSlice";
 
 // 타입별 메시지 핸들러
 export const exceptionMessageHandler = (data, dispatch) => {
@@ -10,11 +10,6 @@ export const exceptionMessageHandler = (data, dispatch) => {
 
     case "E_ROOM_FULL":
       dispatch(setMessage("참여 인원을 초과했습니다."));
-      break;
-
-    case "E_BROWSER_QUIT":
-      console.log("한놈 나갔데이");
-      dispatch(openModal("gameQuit"));
       break;
 
     default:
