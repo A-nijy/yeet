@@ -9,5 +9,6 @@ public enum ResponseType {
     GAME_REMOVE,    // 게임 나감
     GAME_DONE,      // 게임 결과
     GAME_END,        // 게임 종료
+    GAME_QUIT,      // 게임 도중에 나가기
     GAME_RESTART    // 게임 다시하기
 }

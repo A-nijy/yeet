@@ -13,6 +13,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 import yeet.backend.data.GameDataManager;
 import yeet.backend.data.RoomData;
 import yeet.backend.dto.responseDto.GameEndResponseDto;
+import yeet.backend.dto.responseDto.GameQuitResponseDto;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,7 +70,7 @@ public class WebSocketEventListener {
 
             if (gameDataManager.isRoomExists(roomData.getRoomCode())){
                 // 해당 방에 남아있는 플레이어에게 게임 종료 응답
-                simpMessagingTemplate.convertAndSend("/topic/room/" + roomData.getRoomCode(), new GameEndResponseDto(roomData.getPlayer()));
+                simpMessagingTemplate.convertAndSend("/topic/room/" + roomData.getRoomCode(), new GameQuitResponseDto(roomData.getPlayer()));
             }
 
             // 방 데이터 Map 지우기
