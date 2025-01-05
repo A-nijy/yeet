@@ -45,11 +45,17 @@ const StyledTable = styled.table`
     text-align: center;
     background: #e5e5e5;
     transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+
+    @media (max-width: 768px) {
+      padding: 0.5rem 0.3rem;
+    }
   }
 
   td {
     border-top: 1px solid #c2c2c2;
     border-bottom: 1px solid #c2c2c2;
+    height: 1.5rem;
   }
 
   th {

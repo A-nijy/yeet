@@ -29,25 +29,6 @@ const subscribeToPersonalChannel = (client, callback) => {
   return subscription;
 };
 
-// 예외 응답용 채널 구독 (개인 채널)
-// const subscribeToExceptionChannel = (client, dispatch) => {
-//   console.log("예외 응답용 채널 구독 설정 중: /user/queue/errors");
-
-//   const subscription = client.subscribe("/user/queue/errors", (message) => {
-//     try {
-//       const data = JSON.parse(message.body);
-//       console.log("예외 응답용 채널 메시지 수신:", data);
-
-//       exceptionMessageHandler(data, dispatch);
-//     } catch (error) {
-//       console.error("예외 응답용 채널 메시지 처리 중 오류:", error);
-//     }
-//   });
-
-//   console.log("예외 응답용 채널 구독 완료");
-//   return subscription;
-// };
-
 const subscribeToExceptionChannel = (client, dispatch) => {
   if (typeof dispatch !== "function") {
     console.error("dispatch가 함수가 아닙니다:", dispatch);
@@ -75,7 +56,7 @@ export const createRoom = () => async (dispatch, getState) => {
   const { connected } = getState().stomp;
 
   // 세션에 Player1 저장
-  setSessionItem("player", "딩가딩가");
+  setSessionItem("player", "Player1");
   const player = getSessionItem("player");
   if (!player) {
     console.error("세션에 플레이어 값이 저장되지 않았습니다.");
@@ -130,7 +111,7 @@ export const joinRoom = (roomCode) => async (dispatch, getState) => {
     const { connected } = getState().stomp;
 
     // 세션에서 플레이어 정보 가져오기
-    setSessionItem("player", "오리꽥꽥");
+    setSessionItem("player", "Player2");
     const player = getSessionItem("player");
     if (!player) {
       console.error(

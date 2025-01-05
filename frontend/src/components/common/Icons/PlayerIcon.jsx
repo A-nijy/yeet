@@ -16,7 +16,7 @@ const IconWarpper = styled.div`
 const UserIcon = styled(FontAwesomeIcon)`
   transition: color 0.5s ease;
   color: ${(props) =>
-    props.$isActive ? "#1b1b1b" : "#5f5f5f"}; /* 활성화 색상 */
+    props.$isActive ? "#1b1b1b" : "#757575"}; /* 활성화 색상 */
   font-size: 3rem;
 `;
 

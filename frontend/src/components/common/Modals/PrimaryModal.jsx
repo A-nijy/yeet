@@ -14,6 +14,8 @@ import {
 } from "../../../thunk/stompThunk";
 import GameResultsModal from "./ModalContents/GameResultModal";
 import { CancelQuickJoinRoom } from "../../../thunk/roomThunk";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -39,43 +41,54 @@ const ModalContainer = styled.div`
   text-align: center;
   box-sizing: border-box;
   position: relative; /* 닫기 버튼 위치 조정 */
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
 
-  @media (max-width: 480px) {
-    width: 95%;
-    padding: 1rem;
-    border-radius: 0.25rem;
+  /* 애니메이션 */
+  animation: ${({ $isClosing }) =>
+      $isClosing ? "fadeOutAndShrink" : "fadeInAndGrow"}
+    0.4s ease forwards;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+
+  /* 열릴 때 커지는 효과 */
+  @keyframes fadeInAndGrow {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* 닫힐 때 작아지는 효과 */
+  @keyframes fadeOutAndShrink {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
   }
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled(FontAwesomeIcon)`
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 2.1rem; /* 버튼 고정 크기 */
-  height: 2.1rem; /* 버튼 고정 크기 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  border: none;
-  font-size: 2rem; /* 아이콘 크기 */
-  font-weight: bold;
+  top: 0.8rem;
+  right: 1rem;
+  font-size: 1.4rem; /* 아이콘 크기 */
   color: #333;
   cursor: pointer;
-  border-radius: 50%; /* 동그란 버튼 모양 */
   transition: all 0.1s ease-in-out;
 
   /* 클릭 효과: 안으로 들어가는 그림자 */
-
   &:active {
     transform: scale(0.75);
-  }
-
-  @media (max-width: 480px) {
-    width: 1.9rem; /* 버튼 고정 크기 */
-    height: 1.9rem; /* 버튼 고정 크기 */
-    font-size: 1.7rem; /* 아이콘 크기 */
   }
 `;
 
@@ -134,6 +147,7 @@ const MessageBox = styled.div`
     }
   }
 `;
+
 const PrimaryModal = () => {
   const dispatch = useDispatch();
   const { isOpen, contentType, message, createRoomCode } = useSelector(
@@ -145,9 +159,9 @@ const PrimaryModal = () => {
     dispatch(setMessage("")); // 메시지 초기화
   }, [contentType, dispatch]);
 
+  // 메시지 처리
   useEffect(() => {
     if (message) {
-      // 약간의 딜레이를 추가해 브라우저 렌더링 순서 보장
       const timer = setTimeout(() => {
         dispatch(setMessage("")); // 2초 후 메시지 제거
       }, 2000);
@@ -156,19 +170,28 @@ const PrimaryModal = () => {
     }
   }, [message, dispatch]);
 
+  // isOpen이 false로 변경될 때 애니메이션을 시작
+  useEffect(() => {
+    if (!isOpen) {
+      setTimeout(() => {
+        dispatch(closeModal());
+      }, 400); // 애니메이션 시간과 동일하게 설정
+    }
+  }, [isOpen, dispatch]);
+
   const handleClose = () => {
     if (contentType === "withFriends" && createRoomCode) {
-      // 방 코드가 존재하는 경우: 방 코드 초기화 및 메시지 표시
       dispatch(setCreateRoomCode(""));
-      dispatch(disconnectStompExceptForInitialization()); // STOMP 연결 종료
+      dispatch(disconnectStompExceptForInitialization());
       dispatch(setMessage("매칭이 취소되었습니다."));
-      return; // 조건 충족 후 종료
+      return;
     }
     if (contentType === "quickStart") {
       dispatch(CancelQuickJoinRoom());
-      dispatch(disconnectStomp()); // STOMP 연결 종료
+      dispatch(disconnectStomp());
       return;
     }
+
     dispatch(closeModal());
   };
 
@@ -196,11 +219,14 @@ const PrimaryModal = () => {
 
   return (
     <ModalBackground>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
+      <ModalContainer
+        $isClosing={!isOpen} // 애니메이션 적용
+        onClick={(e) => e.stopPropagation()}
+      >
         {contentType === "gameResult" ? (
           ""
         ) : (
-          <CloseButton onClick={handleClose}>&times;</CloseButton>
+          <CloseButton icon={faXmark} onClick={handleClose} />
         )}
         <ModalTitle>{modalTitle}</ModalTitle>
         {message && <MessageBox>{message}</MessageBox>}

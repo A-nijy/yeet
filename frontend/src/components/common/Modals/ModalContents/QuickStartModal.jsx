@@ -7,14 +7,21 @@ import {
 } from "../../../../thunk/roomThunk";
 import { useDispatch, useSelector } from "react-redux";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiceOne } from "@fortawesome/free-solid-svg-icons";
 
 // 모달 콘텐츠 스타일링
 const ModalDescription = styled.div`
   font-size: 1rem;
-  color: #666;
+  color: #555;
   margin: 1rem 0 2rem 0;
 `;
 
+const LoadingIcon = styled(FontAwesomeIcon)`
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+  color: #f3a0b5;
+`;
 // 모달 콘텐츠 컴포넌트
 const QuickStartModal = () => {
   const ready = useSelector((state) => state.game.ready);
@@ -41,6 +48,7 @@ const QuickStartModal = () => {
       ) : (
         <div>
           <ModalDescription>
+            <LoadingIcon icon={faDiceOne} spin />
             <div>상대방을 기다리는 중 입니다.</div>
             <div> 잠시만 기다려 주세요.</div>
           </ModalDescription>

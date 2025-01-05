@@ -37,10 +37,6 @@ const GameInfo = styled.div`
   @media (max-width: 768px) {
     font-size: 1rem;
   }
-
-  @media (max-width: 480px) {
-    font-size: 0.9rem;
-  }
 `;
 
 const BoardWrapper = styled.div`

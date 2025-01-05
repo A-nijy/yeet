@@ -26,7 +26,7 @@ const DiceWrapperContainer = styled.div`
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
-  transition: padding 0.3s ease;
+  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     gap: 0.3rem;
@@ -64,6 +64,7 @@ const DiceIcon = styled(FontAwesomeIcon)`
   opacity: ${(props) => (props.$animated ? "0" : "1")};
   color: ${(props) => (props.$rollCountExceeded ? "#b3b3b3" : "#f3a0b5")};
   font-size: 2.5rem;
+  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     font-size: 2rem;

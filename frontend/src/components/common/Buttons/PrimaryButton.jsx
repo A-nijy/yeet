@@ -50,18 +50,6 @@ const StyledButton = styled.button`
   &:focus {
     outline: none; /* 포커스 스타일 제거 */
   }
-
-  @media (max-width: 768px) {
-    width: 6.5rem;
-    height: 2.3rem;
-    font-size: 0.85rem;
-  }
-
-  /* @media (max-width: 480px) {
-    width: 6rem;
-    height: 2.1rem;
-    font-size: 0.9rem;
-  } */
 `;
 
 const PrimaryButton = ({ onClick, children, disabled, ver = "blue" }) => {
