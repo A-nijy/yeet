@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiceOne } from "@fortawesome/free-solid-svg-icons";
+import { closeModal } from "../../../../store/modalSlice";
 
 // 모달 콘텐츠 스타일링
 const ModalDescription = styled.div`
@@ -25,7 +26,10 @@ const LoadingIcon = styled(FontAwesomeIcon)`
 // 모달 콘텐츠 컴포넌트
 const QuickStartModal = () => {
   const ready = useSelector((state) => state.game.ready);
-  const roomCode = useSelector((state) => state.modal.generatedRoomCode);
+  const { connected, connectError, disconnectError } = useSelector(
+    (state) => state.stomp
+  );
+  const { generatedRoomCode: roomCode } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,8 +38,20 @@ const QuickStartModal = () => {
     }
   }, [roomCode, ready, dispatch]);
 
+  useEffect(() => {
+    if (connectError || disconnectError) {
+      const timer = setTimeout(() => {
+        dispatch(disconnectStomp());
+      }, 2000);
+
+      return () => clearTimeout(timer); // 타이머 정리
+    }
+  }, [connectError, disconnectError, dispatch]);
+
   const handleCancelClick = () => {
-    dispatch(CancelQuickJoinRoom());
+    if (connected) {
+      dispatch(CancelQuickJoinRoom());
+    }
     dispatch(disconnectStomp()); // STOMP 연결 종료
   };
 

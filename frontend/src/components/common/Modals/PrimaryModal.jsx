@@ -17,6 +17,7 @@ import { CancelQuickJoinRoom } from "../../../thunk/roomThunk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import GameQuitModal from "./ModalContents/GameQuitModal";
+import DisconnectedModal from "./ModalContents/DisconnectedModal";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -151,6 +152,7 @@ const MessageBox = styled.div`
 
 const PrimaryModal = () => {
   const dispatch = useDispatch();
+  const { connected, disconnectError } = useSelector((state) => state.stomp);
   const { isOpen, contentType, message, createRoomCode } = useSelector(
     (state) => state.modal
   );
@@ -162,14 +164,30 @@ const PrimaryModal = () => {
 
   // 메시지 처리
   useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        dispatch(setMessage("")); // 2초 후 메시지 제거
-      }, 2000);
+    // 모달이 열려있을 때는 모달 안에 메시지를 띄우도록 함.
+    // 모달이 닫혀있을 때는 모달을 띄우도록 함.
+    if (isOpen) {
+      if (message) {
+        const timer = setTimeout(() => {
+          dispatch(setMessage("")); // 2초 후 메시지 제거
+        }, 2000);
 
-      return () => clearTimeout(timer); // 타이머 정리
+        return () => clearTimeout(timer); // 타이머 정리
+      }
     }
-  }, [message, dispatch]);
+  }, [isOpen, message, dispatch]);
+
+  useEffect(() => {
+    // 모달이 열려있을 때 서버 연결이 끊겼다면 메시지를 호출함.
+    if (isOpen) {
+      //모달이 gameDisconnect을 호출 때는 gameDisconnect에는 메시지를 띄우지 않도록 함
+      if (contentType !== "gameDisconnect") {
+        if (disconnectError) {
+          dispatch(setMessage(disconnectError));
+        }
+      }
+    }
+  }, [disconnectError, contentType, dispatch]);
 
   // isOpen이 false로 변경될 때 애니메이션을 시작
   useEffect(() => {
@@ -188,11 +206,17 @@ const PrimaryModal = () => {
       return;
     }
     if (contentType === "quickStart") {
-      dispatch(CancelQuickJoinRoom());
+      if (connected) {
+        dispatch(CancelQuickJoinRoom());
+      }
       dispatch(disconnectStomp());
       return;
     }
-    if (contentType === "gameQuit") {
+    if (
+      contentType === "gameQuit" ||
+      contentType === "withFriends" ||
+      contentType === "gameDisconnect"
+    ) {
       dispatch(disconnectStomp());
       return;
     }
@@ -205,6 +229,7 @@ const PrimaryModal = () => {
     if (contentType === "withFriends") return "친구랑 하기";
     if (contentType === "gameResult") return "게임 결과";
     if (contentType === "gameQuit") return "앗! 이런";
+    if (contentType === "gameDisconnect") return "에러 발생";
     return "";
   }, [contentType]);
 
@@ -218,6 +243,8 @@ const PrimaryModal = () => {
         return <GameResultsModal />;
       case "gameQuit":
         return <GameQuitModal />;
+      case "gameDisconnect":
+        return <DisconnectedModal />;
       default:
         return null;
     }

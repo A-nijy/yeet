@@ -176,14 +176,20 @@ const GameResultsModal = () => {
   const restart = useSelector((state) => state.game.GAME_RESTART.restart);
   const restartPlayer = useSelector((state) => state.game.player);
 
+  const { disconnectError } = useSelector((state) => state.stomp);
+
   const player = getSessionItem("player");
 
   const [restartRequest, setRestartRequest] = useState(true);
   // 게임 종료 클릭 이벤트
   const handleGameExit = async () => {
     console.log("게임을 나가겠습니다.");
-
-    dispatch(gameOver(roomCode));
+    // 서버 연결 되어있다면 서버에게 게임이 끊났다고 보내고 연결이 끊겼다면 소켓을 닫으면서 모두 초기화 진행
+    if (!disconnectError) {
+      dispatch(gameOver(roomCode));
+    } else {
+      dispatch(disconnectStomp());
+    }
   };
 
   useEffect(() => {
@@ -239,7 +245,7 @@ const GameResultsModal = () => {
 
         <CenterContainer>
           <CommentWrapper>
-            {restart === false && !gameoverPlayer ? (
+            {restart === false && !gameoverPlayer && !disconnectError ? (
               <CommentIconWithText>
                 <CommentIcon
                   icon={faComment}
@@ -278,7 +284,9 @@ const GameResultsModal = () => {
         {/** 게임을 끝낸 사람이 본인이 아니라면 버튼이 비활성화되도록 함 */}
         <PrimaryButton
           onClick={handleGameReplay}
-          disabled={gameoverPlayer && gameoverPlayer !== player}
+          disabled={
+            (gameoverPlayer && gameoverPlayer !== player) || disconnectError
+          }
         >
           다시하기
         </PrimaryButton>

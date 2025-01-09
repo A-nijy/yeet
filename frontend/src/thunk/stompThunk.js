@@ -1,5 +1,10 @@
 import stompClientManager from "../utils/stompClient";
-import { connected, disconnected } from "../store/stompSlice";
+import {
+  connected,
+  connectErrorOccurred,
+  connecting,
+  disconnected,
+} from "../store/stompSlice";
 import { resetModalState } from "../store/modalSlice";
 import { resetGameState } from "../store/gameSlice";
 import { removeSessionItem } from "../utils/roleSession";
@@ -12,13 +17,15 @@ export const connectStomp = () => async (dispatch, getState) => {
     return stompClientManager.getClient();
   }
 
-  console.log("STOMP 연결 시도 중...");
+  dispatch(connecting());
+
   try {
-    const client = await stompClientManager.connect();
+    const client = await stompClientManager.connect(dispatch);
     dispatch(connected());
     return client;
   } catch (error) {
-    console.error("STOMP 연결 실패:", error);
+    // 연결 시도 에러
+    dispatch(connectErrorOccurred(error.message));
     throw error;
   }
 };

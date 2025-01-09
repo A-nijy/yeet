@@ -26,9 +26,10 @@ const GameQuitModal = () => {
     <div>
       <ModalDescription>
         <div>
-          상대방이 <StyledSpan>{player}</StyledSpan>님의 패왕색에 도망쳤어요!
+          <StyledSpan>{player}</StyledSpan>님.. 죄송합니다 (--)(__)(--)
         </div>
-        <div>창을 닫고 로비에서 새로운 상대를 찾아보세요.</div>
+        <div>상대방이 도망쳐 버렸어요.</div>
+        <div>창을 닫고 로비에서 새로운 상대를 찾아보세요!</div>
       </ModalDescription>
     </div>
   );

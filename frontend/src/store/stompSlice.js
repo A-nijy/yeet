@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   client: null,
   connected: false,
-  error: null,
+  connectError: null,
+  disconnectError: null,
 };
 
 const stompSlice = createSlice({
@@ -12,6 +13,8 @@ const stompSlice = createSlice({
   reducers: {
     connecting(state) {
       state.connected = false;
+      state.connectError = null;
+      state.disconnectError = null;
       console.log("STOMP 연결 중...");
     },
     connected(state, action) {
@@ -22,11 +25,17 @@ const stompSlice = createSlice({
     disconnected(state) {
       state.connected = false;
       state.client = null;
+      state.connectError = null;
+      state.disconnectError = null;
       console.log("STOMP 연결 해제");
     },
-    errorOccurred(state, action) {
-      state.error = action.payload;
-      console.log("STOMP 에러 발생:", action.payload);
+    connectErrorOccurred(state, action) {
+      state.connectError = action.payload;
+      console.log("연결 시도 에러 발생:", action.payload);
+    },
+    disconnectErrorOccurred(state, action) {
+      state.disconnectError = action.payload;
+      console.log("연결 끊김 에러 발생:", action.payload);
     },
   },
 });
@@ -35,8 +44,8 @@ export const {
   connecting,
   connected,
   disconnected,
-  errorOccurred,
-  updateRoomDetails,
+  disconnectErrorOccurred,
+  connectErrorOccurred,
 } = stompSlice.actions;
 
 export default stompSlice.reducer;
