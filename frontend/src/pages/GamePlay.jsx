@@ -51,7 +51,7 @@ const BoardWrapper = styled.div`
 const GamePlay = () => {
   const dispatch = useDispatch();
   // Redux 상태 가져오기
-  const { contentType, isOpen } = useSelector((state) => state.modal);
+  const { contentType } = useSelector((state) => state.modal);
   const { currentPlayer, rollCount } = useSelector((state) => state.game);
 
   const diceValues = useSelector((state) => state.game.dice);
@@ -85,7 +85,7 @@ const GamePlay = () => {
     ) {
       dispatch(openModal("gameDisconnect"));
     }
-  }, [disconnectError, dispatch]);
+  }, [contentType, disconnectError, dispatch]);
 
   return (
     <Container>

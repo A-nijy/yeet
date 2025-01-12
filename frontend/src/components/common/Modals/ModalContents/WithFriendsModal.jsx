@@ -75,7 +75,7 @@ const WithFriendsModal = () => {
   }, [message, dispatch]);
 
   useEffect(() => {
-    // stompError가 발생하면 버튼을 다시 활성화
+    // 서버 연결 에러가 발생하면 버튼을 다시 활성화
     if (connectError || disconnectError) {
       setIsJoining(false);
     }
@@ -85,6 +85,16 @@ const WithFriendsModal = () => {
     console.log("방 만들기 클릭!!");
     dispatch(createRoom());
   };
+
+  useEffect(() => {
+    if (connectError || disconnectError) {
+      const timer = setTimeout(() => {
+        dispatch(setCreateRoomCode(""));
+      }, 2000);
+
+      return () => clearTimeout(timer); // 타이머 정리
+    }
+  }, [connectError, disconnectError, dispatch]);
 
   const handleJoinRoom = () => {
     if (!roomCode.trim()) {

@@ -75,7 +75,7 @@ export const createRoom = () => async (dispatch, getState) => {
     // 연결 실패 시 예외 발생
   } catch (error) {
     console.error("STOMP 연결 중 오류:", error); // 예외 처리
-    dispatch(setCreateRoomCode(null)); // 상태 초기화
+    // dispatch(setCreateRoomCode(null)); // 상태 초기화
     dispatch(setMessage("서버 연결에 실패했습니다."));
     return; // 함수 종료
   }

@@ -30,10 +30,14 @@ const stompSlice = createSlice({
       console.log("STOMP 연결 해제");
     },
     connectErrorOccurred(state, action) {
+      state.connected = false;
+      state.client = null;
       state.connectError = action.payload;
       console.log("연결 시도 에러 발생:", action.payload);
     },
     disconnectErrorOccurred(state, action) {
+      state.connected = false;
+      state.client = null;
       state.disconnectError = action.payload;
       console.log("연결 끊김 에러 발생:", action.payload);
     },

@@ -187,7 +187,7 @@ const PrimaryModal = () => {
         }
       }
     }
-  }, [disconnectError, contentType, dispatch]);
+  }, [isOpen, disconnectError, contentType, dispatch]);
 
   // isOpen이 false로 변경될 때 애니메이션을 시작
   useEffect(() => {

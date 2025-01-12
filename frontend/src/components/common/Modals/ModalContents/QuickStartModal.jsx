@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { disconnectStomp } from "../../../../thunk/stompThunk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiceOne } from "@fortawesome/free-solid-svg-icons";
-import { closeModal } from "../../../../store/modalSlice";
 
 // 모달 콘텐츠 스타일링
 const ModalDescription = styled.div`
