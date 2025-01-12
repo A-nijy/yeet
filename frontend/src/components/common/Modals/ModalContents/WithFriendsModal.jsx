@@ -39,10 +39,12 @@ const ModalTextMain = styled.div`
   color: #555;
   margin-bottom: 0.5rem;
 `;
+
 const DiceIcon = styled(FontAwesomeIcon)`
   font-size: 2.5rem;
   color: #f3a0b5;
 `;
+
 const StyledEnterCodeContainer = styled.div`
   display: flex;
   align-items: center;
@@ -57,31 +59,49 @@ const StyledPrimaryInput = styled(PrimaryInput)`
 const WithFriendsModal = () => {
   const dispatch = useDispatch();
   const { createRoomCode, message } = useSelector((state) => state.modal);
+  const { connectError, disconnectError } = useSelector((state) => state.stomp);
   const [roomCode, setRoomCode] = useState(""); // 입력된 방 코드
+  const [isJoining, setIsJoining] = useState(false); // 입장하기 버튼 상태 관리
   const inputRef = useRef(null); // 입력창 참조
 
   useEffect(() => {
+    // 에러 메시지 처리
     if (
       message === "존재하지 않은 초대 코드입니다." ||
       message === "참여 인원을 초과했습니다."
     ) {
       dispatch(disconnectStompExceptForInitialization()); // STOMP 연결 종료
-      return;
     }
   }, [message, dispatch]);
 
+  useEffect(() => {
+    // 서버 연결 에러가 발생하면 버튼을 다시 활성화
+    if (connectError || disconnectError) {
+      setIsJoining(false);
+    }
+  }, [connectError, disconnectError]);
+
   const handleCreateRoom = () => {
     console.log("방 만들기 클릭!!");
-
     dispatch(createRoom());
   };
+
+  useEffect(() => {
+    if (connectError || disconnectError) {
+      const timer = setTimeout(() => {
+        dispatch(setCreateRoomCode(""));
+      }, 2000);
+
+      return () => clearTimeout(timer); // 타이머 정리
+    }
+  }, [connectError, disconnectError, dispatch]);
 
   const handleJoinRoom = () => {
     if (!roomCode.trim()) {
       inputRef.current.focus();
       return;
     }
-
+    setIsJoining(true); // 버튼 비활성화
     dispatch(joinRoom(roomCode)); // 방 코드 전달
   };
 
@@ -93,7 +113,7 @@ const WithFriendsModal = () => {
 
   return (
     <>
-      {/**'방 만들기'로 초대 코드를 받는 사람만 UI를 볼 수 있도록 설정*/}
+      {/** '방 만들기'로 초대 코드를 받는 사람만 UI를 볼 수 있도록 설정 */}
       {createRoomCode ? (
         // 방이 생성된 경우
         <>
@@ -130,7 +150,12 @@ const WithFriendsModal = () => {
                 onChange={setRoomCode}
                 maxLength={6}
               />
-              <PrimaryButton onClick={handleJoinRoom}>입장하기</PrimaryButton>
+              <PrimaryButton
+                onClick={handleJoinRoom}
+                disabled={isJoining} // 입장 버튼 비활성화 상태
+              >
+                {isJoining ? "입장 중..." : "입장하기"} {/* 텍스트 변경 */}
+              </PrimaryButton>
             </StyledEnterCodeContainer>
           </PartContainer>
         </>

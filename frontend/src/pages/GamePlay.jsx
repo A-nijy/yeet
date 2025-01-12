@@ -67,6 +67,7 @@ const GamePlay = () => {
   const opponentRollsLeft = currentPlayer === opponent ? rollCount : 0;
 
   const resultInfo = useSelector((state) => state.game.win);
+  const disconnectError = useSelector((state) => state.stomp.disconnectError);
 
   useEffect(() => {
     if (resultInfo.length > 1) {
@@ -74,6 +75,17 @@ const GamePlay = () => {
       dispatch(openModal("gameResult"));
     }
   }, [resultInfo, dispatch]);
+
+  useEffect(() => {
+    // 모달이 열려있지 않으면서 게임 도중 서버 연결 끊김 시 gameDisconnect 모달 띄우기
+
+    if (
+      !(contentType === "gameResult" || contentType === "gameQuit") &&
+      disconnectError
+    ) {
+      dispatch(openModal("gameDisconnect"));
+    }
+  }, [contentType, disconnectError, dispatch]);
 
   return (
     <Container>
@@ -106,7 +118,9 @@ const GamePlay = () => {
         </BoardWrapper>
       </GameBoardContainer>
       {/** 상황에 맞는 모달 등장*/}
-      {contentType === "gameResult" && <PrimaryModal />}
+      {(contentType === "gameResult" ||
+        contentType === "gameQuit" ||
+        contentType === "gameDisconnect") && <PrimaryModal />}
     </Container>
   );
 };
