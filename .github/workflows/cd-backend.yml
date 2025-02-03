@@ -4,9 +4,7 @@ on:
   workflow_run:
     workflows: ["Backend CI Pipeline"]
     types:
-      - success
-    branches:
-      - release
+      - completed
 
 jobs:
   deploy:
