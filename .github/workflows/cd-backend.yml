@@ -1,11 +1,14 @@
 name: Backend CD Pipeline
 
 on:
-  workflow_run:
-    workflows: ["Backend CI Pipeline"]
-    branches: [release]
-    types:
-      - completed
+  push:
+    branches:
+      - release
+#  workflow_run:
+#    workflows: ["Backend CI Pipeline"]
+#    branches: [release]
+#    types:
+#      - completed
 
 jobs:
   deploy:
