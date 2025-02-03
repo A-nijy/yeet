@@ -21,7 +21,7 @@ FROM openjdk:17-jdk-slim
 # 애플리케이션을 실행할 작업 디렉토리를 생성
 WORKDIR /app
 
-# 빌드 이미지에서 생성된 JAR 파일을 런타임 이미지로 복사!
+# 빌드 이미지에서 생성된 JAR 파일을 런타임 이미지로 복사!!
 COPY --from=build /app/build/libs/*.jar /app/yeet.jar
 
 EXPOSE 8080
