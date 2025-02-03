@@ -8,9 +8,9 @@ let isDeactivating = false; // 클라이언트 비활성화 여부
 
 const createClient = () => {
   return new Client({
-    brokerURL: "ws://localhost:8080/ws/connect",
+    brokerURL: "/ws/connect",
     webSocketFactory: () =>
-      new SockJS("http://localhost:8080/ws/connect", null, {
+      new SockJS("/ws/connect", null, {
         transports: ["websocket"],
         withCredentials: false,
       }),
