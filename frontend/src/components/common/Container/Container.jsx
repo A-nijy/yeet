@@ -19,7 +19,6 @@ const ContainerWrapper = styled.div`
 const ContentContainer = styled.div`
   width: 100%;
   max-width: 1200px;
-  padding: 20px;
   background-color: #e5e5e5;
   display: flex;
   justify-content: center;

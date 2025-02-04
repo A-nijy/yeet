@@ -44,7 +44,7 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   padding-bottom: 1rem;
 
-  transform: scale(1.1);
+  transform: scale(1.2);
   transition: transform 0.3s ease, padding-bottom 0.3s ease;
 
   @media (max-width: 768px) {
@@ -53,16 +53,25 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const Header = styled.header`
+const TitleContainer = styled.div`
   width: 100%;
   padding-bottom: 2rem;
   text-align: center;
 `;
 
-const TitleH1 = styled.h1`
-  font-size: 3.5rem;
-  margin: 0;
+const TitleImage = styled.img`
+  width: 9rem;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  /* padding-bottom: 1rem; */
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: 8rem;
+  }
 `;
+
 const DescriptionText = styled.div`
   font-size: 1.05rem;
   line-height: 1.9;
@@ -102,9 +111,9 @@ const Lobby = () => {
       <Container>
         <LobbyContainer>
           {/** 헤더 추가 */}
-          <Header>
-            <TitleH1>YEET!</TitleH1>
-          </Header>
+          <TitleContainer>
+            <TitleImage src="/yeetLogo.png" alt="타이틀 배경" />
+          </TitleContainer>
           {/** 버튼 섹션 */}
           <ButtonSection>
             <ButtonContainer>
