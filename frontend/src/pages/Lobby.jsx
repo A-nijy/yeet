@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import PrimaryModal from "../components/common/Modals/PrimaryModal";
 import Container from "../components/common/Container/Container";
 import { QuickCreateRoom } from "../thunk/roomThunk";
-import GameDescription from "../components/Lobby/GameDescription";
+
+import InfoIcon from "../components/common/Icons/InfoIcon";
 
 const LobbyContainer = styled.div`
   display: flex;
@@ -14,44 +15,77 @@ const LobbyContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 2rem 2.5rem;
 `;
 
-// 📌 버튼과 설명을 분리하기 위한 섹션 추가
+// 버튼과 설명을 분리하기 위한 섹션 추가
 const ButtonSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  margin-bottom: 3rem; /* 버튼과 설명 구분을 위한 여백 */
+  max-width: 50rem;
+  width: 90%;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  text-align: center;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 600px;
+  max-width: 46rem;
 `;
 
 const ButtonWrapper = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
+  padding-bottom: 1rem;
 
   transform: scale(1.1);
+  transition: transform 0.3s ease, padding-bottom 0.3s ease;
+
+  @media (max-width: 768px) {
+    transform: scale(1.05);
+    padding-bottom: 0rem;
+  }
 `;
 
 const Header = styled.header`
   width: 100%;
-  padding: 1rem 0;
+  padding-bottom: 2rem;
   text-align: center;
 `;
 
 const TitleH1 = styled.h1`
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin: 0;
+`;
+const DescriptionText = styled.div`
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: #555;
+  text-align: center;
+  background: #f0f0f0;
+  box-shadow: inset 4px 4px 10px #c2c2c2, inset -4px -4px 10px #ffffff;
+  max-width: 45rem;
+  width: 90%;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  span {
+    font-weight: bold;
+    color: #3b3b3b;
+    font-size: 1.15rem;
+  }
+
+  @media (max-width: 768px) {
+    transform: scale(0.95);
+  }
 `;
 
 const Lobby = () => {
@@ -65,12 +99,12 @@ const Lobby = () => {
 
   return (
     <>
-      {/** 헤더 추가 */}
-      <Header>
-        <TitleH1>YEET!</TitleH1>
-      </Header>
       <Container>
         <LobbyContainer>
+          {/** 헤더 추가 */}
+          <Header>
+            <TitleH1>YEET!</TitleH1>
+          </Header>
           {/** 버튼 섹션 */}
           <ButtonSection>
             <ButtonContainer>
@@ -93,13 +127,18 @@ const Lobby = () => {
             </ButtonContainer>
           </ButtonSection>
 
-          {/** 게임 설명 섹션 */}
-          <GameDescription />
-
+          <DescriptionText>
+            한 턴에 <span>최대 3번</span> 주사위를 굴릴 수 있습니다.
+            <br />
+            특정 조건을 충족하는 <span>조합</span>을 만들어 점수를 기록하세요!
+            <br />
+            가장 높은 점수를 획득한 <span>플레이어가 승리</span>합니다!
+            <InfoIcon />
+          </DescriptionText>
           {/** 상황에 맞는 모달 등장 */}
-          {(contentType === "quickStart" || contentType === "withFriends") && (
-            <PrimaryModal />
-          )}
+          {(contentType === "quickStart" ||
+            contentType === "withFriends" ||
+            contentType === "gameInfo") && <PrimaryModal />}
         </LobbyContainer>
       </Container>
     </>

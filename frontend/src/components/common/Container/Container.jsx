@@ -1,28 +1,46 @@
 import React from "react";
 import styled from "styled-components";
+import DiceSlider from "../Deco/DiceSlider"; // 📌 분리한 슬라이더 컴포넌트 가져오기
 
-const StyledContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
+// 전체 컨테이너 (배경 포함)
+const ContainerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* 뷰포트 전체 높이 */
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #e5e5e5;
+  position: relative;
+  overflow: hidden;
 `;
 
-const StyeldCenter = styled.div`
+// 중앙 컨텐츠 (반응형 조정 추가)
+const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  background-color: #e5e5e5;
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 100%; /* 자식 요소 정렬을 위한 넓이 설정 */
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  border-radius: 10px;
 `;
 
 const Container = ({ children }) => {
   return (
-    <StyledContainer>
-      <StyeldCenter>{children}</StyeldCenter>
-    </StyledContainer>
+    <ContainerWrapper>
+      {/* 위쪽 주사위 슬라이드 (오른쪽 → 왼쪽) */}
+      <DiceSlider position="top" forward={true} />
+
+      {/* 메인 컨텐츠 (중앙, 반응형 적용) */}
+      <ContentContainer>{children}</ContentContainer>
+
+      {/* 아래쪽 주사위 슬라이드 (왼쪽 → 오른쪽) */}
+      <DiceSlider position="bottom" forward={false} />
+    </ContainerWrapper>
   );
 };
 
