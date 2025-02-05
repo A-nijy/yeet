@@ -14,7 +14,7 @@ const IconWarpper = styled.div`
 `;
 
 const UserIcon = styled(FontAwesomeIcon)`
-  transition: color 0.5s ease;
+  transition: color 0.3s ease;
   color: ${(props) =>
     props.$isActive ? "#1b1b1b" : "#757575"}; /* 활성화 색상 */
   font-size: 3rem;
@@ -26,7 +26,7 @@ const ChancesContainer = styled.div`
   margin-bottom: 1rem;
 `;
 const CircleIcon = styled(FontAwesomeIcon)`
-  transition: color 0.5s ease;
+  transition: color 0.3s ease;
   font-size: 0.5rem;
   color: ${(props) => (props.$active ? "#c94545" : "#aaa")};
 `;

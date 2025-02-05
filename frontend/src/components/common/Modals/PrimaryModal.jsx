@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import GameQuitModal from "./ModalContents/GameQuitModal";
 import DisconnectedModal from "./ModalContents/DisconnectedModal";
+import GameInformaition from "./ModalContents/GameInformation";
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -34,8 +35,10 @@ const ModalBackground = styled.div`
 
 const ModalContainer = styled.div`
   position: relative; /* 자식 요소의 기준 위치로 설정 */
-  width: 30rem;
-  max-width: 90%;
+  width: ${({ $isGameInfo }) => ($isGameInfo ? "90vw" : "30rem")};
+  max-width: ${({ $isGameInfo }) => ($isGameInfo ? "1100px" : "90%")};
+  max-height: ${({ $isGameInfo }) => ($isGameInfo ? "80vh" : "auto")};
+
   background: #e5e5e5;
   border-radius: 0.5rem;
   padding: 2rem;
@@ -43,7 +46,7 @@ const ModalContainer = styled.div`
   text-align: center;
   box-sizing: border-box;
   position: relative; /* 닫기 버튼 위치 조정 */
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 
   /* 애니메이션 */
   animation: ${({ $isClosing }) =>
@@ -99,7 +102,7 @@ const ModalTitle = styled.h2`
   color: #333;
   margin: 0;
   padding-bottom: 0.5rem;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 
   @media (max-width: 768px) {
     font-size: 1.3rem;
@@ -107,6 +110,34 @@ const ModalTitle = styled.h2`
 
   @media (max-width: 480px) {
     font-size: 1.1rem;
+  }
+`;
+
+const ModalContent = styled.div`
+  flex-grow: 1; /* 내용이 늘어나면 자동으로 차지 */
+  overflow-y: auto; /* 스크롤 적용 */
+  overflow-x: hidden;
+  max-height: calc(80vh - 6rem); /* 모달의 높이에서 여백 제외 */
+  /* padding-right: 0.5rem; */
+  margin-top: 0.5rem;
+
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 8px; /* 스크롤바 너비 */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3); /* 스크롤바 색상 */
+    border-radius: 4px; /* 둥근 모서리 */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* 스크롤 트랙 색상 */
+    border-radius: 4px;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5); /* 마우스 호버 시 더 진한 색상 */
   }
 `;
 
@@ -245,6 +276,8 @@ const PrimaryModal = () => {
         return <GameQuitModal />;
       case "gameDisconnect":
         return <DisconnectedModal />;
+      case "gameInfo":
+        return <GameInformaition />;
       default:
         return null;
     }
@@ -255,6 +288,7 @@ const PrimaryModal = () => {
   return (
     <ModalBackground>
       <ModalContainer
+        $isGameInfo={contentType === "gameInfo"} // gameInfo일 때만 다르게 적용
         $isClosing={!isOpen} // 애니메이션 적용
         onClick={(e) => e.stopPropagation()}
       >
@@ -265,7 +299,13 @@ const PrimaryModal = () => {
         )}
         <ModalTitle>{modalTitle}</ModalTitle>
         {message && <MessageBox>{message}</MessageBox>}
-        {renderContent}
+
+        {/* gameInfo 모달일 경우만 스크롤이 있는 컨테이너 적용 */}
+        {contentType === "gameInfo" ? (
+          <ModalContent>{renderContent}</ModalContent>
+        ) : (
+          renderContent
+        )}
       </ModalContainer>
     </ModalBackground>
   );
