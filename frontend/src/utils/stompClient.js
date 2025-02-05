@@ -2,15 +2,18 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { disconnectErrorOccurred } from "../store/stompSlice";
 
+const WS_URL = process.env.REACT_APP_WS_URL;
+const SOCKJS_URL = process.env.REACT_APP_SOCKJS_URL;
+
 let stompClient = null; // 현재 클라이언트 인스턴스
 let isManuallyDisconnected = false; // 사용자가 수동으로 연결을 끊었는지 여부
 let isDeactivating = false; // 클라이언트 비활성화 여부
 
 const createClient = () => {
   return new Client({
-    brokerURL: "/ws/connect",
+    brokerURL: WS_URL,
     webSocketFactory: () =>
-      new SockJS("/ws/connect", null, {
+      new SockJS(SOCKJS_URL, null, {
         transports: ["websocket"],
         withCredentials: false,
       }),
