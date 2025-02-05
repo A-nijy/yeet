@@ -46,7 +46,7 @@ const ModalContainer = styled.div`
   text-align: center;
   box-sizing: border-box;
   position: relative; /* 닫기 버튼 위치 조정 */
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 
   /* 애니메이션 */
   animation: ${({ $isClosing }) =>
@@ -102,7 +102,7 @@ const ModalTitle = styled.h2`
   color: #333;
   margin: 0;
   padding-bottom: 0.5rem;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 
   @media (max-width: 768px) {
     font-size: 1.3rem;
