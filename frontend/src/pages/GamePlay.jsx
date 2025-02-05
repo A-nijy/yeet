@@ -10,6 +10,7 @@ import DiceKeeper from "../components/GamePaly/DiceKeeper";
 import ScoreBoard from "../components/GamePaly/ScoreBoard";
 import PrimaryModal from "../components/common/Modals/PrimaryModal";
 import { openModal } from "../store/modalSlice";
+// import Congratulations from "../components/GamePaly/Congratulations";
 
 const GameBoardContainer = styled.div`
   display: flex;
@@ -69,6 +70,9 @@ const GamePlay = () => {
   const resultInfo = useSelector((state) => state.game.win);
   const disconnectError = useSelector((state) => state.stomp.disconnectError);
 
+  // // 팡파레를 위한 값
+  // const win = useSelector((state) => state.game.GAME_DONE.win);
+
   useEffect(() => {
     if (resultInfo.length > 1) {
       console.log("게임 결과 들어왔으니까 모달 띄워봅시다.", resultInfo);
@@ -89,6 +93,7 @@ const GamePlay = () => {
 
   return (
     <Container>
+      {/* {win === player && <Congratulations />} */}
       <GameBoardContainer>
         <GameInfo>
           {/* 상대 플레이어 아이콘 */}

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDiceOne,
@@ -27,10 +27,20 @@ const DiceWrapperContainer = styled.div`
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
-
+  padding-bottom: 1rem;
   @media (max-width: 768px) {
     gap: 0.3rem;
+
+    margin: 0 0.8rem;
+    transform: scale(1.17);
   }
+`;
+
+/* ✅ 심장박동 효과 (배경색이 밝아졌다가 어두워지는 애니메이션) */
+const pulse = keyframes`
+  0% { background-color: #d6d6d6; }
+  50% { background-color: transparent;  } 
+  100% { background-color: #d6d6d6;  }
 `;
 
 const DiceWrapper = styled.div`
@@ -47,10 +57,17 @@ const DiceWrapper = styled.div`
     props.$isDisabled || props.$rollCountExceeded ? "none" : "auto"};
   transition: padding 0.3s ease;
 
-  &:hover {
+  animation: ${(props) =>
+    !props.$isDisabled && !props.$isSelected
+      ? css`
+          ${pulse} 1.5s infinite ease-in-out
+        `
+      : "none"};
+
+  /* &:hover {
     border: ${(props) =>
-      props.$isDisabled ? "2px solid transparent" : "2px solid #ff6868"};
-  }
+    props.$isDisabled ? "2px solid transparent" : "2px solid #ff6868"};
+  } */
 
   @media (max-width: 768px) {
     padding: 0.15rem 0.29rem;

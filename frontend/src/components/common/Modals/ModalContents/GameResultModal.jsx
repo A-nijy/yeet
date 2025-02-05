@@ -19,10 +19,13 @@ const ModalDescription = styled.div`
   display: flex;
   justify-content: center;
   align-items: end;
-  margin-bottom: 1rem;
+  /* margin-bottom: 0.5rem; */
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
   transition: all 0.3s ease;
   @media (max-width: 768px) {
     height: 8rem;
+    gap: 0.2rem;
     margin-bottom: 0.5rem;
   }
 `;
@@ -30,11 +33,11 @@ const ModalDescription = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 3.5rem;
   transition: all 0.3s ease;
 
   @media (max-width: 768px) {
-    gap: 2rem;
+    gap: 3rem;
   }
 `;
 
@@ -91,19 +94,34 @@ const CenterContainer = styled.div`
   flex-direction: column; /* 세로 정렬 */
   align-items: center; /* 위로 정렬 */
   justify-content: flex-start; /* 위쪽 정렬 */
-  margin: 0 2.5rem; /* 좌우 간격 조정 */
+  margin: 0 0rem; /* 좌우 간격 조정 */
   height: 100%; /* 부모 컨테이너의 전체 높이 사용 */
 `;
 
 const CommentWrapper = styled.div`
   height: 4.7rem; /* 고정 높이 설정 */
+  width: 12rem;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: start;
   position: relative;
+
+  background-image: ${(props) =>
+    props.$resultsWin
+      ? 'url("/Win.png")'
+      : props.$resultsDraw
+      ? 'url("/Draw.png")'
+      : 'url("/Lose.png")'};
+
+  background-size: 5.4rem;
+  background-position: center;
+  background-repeat: no-repeat;
+
   transition: all 0.3s ease;
+
   @media (max-width: 768px) {
     height: 4rem;
+    background-size: 4.5rem;
   }
 `;
 
@@ -120,36 +138,50 @@ const CommentIconWithText = styled.div`
 `;
 
 const CommentIcon = styled(FontAwesomeIcon)`
-  font-size: 4rem;
-  color: #a89879;
+  position: absolute;
   transform: ${(props) => (props.$isFlipped ? "scaleX(-1)" : "none")};
+  top: -1rem;
+  left: ${(props) => (props.$isFlipped ? "155%" : "-27%")};
+
+  font-size: 3.8rem;
+  color: #a89879;
+
   transition: all 0.3s ease;
+
   @media (max-width: 768px) {
     font-size: 3.3rem;
+    top: -0.5rem;
+    left: ${(props) => (props.$isFlipped ? "200%" : "-10%")};
   }
 `;
 
 const CommentText = styled.span`
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 24%;
   transform: translate(-50%, -50%);
-  font-size: 0.8rem;
+  left: ${(props) => (props.$isFlipped ? "187%" : "5%")};
+
   font-weight: bold;
-  color: #ffffff; /* 텍스트 색상 */
+  color: #ffffff;
+  white-space: nowrap;
+  font-size: 0.8rem;
   pointer-events: none; /* 클릭 불가능 */
+
   transition: all 0.3s ease;
+
   @media (max-width: 768px) {
     font-size: 0.65rem;
+    top: 34%;
+    left: ${(props) => (props.$isFlipped ? "237%" : "27%")};
   }
 `;
 
 const Score = styled.div`
-  font-size: 1.6rem;
+  font-size: 2.1rem !important;
   font-weight: bold;
   transition: all 0.3s ease;
   @media (max-width: 768px) {
-    font-size: 1.3rem;
+    font-size: 1.8rem !important;
   }
 `;
 
@@ -231,10 +263,7 @@ const GameResultsModal = () => {
       <ModalDescription>
         <div>
           <IconWrapper>
-            <CrownIcon
-              icon={faWebAwesome}
-              $isWinner={win === player1 || player1Score === player2Score}
-            />
+            <CrownIcon icon={faWebAwesome} $isWinner={win === player1} />
             <UserIcon
               icon={faUser}
               $isWinner={win === player1 || player1Score === player2Score}
@@ -244,17 +273,21 @@ const GameResultsModal = () => {
         </div>
 
         <CenterContainer>
-          <CommentWrapper>
-            {restart === false && !gameoverPlayer && !disconnectError ? (
+          <CommentWrapper
+            $resultsWin={win === player}
+            $resultsDraw={player1Score === player2Score}
+          >
+            {/* CommentWrapper는 항상 존재하고, 내부 요소만 조건적으로 표시 */}
+            {restart === false && !gameoverPlayer && !disconnectError && (
               <CommentIconWithText>
                 <CommentIcon
                   icon={faComment}
                   $isFlipped={restartPlayer !== player1}
                 />
-                <CommentText>다시 ㄱ?</CommentText>
+                <CommentText $isFlipped={restartPlayer !== player1}>
+                  다시 ㄱ?
+                </CommentText>
               </CommentIconWithText>
-            ) : (
-              <div /> /* 빈 공간 유지 */
             )}
           </CommentWrapper>
           <Score>
@@ -264,10 +297,7 @@ const GameResultsModal = () => {
 
         <div>
           <IconWrapper>
-            <CrownIcon
-              icon={faWebAwesome}
-              $isWinner={win === player2 || player1Score === player2Score}
-            />
+            <CrownIcon icon={faWebAwesome} $isWinner={win === player2} />
             <UserIcon
               icon={faUser}
               $isWinner={win === player2 || player1Score === player2Score}

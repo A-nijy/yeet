@@ -32,7 +32,7 @@ const Container = styled.div`
   background: #e5e5e5;
   box-shadow: 4px 4px 10px #c2c2c2, -4px -4px 10px #ffffff;
   width: 100%;
-  margin: 1rem;
+  margin: 1rem 0.5rem 1rem 1rem;
 `;
 
 const StyledTable = styled.table`
@@ -45,10 +45,12 @@ const StyledTable = styled.table`
     text-align: center;
     background: #e5e5e5;
     transition: background-color 0.3s ease;
+    line-height: 1.05;
     transition: all 0.3s ease;
 
     @media (max-width: 768px) {
       padding: 0.5rem 0.3rem;
+      font-size: 0.95rem;
     }
   }
 
@@ -59,8 +61,14 @@ const StyledTable = styled.table`
   }
 
   th {
+    font-size: 1rem;
     background: #e5e5e5;
     border: none;
+    transition: all 0.3s ease;
+
+    @media (max-width: 768px) {
+      font-size: 0.8rem;
+    }
   }
 
   /* 특정 열 강조 (nth-child 적용) */
